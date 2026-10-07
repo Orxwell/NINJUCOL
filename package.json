@@ -1,0 +1,45 @@
+{
+  "name": "NINJUCOL",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.mjs",
+  "scripts": {
+    "test": "echo \"This is a test.\" && exit 1",
+    "build": "npx puppeteer browsers install chrome",
+    "start": "node ./server/src/server.mjs",
+    "dev": "node --env-file .env ./server/src/bootstrap.mjs"
+  },
+  "imports": {
+    "#src/*": "./server/src/*",
+    "#controllers/*": "./server/src/controllers/*",
+    "#importers/*": "./server/src/importers/*",
+    "#middlewares/*": "./server/src/middlewares/*",
+    "#routers/*": "./server/src/routers/*",
+    "#services/*": "./server/src/services/*",
+    "#utils/*": "./server/src/utils/*"
+  },
+  "keywords": [],
+  "author": "...",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.4.0",
+      "onFail": "download"
+    }
+  },
+  "type": "module",
+  "dependencies": {
+    "bcryptjs": "3.0.3",
+    "cookie-parser": "1.4.7",
+    "ejs": "6.0.1",
+    "express": "5.2.1",
+    "mime-types": "3.0.2",
+    "mongodb": "7.6.0",
+    "multer": "^2.4.0",
+    "puppeteer": "25.9.0"
+  },
+  "devDependencies": {
+    "morgan": "1.12.0"
+  }
+}

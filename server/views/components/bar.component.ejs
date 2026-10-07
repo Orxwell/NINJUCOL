@@ -1,0 +1,31 @@
+<header id="bar">
+  <section>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <image href="<%= server_url %>/api/webp/public/NINJUCOL.webp<%= `?v=${Date.now()}` %>" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" style="opacity: 0; transition: opacity .5s ease-in;" onload="this.style.opacity='1'" />
+    </svg>
+
+    <div>
+      <h1>NINJUCOL</h1>
+
+      <span>FUNDACIÓN</span>
+    </div>
+  </Section>
+
+  <nav id="alt">
+    <a href="/" <%= page === 'home' ? 'active' : '' %> >Inicio</a>
+
+    <a href="/about_us" <%= page === 'about_us' ? 'active' : '' %> >Nosotros</a>
+
+    <a href="/services" <%= page === 'services' ? 'active' : '' %> >Servicios</a>
+
+    <a href="/metodology" <%= page === 'metodology' ? 'active' : '' %> >Metodología</a>
+    
+    <a href="/contact_us" <%= page === 'contact_us' ? 'active' : '' %> >Contacto</a>
+  </nav>
+
+  <button id="alt-nav">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+      <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+    </svg>        
+  </button>
+</header>

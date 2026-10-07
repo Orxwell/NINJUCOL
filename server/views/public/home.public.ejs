@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+
+    <%- include('../components/links.component.ejs', { page: 'home', }) %>
+
+    <%- include('../components/scripts.component.ejs') %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('../components/top.component.ejs') %>
+
+    <%- include('../components/bar.component.ejs', { page: 'home', }) %>
+
+    <main>
+      <article>
+        <section class="_1">
+          <div>
+            <h2>Fundación Niñez y Juventud</h2>
+  
+            <p>Trabajamos con entornos escolares donde niñas, niños y jóvenes puedan crecer, educarse y relacionarse desde el diálogo, la responsabilidad y el cuidado.</p>
+          </div>
+  
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            height="100%"
+          >
+            <image
+              href="<%= server_url %>/api/webp/public/banner_1.webp<%= `?v=${Date.now()}` %>"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMidYMid slice"
+              style="opacity: 0; transition: opacity .5s ease-in;"
+              onload="this.style.opacity='1'"
+            />
+          </svg>
+        </section>
+  
+        <section class="_2">
+          <div>
+            <h2>Somos facilitadores de procesos educativos en entornos escolares</h2>
+  
+            <p>Acompañamos a estudiantes, docentes y familias para transformar los conflictos en aprendizaje, y con ello fortalecer comunidades a través de metodologías lúdicas.</p>
+          </div>
+  
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            height="100%"
+          >
+            <image
+              href="<%= server_url %>/api/webp/public/banner_2.webp<%= `?v=${Date.now()}` %>"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMidYMid slice"
+              style="opacity: 0; transition: opacity .5s ease-in;"
+              onload="this.style.opacity='1'"
+            />
+          </svg>
+        </section>
+  
+        <section class="_3">
+          <h2>Servicios para la Niñez</h2>
+
+          <p>Convivencia que se construye y vínculos que se restauran.</p>
+
+          <ul>
+            <li><span>Intervenciones</span></li>
+  
+            <li><span>Habilidades Blandas</span></li>
+  
+            <li><span>Acompañamiento</span></li>
+  
+            <li><span>Competencias Sociales</span></li>
+  
+            <li><span>Trabajo Social</span></li>
+          </ul>
+        </section>
+      </article>
+    </main>
+
+    <%- include('../components/footer.component.ejs') %>
+  </body>
+</html>

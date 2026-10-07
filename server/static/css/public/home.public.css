@@ -1,0 +1,187 @@
+main article {
+  width: 100vw;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 20px;
+}
+main article section {
+  height: clamp(250px, 30vmax, 450px);
+}
+main section._1 {
+  position: relative;
+
+  width: 75vw;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  
+  overflow: hidden;
+}
+main section._1>div {
+  position: relative;
+
+  padding: 20px;
+
+  width: 80%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  text-align: center;
+
+  background-color: var(--fg-color-t);
+  backdrop-filter: blur(8px);
+
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 20px;
+
+  gap: 10px;
+  
+  z-index: 2;
+}
+main section._1 svg {
+  position: absolute;
+  inset: 0;
+  
+  width: 100%;
+  height: 100%;
+
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  z-index: 1;
+}
+
+/* X% for circles */
+@property --c1-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c2-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c3-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c4-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+/* Y% for circles */
+@property --c1-y { syntax: '<length-percentage>'; inherits: false; initial-value: 0%; }
+@property --c2-y { syntax: '<length-percentage>'; inherits: false; initial-value: 0%; }
+@property --c3-y { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c4-y { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+main article section._2 {
+  width: inherit;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-style: solid;
+  border-width: 1px 0;
+
+  background:
+    radial-gradient(circle at var(--c1-x) var(--c1-y), #7028e4 0 15%, transparent 16%),
+    radial-gradient(circle at var(--c2-x) var(--c2-y), #e56686 0 25%, transparent 30%),
+    radial-gradient(circle at var(--c3-x) var(--c3-y), #c1be29 0 20%, transparent 21%),
+    radial-gradient(circle at var(--c4-x) var(--c4-y), #ff8b18 0 25%, transparent 35%),
+    var(--fg-color);
+  
+  overflow: hidden;
+
+  gap: 20px;
+
+  animation: animatedFragmentOne 8s ease-in-out infinite;
+}
+/* Animtaion FragmentOne */
+@keyframes animatedFragmentOne {
+  0%, 100% {
+    --c1-x: 100%; --c1-y: 0%;
+    --c2-x: 100%; --c2-y: 0%;
+    --c3-x: 100%; --c3-y: 100%;
+    --c4-x: 100%; --c4-y: 100%;
+  }
+  50% {
+    --c1-x: 60%; --c1-y: 20%;
+    --c2-x: 10%; --c2-y: 10%;
+    --c3-x: 30%; --c3-y: 80%;
+    --c4-x: 60%; --c4-y: 100%;
+  }
+}
+main article section._2>div {
+  padding: 10px;
+  
+  width: calc(60% - 40px);
+  height: calc(80% - 30px);
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  text-align: right;
+
+  background-color: var(--fg-color-t);
+  backdrop-filter: blur(8px);
+
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 20px;
+
+  gap: 10px;
+}
+main article section._2 svg {
+  width: calc(40% - 40px);
+  height: 80%;
+
+  border-radius: 20px;
+}
+
+main article section._3 {
+  width: 90vw;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: var(--fg-color-t);
+  backdrop-filter: blur(8px);
+
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 20px;
+
+  gap: 20px;
+}
+main section._3 ul {
+  width: 95%;
+  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+  gap: 20px;
+}
+main section._3 li {
+  padding: 20px 0;
+
+  max-width: 250px;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1 1 250px;
+
+  background-color: var(--fg-color);
+  
+  border-radius: 20px;
+
+  transition: all .5s ease-in-out;
+}
+main section._3 li:hover {
+  transform: translateY(-5px);
+
+  filter: brightness(1.25);
+}
