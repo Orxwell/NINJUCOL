@@ -1,0 +1,76 @@
+/* X% for circles */
+@property --c1-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c2-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c3-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c4-x { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+/* Y% for circles */
+@property --c1-y { syntax: '<length-percentage>'; inherits: false; initial-value: 0%; }
+@property --c2-y { syntax: '<length-percentage>'; inherits: false; initial-value: 0%; }
+@property --c3-y { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+@property --c4-y { syntax: '<length-percentage>'; inherits: false; initial-value: 100%; }
+main article section._2 {
+  width: inherit;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-style: solid;
+  border-width: 1px 0;
+
+  background:
+    radial-gradient(circle at var(--c1-x) var(--c1-y), #7028e4 0 15%, transparent 16%),
+    radial-gradient(circle at var(--c2-x) var(--c2-y), #e56686 0 25%, transparent 30%),
+    radial-gradient(circle at var(--c3-x) var(--c3-y), #c1be29 0 20%, transparent 21%),
+    radial-gradient(circle at var(--c4-x) var(--c4-y), #ff8b18 0 25%, transparent 35%),
+    var(--fg-color);
+  
+  overflow: hidden;
+
+  gap: 20px;
+
+  animation: animatedFragmentOne 8s ease-in-out infinite;
+}
+/* Animtaion FragmentOne */
+@keyframes animatedFragmentOne {
+  0%, 100% {
+    --c1-x: 100%; --c1-y: 0%;
+    --c2-x: 100%; --c2-y: 0%;
+    --c3-x: 100%; --c3-y: 100%;
+    --c4-x: 100%; --c4-y: 100%;
+  }
+  50% {
+    --c1-x: 60%; --c1-y: 20%;
+    --c2-x: 10%; --c2-y: 10%;
+    --c3-x: 30%; --c3-y: 80%;
+    --c4-x: 60%; --c4-y: 100%;
+  }
+}
+main article section._2>div {
+  padding: 10px;
+  
+  width: calc(60% - 40px);
+  height: calc(80% - 30px);
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  text-align: right;
+
+  background-color: var(--fg-color-t);
+  backdrop-filter: blur(8px);
+
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 20px;
+
+  gap: 10px;
+}
+main article section._2 svg {
+  width: calc(40% - 40px);
+  height: 80%;
+
+  border-radius: 20px;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta
+      charset="UTF-8"
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+
+    <%- include('../components/links.component.ejs', { page: 'about_us', }) %>
+
+    <%- include('../components/scripts.component.ejs') %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('../components/top.component.ejs') %>
+
+    <%- include('../components/bar.component.ejs', { page: 'about_us', }) %>
+
+    <main>
+      <article>
+        <%- include('../components/_1.component.ejs') %>
+
+        <%- include('../components/donations.component.ejs') %>
+  
+        <%- include('../components/_2.component.ejs') %>
+
+        <%- include('../components/donations.component.ejs') %>
+      </article>
+    </main>
+
+    <%- include('../components/footer.component.ejs') %>
+  </body>
+</html>

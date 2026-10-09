@@ -23,6 +23,8 @@ header#bar section {
   gap: 10px;
 }
 header#bar section svg {
+  padding: 5px;
+  
   height: 80px;
 
   border-style: solid;
