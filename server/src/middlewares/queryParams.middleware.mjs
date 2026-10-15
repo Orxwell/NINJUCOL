@@ -14,8 +14,6 @@ function castingType ({ cast='' }={}) {
 
   if (processed === '') return undefined;
 
-  if (processed === 'null') return 'null';
-
   if (['true', 'false'].includes(processed)) return 'boolean';
 
   if (
@@ -36,7 +34,7 @@ export default function handlingQueryParams ({
   if (Object.prototype.toString.call(scheme) !== '[object Object]')
     throw new Error(`Internal-Server-Error, from ${filename}: 'scheme' must be a valid plain object.`);
 
-  const accepted_types = ['string', 'number', 'boolean', 'null'];
+  const accepted_types = ['string', 'number', 'boolean'];
   for (const [key, value] of Object.entries(scheme)) {
     if (typeof value !== 'string' || value.trim() === '')
       throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be a non-empty string.`);
@@ -65,9 +63,6 @@ export default function handlingQueryParams ({
   for (const [key, value] of Object.entries(optional)) {
     if (!internal_keys.includes(key))
       throw new Error(`Internal-Server-Error, from ${filename}: 'optional.${key}' must also be declared in 'scheme'.`);
-
-    if (typeof value !== 'string' || value.trim() === '')
-      throw new Error(`Internal-Server-Error, from ${filename}: 'optional.${key}' must be a non-empty string.`);
   }
 
   // Pre-calculating required-keys
@@ -140,18 +135,22 @@ export default function handlingQueryParams ({
         .map(type => type.trim().toLowerCase())
         .filter(Boolean);
       
-      const casted_type = castingType({ cast: request_query[key] });
-  
-      if (!valid_types.includes(casted_type)) return errorHTTP({
-        header: header,
-        body: {
-          status : 400,
-          id     : 'ERR-3',
-          message: `Bad-Request: expected types [${valid_types
-            .map(type => `'${type}'`)
-            .join(', ')}] for query-key '${key}' but got '${casted_type}'.`,
-        },
-      });
+      const value = request_query[key];
+
+      if (typeof value === 'string') {
+        const casted_type = castingType({ cast: value, });
+    
+        if (!valid_types.includes(casted_type)) return errorHTTP({
+          header: header,
+          body: {
+            status : 400,
+            id     : 'ERR-3',
+            message: `Bad-Request: expected types [${valid_types
+              .map(type => `'${type}'`)
+              .join(', ')}] for query-key '${key}' but got '${casted_type}'.`,
+          },
+        });
+      }
 
       req.query[key] = request_query[key];
     }

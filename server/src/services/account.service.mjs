@@ -79,7 +79,7 @@ export default class AccountService {
     await this.dbAPI.createIndexes({
       indexes: [
         {
-          key   : { 'profile.email': 1, } ,
+          key   : { 'email': 1, } ,
           name  : 'email_unique',
           unique: true          ,
         },
@@ -109,36 +109,38 @@ export default class AccountService {
       throw error;
     }
 
-    const normalized_email = email.trim().toLowerCase();
-
     const uuid = randomUUID(); 
+
+    const normalized_firstname = firstname.trim().toLowerCase();
+    const normalized_lastname = lastname.trim().toLowerCase();
+    const normalized_birthdate = birthdate.trim().toLowerCase();
+    const normalized_phone = phone.trim().toLowerCase();
+    const normalized_email = email.trim().toLowerCase();
     
     const hashed_password = await bcryptjs.hash(password, 10);
 
-    const date = new Date();
-    const created_at = date
-      .toISOString()
-      .split('.')[0] + 'Z';
+    const date = new Date().toLocaleDateString('es-ES', {
+      minute: '2-digit',
+      hour: '2-digit',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour12: true,
+    });
 
     await this.dbAPI.createDocument({
       document: {
-        UUID: uuid,
-        profile: {
-          firstname      : firstname,
-          lastname       : lastname ,
-          birthdate      : birthdate,
-          phone          : phone,
-          url_photo      : '',
-          email          : normalized_email,
-          hashed_password: hashed_password,
-          roles: {
-            isStaff: false,
-            isAdmin: false,
-          },
-        },
-        status: 'PENDING',
-        created_at: created_at,
-        updated_at: ''
+        uuid: uuid,
+        
+        firstname: normalized_firstname,
+        lastname : normalized_lastname ,
+        birthdate: normalized_birthdate,
+        phone    : normalized_phone,
+        email    : normalized_email,
+
+        hashed_password: hashed_password,
+
+        date: date,
       },
     });
   }
@@ -170,101 +172,33 @@ export default class AccountService {
     const normalized_email = email.trim().toLowerCase();
 
     return await this.dbAPI.findDocument({
-      filter    : { 'profile.email': normalized_email, },
+      filter    : { email: normalized_email, },
       projection: { _id: 0, },
     });
   }
 
-  async findAllAccountsByStatus ({ status }={}) {
+  async findAll () {
     this.#ensureInit();
-
-    this.#ensureString(status, 'status');
-
-    if (!['PENDING', 'APPROVED', 'FREEZE', 'TERMINATED'].includes(status)) {
-      const error = new Error(this.errors['ERR-1']);
-      error.code = 'ERR-1';
-      throw error;
-    }
 
     return await this.dbAPI.findDocuments({
-      filter    : { status: status, },
       projection: { _id: 0, },
     });
   }
 
-  async updateAccountsStatuses ({ statuses }={}) {
+  async updateByEmail ({ email, setter }={}) {
     this.#ensureInit();
 
-    this.#ensureObject(statuses, 'statuses');
+    this.#ensureString(email, 'email');
+    this.#ensureObject(setter, 'setter');
 
-    const allowed_statuses = [
-      'PENDING',
-      'APPROVED',
-      'FREEZE',
-      'TERMINATED',
-    ];
+    Object.entries(setter).forEach(([key, value]) => {
+      this.#ensureString(value, `setter.${key}`);
+    });
 
-    for (const status of allowed_statuses) {
-      const uuids = statuses[status];
-
-      if (!uuids) continue;
-      
-      this.#ensureArray(uuids, `statuses.${status}`);
-
-      if (uuids.length === 0) continue;
-
-      for (const [i, uuid] of uuids.entries()) {
-        this.#ensureString(uuid, `statuses.${status}[${i}]`);
-      }
-
-      await this.dbAPI.updateDocuments({
-        filter: {
-          UUID: { $in: uuids, },
-        },
-        update: {
-          $set: { status: status, },
-        },
-      });
-    }
-  }
-
-  async updateAccountsRoles ({ roles }={}) {
-    this.#ensureInit();
-
-    this.#ensureObject(roles, 'roles');
-
-    const role_mapping = {
-      NONE : { isStaff: false, isAdmin: false, },
-      STAFF: { isStaff: true , isAdmin: false, },
-      ADMIN: { isStaff: false, isAdmin: true,  },
-      ALL  : { isStaff: true , isAdmin: true,  },
-    };
-
-    for (const [role, permissions] of Object.entries(role_mapping)) {
-      const uuids = roles[role];
-
-      if (!uuids) continue;
-      
-      this.#ensureArray(uuids, `roles.${role}`);
-
-      if (uuids.length === 0) continue;
-
-      for (const [i, uuid] of uuids.entries()) {
-        this.#ensureString(uuid, `roles.${role}[${i}]`);
-      }
-
-      await this.dbAPI.updateDocuments({
-        filter: {
-          UUID: { $in: uuids, },
-        },
-        update: {
-          $set: {
-            'profile.roles.isStaff': permissions.isStaff,
-            'profile.roles.isAdmin': permissions.isAdmin,
-          },
-        },
-      });
-    }
+    await this.dbAPI.updateDocument({
+      filter: { email: email, },
+      update: { $set: setter, },
+    });
   }
 
   async deleteByEmail ({ email }={}) {
@@ -274,7 +208,7 @@ export default class AccountService {
 
     const normalized_email = email.trim().toLowerCase();
 
-    await this.dbAPI.deleteDocument({ filter: { 'profile.email': normalized_email, }, });
+    await this.dbAPI.deleteDocument({ filter: { email: normalized_email, }, });
   }
 
   async deleteAll ({ firm }={}) {

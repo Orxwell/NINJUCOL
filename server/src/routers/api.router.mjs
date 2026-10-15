@@ -7,6 +7,7 @@ import { Router } from 'express';
 import middleware from '#middlewares/handler.middleware.mjs';
 
 // Services for the API
+import TokenService   from '#services/token.service.mjs';
 
 // External & Internal Libraries
 import { lookup } from 'mime-types';
@@ -17,7 +18,6 @@ import {
 } from 'fs/promises';
 
 import { env } from '#importers/env.importer.mjs';
-
 import paths from '#utils/paths.util.mjs' ;
 import {
   getFolders,
@@ -31,8 +31,7 @@ const routerAPI = Router();
 // ___________________________________________
 
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~API-GET~~~~~~~~~~~~~~~~~~~~~~~~~
-// Important Internal Constants: (IIC) ---------------¬
+// Important-Internal-Constants: (IIC) ---------------¬
 const ROUTE_SPECS = {
   css : { path: paths.cssPath  },
   ico : { path: paths.icoPath  },
@@ -45,14 +44,11 @@ const ROUTE_SPECS = {
 // ___________________________________________________-
 
 
-// >>-------- GET - API in General - Below --------<<
+// ~~~~~~~~~~~ROUTER-API~~~~~~~~~~~
+// >>-------- GET - BELOW --------<<
 routerAPI.get('/api',
-  middleware.queryParams({ scheme: {}, mode: 'reply' }),
+  middleware.queryParams({}),
   async (req, res) => {
-    if (req?.queryParamsError) {
-      // Handle the error
-    }
-
     const folders = await getFolders(paths.staticPath);
 
     if (!folders) return res.sendStatus(404);
@@ -67,12 +63,9 @@ routerAPI.get('/api',
 );
 
 routerAPI.get('/api/:route',
+  middleware.queryParams({}),
   middleware.routeParams({ scheme: { route: 'string' }, }),
   async (req, res) => {
-    if (req?.routeParamsError) {
-      // Handle the error
-    }
-
     const { route } = req.params;
 
     if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
@@ -91,6 +84,7 @@ routerAPI.get('/api/:route',
 );
 
 routerAPI.get('/api/:route/:to',
+  middleware.queryParams({}),
   middleware.routeParams({
     scheme: {
       route: 'string',
@@ -98,16 +92,16 @@ routerAPI.get('/api/:route/:to',
     },
   }),
   async (req, res) => {
-    if (req?.routeParamsError) {
-      // Handle the error
-    }
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.status(401).json({ error: 'Unauthorized response' });
 
     const { route, to } = req.params;
 
     if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
 
     const abs_path = join(ROUTE_SPECS[route].path, to);
-    const files    = await getFiles(abs_path)         ;
+    const files    = await getFiles(abs_path);
 
     if (!files) return res.sendStatus(404);
 
@@ -121,6 +115,7 @@ routerAPI.get('/api/:route/:to',
 );
 
 routerAPI.get('/api/:route/:to/:file',
+  middleware.queryParams({}),
   middleware.routeParams({
     scheme: {
       route: 'string',
@@ -129,10 +124,10 @@ routerAPI.get('/api/:route/:to/:file',
     },
   }),
   async (req, res) => {
-    if (req?.routeParamsError) {
-      // Handle the error
-    }
-    
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.status(401).json({ error: 'Unauthorized response' });
+
     const { route, to, file } = req.params;
 
     if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
@@ -150,25 +145,11 @@ routerAPI.get('/api/:route/:to/:file',
     } catch (_) { return res.sendStatus(404); }
   }
 );
-// >>-------- GET - API in General - Above --------<<
-
-// ~~~~~~~~~~~~~~~~~~~~~~~~~API-GET~~~~~~~~~~~~~~~~~~~~~~~~~
+// >>-------- GET - ABOVE --------<<
 
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~API-POST~~~~~~~~~~~~~~~~~~~~~~~~~
-// >>-------- POST - API for downloads - Below --------<<
-
-// >>-------- POST - API for downloads - Above --------<<
-// ~~~~~~~~~~~~~~~~~~~~~~~~~API-POST~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-// >>-------- API - Error Handler - BELOW --------<<
-routerAPI.use((error, req, res, next) => {
-  return res.status(error.status).json({
-    id     : error.id,
-    message: error.message,
-  });
-});
-// >>-------- API - Error Handler - ABOVE --------<<
+// >>-------- POST - BELOW --------<<
+// >>-------- POST - ABOVE --------<<
+// ~~~~~~~~~~~ROUTER-API~~~~~~~~~~~
 
 export default routerAPI;

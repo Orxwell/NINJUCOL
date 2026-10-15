@@ -2,10 +2,11 @@ import express      from 'express'      ;
 import morgan       from 'morgan'       ;
 import cookieParser from 'cookie-parser';
 
+// Router for the server
 import router from '#routers/handler.router.mjs';
 
 // Services for the server
-import TokenService from '#services/token.service.mjs';
+import service from '#services/handler.service.mjs';
 
 // External & Internal Libraries
 import { env } from '#importers/env.importer.mjs';
@@ -40,12 +41,15 @@ Object.entries(router).forEach(([name, router]) => {
   app.use(router);
 });
 
-// Instantiating services -------------¬
-const tokenService = new TokenService();
-await tokenService.init();
-// _____________________________________
+// Handling global events
+app.use((error, req, res, next) => {
+  return res.status(error.status ?? 500).json({
+    id     : error.id     ,
+    message: error.message,
+  });
+});
 
 // Erasing all tokens
-await tokenService.deleteAll({ firm: 1 });
+await service.token.deleteAll({ firm: 1 });
 
 export default app;
