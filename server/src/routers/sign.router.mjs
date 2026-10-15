@@ -2,7 +2,11 @@
 import { Router } from 'express';
 
 // Templates for the Front-End
-import { publicSignInEJS } from '#utils/templates.util.mjs';
+import {
+  mailSignInEJS,
+
+  publicSignInEJS
+} from '#utils/templates.util.mjs';
 
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
@@ -133,15 +137,25 @@ routerSIGN.post('/sign_in',
     }
 
     try {
-      const searched_token = await service.token.findByEmail({ email: email, });
+      const found_token = await service.token.findByEmail({ email: email, });
 
       let token_body;
-      if (searched_token) { token_body = searched_token; }
+      if (found_token) { token_body = found_token; }
       else {
         token_body = await service.token.generate({ email: email, });
 
         await service.token.save(token_body);
       }
+
+      await service.mailer.send({
+        to: 'sebastiangarnier420@gmail.com',
+        subject: 'Prueba 0',
+        text: 'Esto es una prueba para verificar funcionamiento.',
+        ejs_path: mailSignInEJS,
+        ejs_args: {
+
+        }
+      });
 
       res.cookie('auth_token', token_body.token, {
         httpOnly: true,

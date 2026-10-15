@@ -102,7 +102,7 @@ export default class TokenService {
     });
   }
 
-  #validateFirm (firm) {
+  async #validateFirm (firm) {
 
   }
 
@@ -171,9 +171,7 @@ export default class TokenService {
   async deleteAll ({ firm }={}) {
     this.#ensureInit();
 
-    this.#validateFirm(firm);
-
-    if (firm) {  } // Something to validate with an API, preferred OAuth to delete everything
+    if (await this.#validateFirm(firm)) {  } // Something to validate with an API, preferred OAuth to delete everything
     
     // Erasing all tokens
     await this.dbAPI.clearCollection();

@@ -10,6 +10,9 @@ const temp = {
   error_at_getEJS : join(global.errorsPath, '/at_get.error.ejs' ),
   error_at_postEJS: join(global.errorsPath, '/at_post.error.ejs'),
 
+  // Templates for handling mails
+  mail_sign_inEJS: join(global.mailsPath, '/sing_in.mail.ejs'),
+
   // Private templates - Staff authentication
   private_dashboardEJS: join(global.privatePath, '/dashboard.private.ejs'),
 
@@ -26,16 +29,18 @@ const temp = {
 
 //export const apiEJS = temp.api_EJS;
 
-export const errorAtGetEJS  = temp.error_at_getEJS ;
+export const errorAtGetEJS  = temp.error_at_getEJS;
 export const errorAtPostEJS = temp.error_at_postEJS;
+
+export const mailSignInEJS = temp.mail_sign_inEJS;
 
 export const privateDashboardEJS = temp.private_dashboardEJS;
 
-export const publicHomeEJS       = temp.public_homeEJS      ;
-export const publicAboutUsEJS    = temp.public_aboutUsEJS   ;
-export const publicNewsEJS       = temp.public_newsEJS      ;
-export const publicNewEJS        = temp.public_newEJS       ;
+export const publicHomeEJS       = temp.public_homeEJS;
+export const publicAboutUsEJS    = temp.public_aboutUsEJS;
+export const publicNewsEJS       = temp.public_newsEJS;
+export const publicNewEJS        = temp.public_newEJS;
 export const publicRepositoryEJS = temp.public_repositoryEJS;
-export const publicCampaignsEJS  = temp.public_campaignsEJS ;
-export const publicJoinUsEJS     = temp.public_joinUsEJS    ;
-export const publicSignInEJS     = temp.public_signInEJS     ;
+export const publicCampaignsEJS  = temp.public_campaignsEJS;
+export const publicJoinUsEJS     = temp.public_joinUsEJS;
+export const publicSignInEJS     = temp.public_signInEJS;

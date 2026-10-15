@@ -20,6 +20,7 @@ const utils_path       = join(src_path, '/utils');
 // VIEWS level path
 const api_path     = join(views_path, '/api');
 const errors_path  = join(views_path, '/errors');
+const mails_path   = join(views_path, '/mails');
 const private_path = join(views_path, '/private');
 const public_path  = join(views_path, '/public');
 
@@ -46,6 +47,7 @@ const paths = {
 
   apiPath    : api_path,
   errorsPath : errors_path,
+  mailsPath  : mails_path,
   privatePath: private_path,
   publicPath : public_path,
 

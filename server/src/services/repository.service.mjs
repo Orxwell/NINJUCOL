@@ -83,7 +83,7 @@ export default class RepositoryService {
     });
   }
 
-  #validateFirm (firm) {
+  async #validateFirm (firm) {
 
   }
 
@@ -177,9 +177,7 @@ export default class RepositoryService {
   async deleteAll ({ firm }={}) {
     this.#ensureInit();
 
-    this.#validateFirm(firm);
-
-    if (firm) {  } // Something to validate with an API, preferred OAuth to delete everything
+    if (await this.#validateFirm(firm)) {  } // Something to validate with an API, preferred OAuth to delete everything
 
     await this.dbAPI.clearCollection();
   }
