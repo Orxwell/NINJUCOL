@@ -16,7 +16,7 @@ const routerJOIN_US = Router();
 
 // ~~~~~~~~~~~ROUTER-REPOSITORY~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
-routerHOME.get('/join_us',
+routerJOIN_US.get('/join_us',
   middleware.queryParams({}),
   async (req, res) => {
     try {

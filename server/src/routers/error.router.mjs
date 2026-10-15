@@ -7,6 +7,9 @@ import {
   errorAtPostEJS,
 } from '#utils/templates.util.mjs';
 
+// Middlewares for the endpoints
+import middleware from '#middlewares/handler.middleware.mjs';
+
 // External & Internal Libraries
 import { env } from '#importers/env.importer.mjs';
 

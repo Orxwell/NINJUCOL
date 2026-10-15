@@ -7,7 +7,7 @@ import { Router } from 'express';
 import middleware from '#middlewares/handler.middleware.mjs';
 
 // Services for the API
-import TokenService   from '#services/token.service.mjs';
+import service from '#services/handler.service.mjs';
 
 // External & Internal Libraries
 import { lookup } from 'mime-types';
@@ -92,11 +92,17 @@ routerAPI.get('/api/:route/:to',
     },
   }),
   async (req, res) => {
-    const { auth_token } = req.cookies;
-
-    if (!auth_token) return res.status(401).json({ error: 'Unauthorized response' });
-
     const { route, to } = req.params;
+    
+    if (to === 'private') {
+      const { auth_token } = req.cookies;
+
+      if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
+
+      const token_body = await service.token.findByToken({ token: auth_token });
+      
+      if (!token_body) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
+    }
 
     if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
 
@@ -115,7 +121,6 @@ routerAPI.get('/api/:route/:to',
 );
 
 routerAPI.get('/api/:route/:to/:file',
-  middleware.queryParams({}),
   middleware.routeParams({
     scheme: {
       route: 'string',
@@ -124,11 +129,17 @@ routerAPI.get('/api/:route/:to/:file',
     },
   }),
   async (req, res) => {
-    const { auth_token } = req.cookies;
-
-    if (!auth_token) return res.status(401).json({ error: 'Unauthorized response' });
-
     const { route, to, file } = req.params;
+
+    if (to === 'private') {
+      const { auth_token } = req.cookies;
+
+      if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
+
+      const token_body = await service.token.findByToken({ token: auth_token });
+      
+      if (!token_body) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
+    }
 
     if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
 

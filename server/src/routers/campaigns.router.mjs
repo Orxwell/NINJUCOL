@@ -19,7 +19,7 @@ const routerCAMPAIGNS = Router();
 
 // ~~~~~~~~~~~ROUTER-CAMPAIGNS~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
-routerHOME.get('/campaigns',
+routerCAMPAIGNS.get('/campaigns',
   middleware.queryParams({}),
   async (req, res) => {
     try {

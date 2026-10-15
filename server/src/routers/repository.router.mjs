@@ -19,7 +19,7 @@ const routerREPOSITORY = Router();
 
 // ~~~~~~~~~~~ROUTER-REPOSITORY~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
-routerHOME.get('/repository',
+routerREPOSITORY.get('/repository',
   middleware.queryParams({}),
   async (req, res) => {
     try {

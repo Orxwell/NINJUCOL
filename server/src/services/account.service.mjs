@@ -34,7 +34,6 @@ export default class AccountService {
     // ______________________________________
 
     this.is_initialized = true;
-
     await this.#createIndexes();
   }
 
@@ -81,7 +80,7 @@ export default class AccountService {
         {
           key   : { 'email': 1, } ,
           name  : 'email_unique',
-          unique: true          ,
+          unique: true,
         },
       ],
     });
