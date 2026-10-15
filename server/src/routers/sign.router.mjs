@@ -81,6 +81,9 @@ routerSIGN.post('/sign_up',
         phone    : phone,
         email    : email,
         password : password,
+
+        roles: {},
+        status: 'PENDING',
       });
 
     } catch (err) {
@@ -148,7 +151,7 @@ routerSIGN.post('/sign_in',
       }
 
       await service.mailer.send({
-        to: 'sebastiangarnier420@gmail.com',
+        to: email,
         subject: 'Prueba 0',
         text: 'Esto es una prueba para verificar funcionamiento.',
         ejs_path: mailSignInEJS,

@@ -54,4 +54,41 @@ routerDASHBOARD.get('/dashboard',
 
 
 // >>-------- POST - BELOW --------<<
+routerDASHBOARD.post('/dashboard/add/new',
+  middleware.bodyParams({
+    scheme: {
+      new: {
+        title: 'string',
+        author: 'string',
+        resume: 'string',
+        description: 'string',
+        image_url: 'string',
+        video_url: 'string',
+      },
+    }
+  }),
+  async (res, req) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+
+    try {
+      const token_body = await service.token.findByToken({ token: auth_token });
+      
+      if (!token_body) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+
+      //* Guardar la noticia, con la capa de servicio NewsService
+
+    } catch (err) {
+      return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(err.message)}`
+      );
+    }
+  },
+)
+// >>-------- POST - ABOVE --------<<
+// ~~~~~~~~~~~ROUTER-DASHBOARD~~~~~~~~~~~
+
 export default routerDASHBOARD;

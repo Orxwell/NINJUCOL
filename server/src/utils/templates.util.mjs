@@ -24,7 +24,7 @@ const temp = {
   public_repositoryEJS: join(global.publicPath, '/repository.public.ejs'),
   public_campaignsEJS : join(global.publicPath, '/campaigns.public.ejs'),
   public_joinUsEJS    : join(global.publicPath, '/join_us.public.ejs'),
-  public_signInEJS     : join(global.publicPath, '/signIn.public.ejs'),
+  public_signInEJS     : join(global.publicPath, '/sign_in.public.ejs'),
 };
 
 //export const apiEJS = temp.api_EJS;

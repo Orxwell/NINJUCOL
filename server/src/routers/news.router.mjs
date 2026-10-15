@@ -23,7 +23,10 @@ const routerNEWS = Router();
 // ~~~~~~~~~~~ROUTER-NEWS~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerNEWS.get('/news',
-  middleware.queryParams({}),
+  middleware.queryParams({
+    scheme  : { error: 'string',  },
+    optional: { error: undefined, },
+  }),
   async (req, res) => {
     try {
       const found_news = await service.news.findAll();
@@ -48,6 +51,9 @@ routerNEWS.get('/news/new',
 
     try {
       const found_new = await service.news.findByUUID({ uuid: uuid, });
+
+      if (!found_new) return res.redirect('/news' +
+        `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
 
       return res.render(publicNewEJS, {
         title: `New | NINJUCOL`,

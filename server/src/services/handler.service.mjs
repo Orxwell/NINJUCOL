@@ -3,7 +3,8 @@ import AccountService    from './account.service.mjs';
 import NewsService       from './news.service.mjs';
 import CampaignsService  from './campaigns.service.mjs';
 import RepositoryService from './repository.service.mjs';
-import MailerService from './mailer.service.mjs';
+import DonationsService from './donations.service.mjs';
+import MailerService     from './mailer.service.mjs';
 // Import more route if it's needed
 
 // Instantiating services -----------------------¬
@@ -22,6 +23,9 @@ await campaignsService.init();
 const repositoryService = new RepositoryService();
 await repositoryService.init();
 
+const donationsService = new DonationsService();
+await donationsService.init();
+
 const mailerService = new MailerService();
 await mailerService.init();
 // _______________________________________________
@@ -32,6 +36,7 @@ const service = {
   'news'      : newsService,
   'campaigns' : campaignsService,
   'repository': repositoryService,
+  'donations' : donationsService,
   'mailer'    : mailerService,
   // Remember importing it
 };

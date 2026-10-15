@@ -90,7 +90,7 @@ export default class AccountService {
 
   }
 
-  async create ({ firstname, lastname, birthdate, phone, email, password }={}) {
+  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}) {
     this.#ensureInit();
 
     this.#ensureString(firstname, 'firstname');
@@ -99,6 +99,8 @@ export default class AccountService {
     this.#ensureString(phone    , 'phone');
     this.#ensureString(email    , 'email');
     this.#ensureString(password , 'password');
+    this.#ensureString(roles    , 'roles');
+    this.#ensureString(status   , 'status');
 
     const account = await this.findByEmail({ email: email, });
 
@@ -138,6 +140,9 @@ export default class AccountService {
         email    : normalized_email,
 
         hashed_password: hashed_password,
+
+        roles: {},
+        status: status,
 
         date: date,
       },
