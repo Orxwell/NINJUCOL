@@ -1,35 +1,160 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="<%= server_url %>/api/ico/logo/favicon.ico<%= `?v=${Date.now()}` %>"
-    />
+  <link
+    rel="icon"
+    type="image/x-icon"
+    href="<%= server_url %>/api/ico/logo/favicon.ico<%= `?v=${Date.now()}` %>"
+  />
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="<%= server_url %>/api/css/public/reset.public.css<%= `?v=${Date.now()}` %>"
-    />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="<%= server_url %>/api/css/public/reset.public.css<%= `?v=${Date.now()}` %>"
+  />
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="<%= server_url %>/api/css/private/dashboard.private.css<%= `?v=${Date.now()}` %>"
-    />
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="<%= server_url %>/api/css/private/dashboard.private.css<%= `?v=${Date.now()}` %>"
+  />
 
-    <title><%= title %></title>
-  </head>
+  <title><%= title %></title>
+</head>
+<body>
 
-  <body>
-    <!-- Aquí es donde va la lógica de la vista de la aplicación, de la ruta /dashboard -->
-  </body>
+  <!-- Barra Superior y de Navegación Estándar -->
+  <%- include('../components/top.component.ejs', { page: 'dashboard' }) %>
+  <%- include('../components/bar.component.ejs', { page: 'dashboard' }) %>
+
+  <main>
+    <section class="dashboard-section">
+      <div class="dashboard-container">
+        
+        <h2>Panel de Administración</h2>
+        <p class="dashboard-subtitulo">Gestiona las publicaciones, recursos y campañas de la fundación en un solo lugar.</p>
+
+        <div class="dashboard-accordion-group">
+
+          <!-- 1. Sección de Noticias -->
+          <details class="dashboard-card-section" open>
+            <summary class="dashboard-summary">
+              <div class="dashboard-summary-info">
+                <span class="dashboard-summary-icon">📰</span>
+                <h3>Artículos y Comunicados</h3>
+                <span class="dashboard-summary-badge">Noticias</span>
+              </div>
+              <span class="dashboard-toggle-arrow">▼</span>
+            </summary>
+            <div class="dashboard-content-body">
+              <div class="dashboard-section-actions-top">
+                <a href="/admin/new_post" class="dashboard-btn-crear">+ Crear Noticia</a>
+              </div>
+              <div class="dashboard-items-list">
+                <% if (typeof newsList !== 'undefined' && newsList && newsList.length > 0) { %>
+                  <% newsList.forEach(news => { %>
+                    <div class="dashboard-item-row">
+                      <div class="dashboard-item-info">
+                        <h4 class="dashboard-item-title"><%= news.title %></h4>
+                        <p class="dashboard-item-desc"><%= news.description %></p>
+                      </div>
+                      <div class="dashboard-item-actions">
+                        <a href="/admin/edit/news/<%= news._id %>" class="dashboard-btn-editar">Editar</a>
+                        <form action="/admin/delete/news/<%= news._id %>" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta noticia?');">
+                          <button type="submit" class="dashboard-btn-eliminar">Eliminar</button>
+                        </form>
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <p class="dashboard-no-items">No hay noticias publicadas todavía.</p>
+                <% } %>
+              </div>
+            </div>
+          </details>
+
+          <!-- 2. Sección de Repositorio -->
+          <details class="dashboard-card-section">
+            <summary class="dashboard-summary">
+              <div class="dashboard-summary-info">
+                <span class="dashboard-summary-icon">📚</span>
+                <h3>Archivos y Recursos</h3>
+                <span class="dashboard-summary-badge">Repositorio</span>
+              </div>
+              <span class="dashboard-toggle-arrow">▼</span>
+            </summary>
+            <div class="dashboard-content-body">
+              <div class="dashboard-section-actions-top">
+                <a href="/admin/new_recurso" class="dashboard-btn-crear">+ Subir Recurso</a>
+              </div>
+              <div class="dashboard-items-list">
+                <% if (typeof repositoryList !== 'undefined' && repositoryList && repositoryList.length > 0) { %>
+                  <% repositoryList.forEach(item => { %>
+                    <div class="dashboard-item-row">
+                      <div class="dashboard-item-info">
+                        <h4 class="dashboard-item-title"><%= item.title %></h4>
+                        <p class="dashboard-item-desc"><%= item.description %></p>
+                      </div>
+                      <div class="dashboard-item-actions">
+                        <a href="/admin/edit/repository/<%= item._id %>" class="dashboard-btn-editar">Editar</a>
+                        <form action="/admin/delete/repository/<%= item._id %>" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este recurso?');">
+                          <button type="submit" class="dashboard-btn-eliminar">Eliminar</button>
+                        </form>
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <p class="dashboard-no-items">No hay recursos en el repositorio.</p>
+                <% } %>
+              </div>
+            </div>
+          </details>
+
+          <!-- 3. Sección de Campañas -->
+          <details class="dashboard-card-section">
+            <summary class="dashboard-summary">
+              <div class="dashboard-summary-info">
+                <span class="dashboard-summary-icon">🎯</span>
+                <h3>Iniciativas Activas</h3>
+                <span class="dashboard-summary-badge">Campañas</span>
+              </div>
+              <span class="dashboard-toggle-arrow">▼</span>
+            </summary>
+            <div class="dashboard-content-body">
+              <div class="dashboard-section-actions-top">
+                <a href="/admin/new_iniciativa" class="dashboard-btn-crear">+ Crear Campaña</a>
+              </div>
+              <div class="dashboard-items-list">
+                <% if (typeof campaignsList !== 'undefined' && campaignsList && campaignsList.length > 0) { %>
+                  <% campaignsList.forEach(campaign => { %>
+                    <div class="dashboard-item-row">
+                      <div class="dashboard-item-info">
+                        <h4 class="dashboard-item-title"><%= campaign.title %></h4>
+                        <p class="dashboard-item-desc"><%= campaign.description %></p>
+                      </div>
+                      <div class="dashboard-item-actions">
+                        <a href="/admin/edit/campaigns/<%= campaign._id %>" class="dashboard-btn-editar">Editar</a>
+                        <form action="/admin/delete/campaigns/<%= campaign._id %>" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta campaña?');">
+                          <button type="submit" class="dashboard-btn-eliminar">Eliminar</button>
+                        </form>
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <p class="dashboard-no-items">No hay campañas registradas.</p>
+                <% } %>
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+</body>
 </html>

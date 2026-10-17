@@ -1,94 +1,61 @@
-<section class="_4">
-  <div id="donations">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="100%"
-      height="100%"
-    >
-      <image
-        href="<%= server_url %>/api/webp/public/banner_1.webp<%= `?v=${Date.now()}` %>"
-        x="0"
-        y="0"
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid slice"
-        style="opacity: 0; transition: opacity .5s ease-in;"
-        onload="this.style.opacity='1'"
-      />
-    </svg>
-
-    <form
-      action="/donations"
-      method="POST"
-    >
-      <h3>Ayúdanos a llegar a más niños</h3>
-
-      <fieldset class="donation-options">
-        <label class="option">
-          <input
-            type="radio"
-            value="10000"
-            checked
-          />
-
-          <span>10.000 COP</span>
-        </label>
-
-        <label class="option">
-          <input
-            type="radio"
-            value="50000"
-          />
-
-          <span>50.000 COP</span>
-        </label>
-
-        <label class="option">
-          <input
-            type="radio"
-            value="100000"
-          />
-
-          <span>100.000 COP</span>
-        </label>
-
-        <label class="option">
-          <input
-            type="radio"
-            value="custom"
-          />
-
-          <span>Otro</span>
-        </label>
-      </fieldset>
-
-      <div class="custom-donation" hidden>
-        <label for="custom-option">Ingresa un monto</label>
+<section class="donation-section-full">
+    <div class="donation-grid-full">
         
-        <input
-          id="custom-option"
-          type="number"
-          min="1000"
-          step="1000"
-          placeholder="Ej. 20.000 COP"
-          disabled
-        />
-      </div>
+        <!-- Left Column: Image -->
+        <div class="donation-col-image">
+            <img src="<%= server_url %>/api/webp/public/imagen2.webp<%= `?v=${Date.now()}` %>" alt="Niños de la fundación" class="donation-img-full">            <div class="donation-badge-float">
+            <span>TU APOYO CAMBIA VIDAS</span>
+            </div>
+        </div>
 
-      <div class="donation-summary" aria-live="polite">
-        <p>Tu donación será:</p>
+        <!-- Right Column: Content & Form -->
+        <div class="donation-col-content">
+            <div class="donation-inner-wrapper">
+                <span class="section-dots">...</span>
+                <h2 class="donation-title">ÚNETE A LA CAUSA</h2>
+                <p class="donation-subtitle">Ayúdanos a llevar programas de convivencia y prevención a más escuelas en Colombia.</p>
 
-        <strong id="donation-display">10.000 COP</strong>
-      </div>
+                <div class="donation-form">
+                    <label class="form-label">SELECCIONA EL MONTO A DONAR (COP)</label>
+                    
+                    <div class="values-grid">
+                        <button type="button" class="btn-value active" onclick="selectValue(10000, this)">10.000</button>
+                        <button type="button" class="btn-value" onclick="selectValue(50000, this)">50.000</button>
+                        <button type="button" class="btn-value" onclick="selectValue(100000, this)">100.000</button>
+                        <input type="number" class="input-other" id="inputOther" placeholder="Otro" oninput="captureOther(this.value)">
+                    </div>
 
-      <input
-        type="hidden"
-        name="amount"
-        id="donation-amount"
-        value="10000"
-      />
+                    <div class="projection-box">
+                        <span class="projection-text">APORTE TOTAL SELECCIONADO</span>
+                        <p class="projection-value" id="projectedValue">10.000 COP</p>
+                    </div>
 
-      <button type="submit">Proceder</button>
-    </form>
-  </div>
+                    <button type="button" class="btn-donate-submit">CONTINUAR DONACIÓN &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </section>
+
+<script>
+    const visor = document.getElementById('projectedValue');
+    const inputOther = document.getElementById('inputOther');
+
+    function selectValue(amount, button) {
+        inputOther.value = '';
+        document.querySelectorAll('.btn-value').forEach(b => b.classList.remove('active'));
+        button.classList.add('active');
+        visor.innerText = amount.toLocaleString('es-CO') + ' COP';
+    }
+
+    function captureOther(value) {
+        document.querySelectorAll('.btn-value').forEach(b => b.classList.remove('active'));
+        if(value && value > 0) {
+            let number = parseFloat(value);
+            visor.innerText = number.toLocaleString('es-CO') + ' COP';
+        } else {
+            visor.innerText = '0 COP';
+        }
+    }
+</script>

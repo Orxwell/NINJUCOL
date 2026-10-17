@@ -1,0 +1,123 @@
+/* ==========================================
+   SECCIÓN SEIS (CLASE ._6) - MISIÓN (CÍRCULOS)
+   ========================================== */
+section._6 {
+  width: 100%;
+  padding: 60px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+section._6 ._6-container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+section._6 ._6-mision-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+section._6 ._6-mision-header h2 {
+  font-family: var(--font-heading);
+  color: var(--color-sea-dark);
+  font-size: clamp(28px, 3.5vw, 40px);
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+  letter-spacing: 1px;
+}
+
+section._6 ._6-mision-header p {
+  font-family: var(--font-body);
+  color: #64748B;
+  font-size: clamp(14px, 1.5vw, 17px);
+  max-width: 750px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+section._6 ._6-mision-circulos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+section._6 ._6-circulo {
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #FFFFFF;
+  padding: 30px;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section._6 ._6-circulo:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+}
+
+section._6 ._6-circulo-sea {
+  background-color: var(--color-sea);
+}
+
+section._6 ._6-circulo-dark {
+  background-color: var(--color-sea-dark);
+}
+
+section._6 ._6-circulo-tangerine {
+  background-color: var(--color-tangerine);
+}
+
+section._6 ._6-icono-contenedor {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+section._6 ._6-icono-contenedor svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+section._6 ._6-circulo h3 {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+}
+
+section._6 ._6-circulo p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  section._6 ._6-mision-circulos {
+    gap: 20px;
+  }
+}

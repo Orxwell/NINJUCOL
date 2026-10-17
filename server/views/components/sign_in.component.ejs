@@ -1,0 +1,92 @@
+<section class="signin-section">
+  <div class="signin-container">
+    
+    <!-- Columna Izquierda: Tarjeta de Bienvenida con Imagen -->
+    <div class="signin-brand-col">
+      <div class="signin-brand-overlay"></div>
+      <div class="signin-brand-content">
+        <span class="signin-badge">NINJUCOL</span>
+        <h2>Transformando entornos escolares</h2>
+        <p>Accede a tu panel para gestionar programas, talleres y herramientas de convivencia restaurativa.</p>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Formulario de Inicio de Sesión -->
+    <div class="signin-form-col">
+      <div class="signin-form-wrapper">
+        
+        <div class="signin-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Ingresa tus credenciales para acceder a la plataforma.</p>
+        </div>
+
+        <form action="/api/v1/accounts/sign-in" method="POST" class="signin-form">
+          
+          <!-- Campo: Correo Electrónico -->
+          <div class="signin-form-group">
+            <label for="email">Correo Electrónico</label>
+            <div class="signin-input-wrapper">
+              <svg class="signin-input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="ejemplo@ninjucol.org" 
+                required 
+                autocomplete="email"
+              />
+            </div>
+          </div>
+
+          <!-- Campo: Contraseña -->
+          <div class="signin-form-group">
+            <div class="signin-label-row">
+              <label for="password">Contraseña</label>
+              <a href="/recovery" class="signin-forgot-link">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="signin-input-wrapper">
+              <svg class="signin-input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                placeholder="••••••••" 
+                required 
+                autocomplete="current-password"
+              />
+            </div>
+          </div>
+
+          <!-- Opción Recordar Sesión -->
+          <div class="signin-form-remember">
+            <label class="signin-checkbox-container">
+              <input type="checkbox" name="remember" value="true">
+              <span class="signin-checkmark"></span>
+              Recordar mi sesión en este dispositivo
+            </label>
+          </div>
+
+          <!-- Botón de Envío -->
+          <button type="submit" class="signin-btn">
+            INGRESAR A LA PLATAFORMA
+          </button>
+
+        </form>
+
+        <!-- Footer del Formulario -->
+        <div class="signin-footer">
+          <p>¿Aún no tienes una cuenta de educador o voluntario?</p>
+          <a href="/sign-up" class="signin-signup-link">Solicitar acceso o registrarse</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>

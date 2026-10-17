@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
 
-    <%- include('../components/links.component.ejs', { page: 'login', }) %>
+    <%- include('../components/links.component.ejs', { page: 'sign_in', }) %>
 
     <%- include('../components/scripts.component.ejs') %>
 
@@ -17,11 +17,11 @@
   <body>
     <%- include('../components/top.component.ejs') %>
 
-    <%- include('../components/bar.component.ejs', { page: 'login', }) %>
+    <%- include('../components/bar.component.ejs', { page: 'sign_in', }) %>
 
     <main>
       <article>
-        <%- include('../components/login.component.ejs') %>
+        <%- include('../components/sign_in.component.ejs') %>
       </article>
     </main>
 

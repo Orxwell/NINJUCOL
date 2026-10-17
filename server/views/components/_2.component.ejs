@@ -1,24 +1,34 @@
 <section class="_2">
-  <div>
-    <h2>Somos facilitadores de procesos educativos en entornos escolares</h2>
+  <div class="_2-container">
+    <!-- Columna Izquierda: Textos y enlace -->
+    <div class="_2-text-col">
+      <div class="_2-dots">
+        <span></span><span></span><span></span>
+      </div>
+      
+      <h2>SOMOS FACILITADORES DE PROCESOS EDUCATIVOS</h2>
+      
+      <p class="_2-subtitle">Acompañamos a estudiantes, docentes y familias en entornos escolares.</p>
+      
+      <p class="_2-desc">Transformamos los conflictos en aprendizaje y fortalecemos comunidades a través del diálogo y metodologías lúdicas orientadas al desarrollo integral.</p>
+      
+      <a href="/about_us" class="_2-link">CONOCER MÁS SOBRE NOSOTROS &rarr;</a>
+    </div>
 
-    <p>Acompañamos a estudiantes, docentes y familias para transformar los conflictos en aprendizaje, y con ello fortalecer comunidades a través de metodologías lúdicas.</p>
+    <!-- Columna Derecha: Imagen adaptada con SVG y API WebP -->
+    <div class="_2-image-card">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <image
+          href="<%= server_url %>/api/webp/public/banner_1.webp<%= `?v=${Date.now()}` %>"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid slice"
+          style="opacity: 0; transition: opacity .5s ease-in;"
+          onload="this.style.opacity='1'"
+        />
+      </svg>
+    </div>
   </div>
-
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-  >
-    <image
-      href="<%= server_url %>/api/webp/public/banner_2.webp<%= `?v=${Date.now()}` %>"
-      x="0"
-      y="0"
-      width="100%"
-      height="100%"
-      preserveAspectRatio="xMidYMid slice"
-      style="opacity: 0; transition: opacity .5s ease-in;"
-      onload="this.style.opacity='1'"
-    />
-  </svg>
 </section>

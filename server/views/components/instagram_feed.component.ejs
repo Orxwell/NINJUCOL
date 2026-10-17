@@ -1,0 +1,35 @@
+<section class="instagram-feed">
+  <div class="instagram-container">
+    <div class="instagram-header">
+      <h2>SÍGUENOS EN INSTAGRAM</h2>
+      <p>Conoce de cerca nuestras actividades e historias diarias en la comunidad.</p>
+    </div>
+
+    <div class="instagram-grid">
+      <% if (posts && posts.length > 0) { %>
+        <% posts.forEach(post => { %>
+          <a href="<%= post.permalink %>" target="_blank" rel="noopener noreferrer" class="instagram-card">
+            <div class="instagram-img-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <image
+                  href="<%= post.media_url %>"
+                  x="0" y="0" width="100%" height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </svg>
+            </div>
+            <div class="instagram-overlay">
+              <span class="instagram-caption"><%= post.caption ? post.caption.substring(0, 80) + '...' : 'Ver en Instagram' %></span>
+            </div>
+          </a>
+        <% }); %>
+      <% } else { %>
+        <p class="instagram-no-posts">Visita nuestro perfil oficial para ver más publicaciones.</p>
+      <% } %>
+    </div>
+
+    <a href="https://instagram.com/tu_fundacion" target="_blank" rel="noopener noreferrer" class="instagram-btn">
+      VER PERFIL DE INSTAGRAM &rarr;
+    </a>
+  </div>
+</section>

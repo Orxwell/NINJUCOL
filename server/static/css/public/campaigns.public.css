@@ -1,0 +1,10 @@
+/* GENERAL'S STYLES */
+@import "./reset.public.css";
+@import "./styles.public.css";
+
+/* COMPONENTS' STYLES */
+@import "../components/top.component.css";
+@import "../components/bar.component.css";
+
+@import "../components/donations.component.css";
+@import "../components/footer.component.css";

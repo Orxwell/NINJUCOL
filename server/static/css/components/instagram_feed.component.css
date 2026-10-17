@@ -1,0 +1,132 @@
+/* ==========================================
+   SECCIÓN FEED DE INSTAGRAM (SEMANTERIZADA)
+   ========================================== */
+section.instagram-feed {
+  width: 100%;
+  padding: 80px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8fafc;
+}
+
+section.instagram-feed .instagram-container {
+  max-width: 1200px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section.instagram-feed .instagram-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+section.instagram-feed .instagram-header h2 {
+  font-family: var(--font-heading);
+  color: var(--color-sea-dark);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  letter-spacing: 1px;
+}
+
+section.instagram-feed .instagram-header p {
+  font-family: var(--font-body);
+  color: #64748b;
+  font-size: clamp(14px, 1.5vw, 16px);
+  margin: 0;
+}
+
+/* Grid de publicaciones */
+section.instagram-feed .instagram-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+section.instagram-feed .instagram-card {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  display: block;
+}
+
+section.instagram-feed .instagram-img-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+section.instagram-feed .instagram-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(59, 107, 156, 0.85); /* Tono azul sea-dark con opacidad */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+section.instagram-feed .instagram-card:hover .instagram-overlay {
+  opacity: 1;
+}
+
+section.instagram-feed .instagram-caption {
+  font-family: var(--font-body);
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+section.instagram-feed .instagram-no-posts {
+  font-family: var(--font-body);
+  color: #64748b;
+  font-size: 16px;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+section.instagram-feed .instagram-btn {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-tangerine);
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+section.instagram-feed .instagram-btn:hover {
+  background-color: var(--color-tangerine-hover);
+  transform: translateY(-2px);
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 900px) {
+  section.instagram-feed .instagram-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  section.instagram-feed .instagram-grid {
+    grid-template-columns: 1fr;
+  }
+}

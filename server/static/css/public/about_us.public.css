@@ -5,20 +5,9 @@
 /* COMPONENTS' STYLES */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
-@import "../components/_1.component.css";
-@import "../components/_2.component.css";
+@import "../components/_4.component.css";
+@import "../components/_5.component.css";
+@import "../components/_6.component.css";
+@import "../components/_3.component.css";
 @import "../components/donations.component.css";
 @import "../components/footer.component.css";
-
-main article {
-  width: 100vw;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 20px;
-}
-main article section {
-  height: clamp(250px, 30vmax, 450px);
-}
