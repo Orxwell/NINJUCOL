@@ -5,10 +5,12 @@ import { connectDB } from '#src/importers/mongodb.importer.mjs';
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
 
+
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
-export default class MongoAPIcontroller {
+
+export default class MongoDBController {
   constructor () {
     this.collection = null;
 
@@ -21,7 +23,19 @@ export default class MongoAPIcontroller {
     this.db = null;
   }
 
-  async connect () { this.db = await connectDB(); }
+  async init (onError=null) {
+    try {
+      this.db = await connectDB();
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
 
   #ensureConnection () {
     if (!this.db) {
@@ -74,256 +88,288 @@ export default class MongoAPIcontroller {
     }
   }
 
-  #collectionHandler () {
-    this.#ensureConnection();
-    this.#ensureCollection();
+  #collectionHandler (onError=null) {
+    try {
+      this.#ensureConnection();
+      this.#ensureCollection();
 
-    return this.db.collection(this.collection);
-  }
+      return this.db.collection(this.collection);
 
-  setCollection ({ collection }={}) {
-    this.#ensureString(collection, 'collection');
-
-    this.collection = collection;
-  }
-
-  /**
-   * Create a single document in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]          - Options object.
-   * @param {Object} [options.document={}] - Object of a document to create.
-   * 
-   * @returns {Promise<Object>} - Object promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async createDocument ({ document={} }={}) {
-    this.#ensureObject(document, 'document');
-
-    return await this.#collectionHandler()
-      .insertOne(document);
-  }
-
-  /**
-   * Create multiple documents in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]           - Options object.
-   * @param {Object} [options.documents=[]] - Array of documents to create.
-   * 
-   * @returns {Promise<Object>} - Object promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async createDocuments ({ documents=[] }={}) {
-    this.#ensureArray(documents, 'documents');
-
-    documents.forEach(document => this.#ensureObject(document, 'document'));
-
-    return await this.#collectionHandler()
-      .insertMany(documents);
-  }
-
-  /**
-   * Search a document in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]            - Options object.
-   * @param {Object} [options.filter={}]     - Filter's query.
-   * @param {Object} [options.projection={}] - Projection's query.
-   * 
-   * @returns {Promise<Object>} - Object promise. If any results but default: null.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async findDocument ({ filter={}, projection={} }={}) {
-    this.#ensureObject(filter    , 'filter'    );
-    this.#ensureObject(projection, 'projection');
-
-    return await this.#collectionHandler()
-      .findOne(filter, { projection });
-  }
-
-  /**
-   * Search documents in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]            - Options object.
-   * @param {Object} [options.filter={}]     - Filter's query.
-   * @param {Object} [options.projection={}] - Projection's query.
-   * @param {Object} [options.modifiers={}]  - Modify the query with { sort: {}, limit: {}, skip: {} }.
-   * 
-   * @returns {Promise<Array>} - Array promise. If any results but default: [].
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async findDocuments({ filter={}, projection={}, modifiers={} }={}) {
-    this.#ensureObject(filter    , 'filter'    );
-    this.#ensureObject(projection, 'projection');
-    this.#ensureObject(modifiers , 'modifiers' );
-
-    if (modifiers.sort  !== undefined) { this.#ensureObject(modifiers.sort , 'modifiers.sort' ); }
-    if (modifiers.limit !== undefined) { this.#ensureNumber(modifiers.limit, 'modifiers.limit'); }
-    if (modifiers.skip  !== undefined) { this.#ensureNumber(modifiers.skip , 'modifiers.skip' ); }
-
-    return await this.#collectionHandler()
-      .find(filter, { projection })
-      .sort( modifiers.sort  ?? {})
-      .limit(modifiers.limit ??  0)
-      .skip( modifiers.skip  ??  0)
-      .toArray();
-  }
-
-  /**
-   * Update the first document found in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]         - Options object.
-   * @param {Object} [options.filter={}]  - Filter's query.
-   * @param {Object} [options.update={}]  - Update's query.
-   * @param {Object} [options.options={}] - Option's query.
-   * 
-   * @returns {Promise<Array>} - Array promise. If any results but default: [].
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async updateDocument({ filter={}, update={}, options={} }={}) {
-    this.#ensureObject(filter , 'filter' );
-    this.#ensureObject(update , 'update' );
-    this.#ensureObject(options, 'options');
-
-    return await this.#collectionHandler()
-      .updateOne(filter, update, options);
-  }
-
-  /**
-   * Update all documents in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]        - Options object.
-   * @param {Object} [options.filter={}] - Filter's query.
-   * @param {Object} [options.update={}] - Update's query.
-   * 
-   * @returns {Promise<Array>} - Array promise. If any results but default: [].
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async updateDocuments({ filter={}, update={} }={}) {
-    this.#ensureObject(filter, 'filter');
-    this.#ensureObject(update, 'update');
-
-    return await this.#collectionHandler()
-      .updateMany(filter, update);
-  }
-
-  /**
-   * Update all documents in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]             - Options object.
-   * @param {Object} [options.filter={}]      - Filter's query.
-   * @param {Object} [options.replacement={}] - Replacement's document.
-   * 
-   * @returns {Promise<Array>} - Array promise. If any results but default: [].
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async replaceDocument({ filter={}, replacement={} }={}) {
-    this.#ensureObject(filter     , 'filter'     );
-    this.#ensureObject(replacement, 'replacement');
-
-    return await this.#collectionHandler()
-      .replaceOne(filter, replacement);
-  }
-
-  /**
-   * Delete a single document in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]        - Options object.
-   * @param {Object} [options.filter={}] - Filter's query.
-   * 
-   * @returns {Promise<DeleteResult>} - Promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async deleteDocument ({ filter={} }={}) {
-    this.#ensureObject(filter, 'filter');
-
-    return await this.#collectionHandler()
-      .deleteOne(filter);
-  }
-
-  /**
-   * Delete multiple documents in a specific collection on MongoDB.
-   *
-   * @param {Object} [options={}]        - Options object.
-   * @param {Object} [options.filter={}] - Filter's query.
-   * 
-   * @returns {Promise<DeleteResult>} - Promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async deleteDocuments ({ filter={} }={}) {
-    this.#ensureObject(filter, 'filter');
-
-    return await this.#collectionHandler()
-      .deleteMany(filter);
-  }
-
-  /**
-   * Delete all the documents in a specific collection on MongoDB.
-   * 
-   * @returns {Promise<DeleteResult>} - Promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async clearCollection () {
-    return await this.#collectionHandler()
-      .deleteMany({});
-  }
-
-  /**
-   * Create indexes in a specific collection on MongoDB.
-   * 
-   * @param {Object} [options={}]         - Options object.
-   * @param {Object} [options.indexes={}] - Array of indexes to create.
-   * 
-   * @returns {Promise<Object>} - Promise.
-   * 
-   * @throws {Error} If something goes wrong...
-   */
-  async createIndexes ({ indexes=[] }={}) {
-    this.#ensureArray(indexes, 'indexes');
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
   
-    indexes.forEach((index, i) => {
-      this.#ensureObject(index    , `indexes[${i}]`    );
-      this.#ensureObject(index.key, `indexes[${i}].key`);
-    });
+      throw error;
+    }
+  }
+
+  setCollection ({ collection }={}, onError=null) {
+    try {
+      this.#ensureString(collection, 'collection');
+
+      this.collection = collection;
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
   
-    return await this.#collectionHandler()
-      .createIndexes(indexes);
+      throw error;
+    }
   }
 
-  /**
-   * Drop one index in the current collection by name.
-   *
-   * @param {Object} [options={}]    - Options object.
-   * @param {string} [options.index] - Index name.
-   *
-   * @returns {Promise<Object>} - Promise with the operation result.
-   *
-   * @throws {Error} If something goes wrong...
-   */
-  async dropIndex ({ index }={}) {
-    this.#ensureString(index, 'index');
+  async createRecord ({ record={} }={}, onError=null) {
+    try {
+      this.#ensureObject(record, 'record');
 
-    return await this.#collectionHandler()
-      .dropIndex(index);
+      const handler = this.#collectionHandler((error) => { throw error; });
+
+      return await handler.insertOne(record);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 
-  /**
- * Drop all indexes in the current collection, except _id.
- *
- * @returns {Promise<Object>} - Promise.
- *
- * @throws {Error} If something goes wrong...
- */
-  async dropIndexes () {
-    return await this.#collectionHandler()
-      .dropIndexes();
+  async createRecords ({ records=[] }={}, onError=null) {
+    try {
+      this.#ensureArray(records, 'records');
+
+      records.forEach(record => this.#ensureObject(record, 'record'));
+
+      const handler = await this.#collectionHandler((error) => { throw error; });
+
+      return handler.insertMany(records);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async findRecord ({ filter={}, projection={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter    , 'filter');
+      this.#ensureObject(projection, 'projection');
+
+      const handler = await this.#collectionHandler((error) => { throw error; });
+
+      return handler.findOne(filter, { projection });
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async findRecords({ filter={}, projection={}, modifiers={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter    , 'filter');
+      this.#ensureObject(projection, 'projection');
+      this.#ensureObject(modifiers , 'modifiers');
+
+      if (modifiers?.sort) this.#ensureObject(modifiers.sort, 'modifiers.sort');
+      if (modifiers?.limit) this.#ensureNumber(modifiers.limit, 'modifiers.limit');
+      if (modifiers?.skip) this.#ensureNumber(modifiers.skip, 'modifiers.skip');
+
+      const handler = await this.#collectionHandler();
+
+      return handler
+        .find(filter, { projection })
+        .sort( modifiers.sort  ?? {})
+        .limit(modifiers.limit ?? 0)
+        .skip( modifiers.skip  ?? 0)
+        .toArray();
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async updateRecord({ filter={}, update={}, options={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter , 'filter');
+      this.#ensureObject(update , 'update');
+      this.#ensureObject(options, 'options');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.updateOne(filter, update, options);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async updateRecords({ filter={}, update={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter, 'filter');
+      this.#ensureObject(update, 'update');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.updateMany(filter, update);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async replaceRecord({ filter={}, replacement={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter     , 'filter');
+      this.#ensureObject(replacement, 'replacement');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.replaceOne(filter, replacement);
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async deleteRecord ({ filter={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter, 'filter');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.deleteOne(filter);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async deleteRecords ({ filter={} }={}, onError=null) {
+    try {
+      this.#ensureObject(filter, 'filter');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.deleteMany(filter);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async clearCollection (onError=null) {
+    try {
+      const handler = await this.#collectionHandler();
+
+      return handler.deleteMany({});
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async createIndexes ({ indexes=[] }={}, onError=null) {
+    try {
+      this.#ensureArray(indexes, 'indexes');
+  
+      indexes.forEach((index, i) => {
+        this.#ensureObject(index    , `indexes[${i}]`);
+        this.#ensureObject(index.key, `indexes[${i}].key`);
+      });
+
+      const handler = await this.#collectionHandler();
+    
+      return handler.createIndexes(indexes);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async dropIndex ({ index }={}, onError=null) {
+    try {
+      this.#ensureString(index, 'index');
+
+      const handler = await this.#collectionHandler();
+
+      return handler.dropIndex(index);
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async dropIndexes (onError=null) {
+    try {
+      const handler = await this.#collectionHandler();
+
+      return handler.dropIndexes();
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 };

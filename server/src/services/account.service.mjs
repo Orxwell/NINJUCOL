@@ -1,5 +1,5 @@
-// Controllers for APIs
-import MongoAPIcontroller from '#controllers/mongodb.controller.mjs';
+// Controllers for service
+import controller from '#controllers/handler.controller.mjs';
 
 // External & Internal Libraries
 import bcryptjs from 'bcryptjs';
@@ -7,9 +7,12 @@ import bcryptjs from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { randomUUID }    from 'crypto';
 import { basename }      from 'path';
+import { error } from 'console';
+
 
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 export default class AccountService {
   constructor () {
@@ -18,23 +21,34 @@ export default class AccountService {
     this.errors = {
       'ERR-0': `Internal-Server-Error, from ${filename}: AccountService instance needs to be initialized.`,
       'ERR-1': `Internal-Server-Error, from ${filename}: Invalid argument: `,
-      'ERR-2': `Internal-Server-Error, from ${filename}: Account doesn't exist.`,
-      'ERR-3': `Internal-Server-Error, from ${filename}: Account already exist.`,
+      'ERR-2': `Internal-Server-Error, from ${filename}: Account already exist.`,
+      'ERR-3': `Internal-Server-Error, from ${filename}: Account doesn't exist.`,
     };
 
     this.is_initialized = false;
+    this.dbAPI = undefined;
   }
 
-  async init () {
-    // Instantiating controllers -----------¬
-    this.dbAPI = new MongoAPIcontroller();
-    await this.dbAPI.connect();
+  async init (onError=null) {
+    try {
+      // Stting collection
+      this.dbAPI = controller.dbAPI;
+      this.dbAPI.setCollection({ collection: this.collection });
 
-    this.dbAPI.setCollection({ collection: this.collection});
-    // ______________________________________
+      this.is_initialized = true;
+      
+      await this.#createIndexes((error) => { throw error; });
 
-    this.is_initialized = true;
-    await this.#createIndexes();
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
   #ensureInit () {
@@ -72,154 +86,260 @@ export default class AccountService {
     }
   }
 
-  async #createIndexes () {
-    this.#ensureInit();
+  async #createIndexes (onError=null) {
+    try {
+      this.#ensureInit();
 
-    await this.dbAPI.createIndexes({
-      indexes: [
-        {
-          key   : { 'email': 1, } ,
-          name  : 'email_unique',
-          unique: true,
-        },
-      ],
-    });
-  }
+      await this.dbAPI.createIndexes({
+        indexes: [
+          {
+            key   : { 'email': 1, } ,
+            name  : 'email_unique',
+            unique: true,
+          },
+        ],
+      }, (error) => { throw error; });
 
-  async #validateFirm (firm) {
+      return 'DONE';
 
-  }
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
 
-  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}) {
-    this.#ensureInit();
-
-    this.#ensureString(firstname, 'firstname');
-    this.#ensureString(lastname , 'lastname');
-    this.#ensureString(birthdate, 'birthdate');
-    this.#ensureString(phone    , 'phone');
-    this.#ensureString(email    , 'email');
-    this.#ensureString(password , 'password');
-    this.#ensureString(roles    , 'roles');
-    this.#ensureString(status   , 'status');
-
-    const account = await this.findByEmail({ email: email, });
-
-    if (account) {
-      const error = new Error(this.errors['ERR-3']);
-      error.code = 'ERR-3';
       throw error;
     }
-
-    const uuid = randomUUID(); 
-
-    const normalized_firstname = firstname.trim().toLowerCase();
-    const normalized_lastname = lastname.trim().toLowerCase();
-    const normalized_birthdate = birthdate.trim().toLowerCase();
-    const normalized_phone = phone.trim().toLowerCase();
-    const normalized_email = email.trim().toLowerCase();
-    
-    const hashed_password = await bcryptjs.hash(password, 10);
-
-    const date = new Date().toLocaleDateString('es-ES', {
-      minute: '2-digit',
-      hour: '2-digit',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour12: true,
-    });
-
-    await this.dbAPI.createDocument({
-      document: {
-        uuid: uuid,
-        
-        firstname: normalized_firstname,
-        lastname : normalized_lastname ,
-        birthdate: normalized_birthdate,
-        phone    : normalized_phone,
-        email    : normalized_email,
-
-        hashed_password: hashed_password,
-
-        roles: {},
-        status: status,
-
-        date: date,
-      },
-    });
   }
 
-  async auth ({ email, password }={}) {
-    this.#ensureInit();
+  async #validateFirm (firm, onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(email   , 'email'   );
-    this.#ensureString(password, 'password');
+      return 'DONE';
 
-    const account = await this.findByEmail({ email: email, });
-
-    if (!account) {
-      const error = new Error(this.errors['ERR-2']);
-      error.code = 'ERR-2';
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
       throw error;
     }
+  }
 
-    const status = await bcryptjs.compare(password, account.profile.hashed_password);
+  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, onError=null) {
+    try {
+      this.#ensureInit();
+
+      this.#ensureString(firstname, 'firstname');
+      this.#ensureString(lastname , 'lastname');
+      this.#ensureString(birthdate, 'birthdate');
+      this.#ensureString(phone    , 'phone');
+      this.#ensureString(email    , 'email');
+      this.#ensureString(password , 'password');
+      this.#ensureObject(roles    , 'roles');
+      this.#ensureString(status   , 'status');
+
+      const account = await this.findByEmail({ email: email }, (error) => { throw error; });
+
+      if (account) {
+        const error = new Error(this.errors['ERR-2']);
+        error.code = 'ERR-2';
+        return { error: error, };
+      }
+
+      const uuid = randomUUID(); 
       
-    return { status: status ? 'GRANTED' : 'DENIED' };
+      const hashed_password = await bcryptjs.hash(password, 10);
+
+      const date = new Date().toLocaleDateString('es-ES', {
+        minute: '2-digit',
+        hour: '2-digit',
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour12: true,
+      });
+
+      await this.dbAPI.createRecord({
+        document: {
+          uuid: uuid,
+          
+          firstname: firstname,
+          lastname : lastname,
+          birthdate: birthdate,
+          phone    : phone,
+          email    : email,
+
+          hashed_password: hashed_password,
+
+          roles : roles,
+          status: status,
+
+          date: date,
+        },
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async findByEmail ({ email }={}) {
-    this.#ensureInit();
+  async auth ({ email, password }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(email, 'email');
+      this.#ensureString(email   , 'email');
+      this.#ensureString(password, 'password');
 
-    const normalized_email = email.trim().toLowerCase();
+      const account = await this.dbAPI.findRecord({
+        filter    : { email: email, },
+        projection: { _id: 0, },
+      }, (error) => { throw error; });
 
-    return await this.dbAPI.findDocument({
-      filter    : { email: normalized_email, },
-      projection: { _id: 0, },
-    });
+      if (!account) return {
+        message: `Account doesn't exist.`,
+        status: 'DENIED',
+      };
+
+      const status = await bcryptjs.compare(password, account.profile.hashed_password);
+
+      if (!status) return {
+        message: `Invalid password.`,
+        status: 'DENIED',
+      };
+        
+      return {
+        message: 'Account verified.',
+        status: 'GRANTED'
+      };
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async findAll () {
-    this.#ensureInit();
+  async findByEmail ({ email }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    return await this.dbAPI.findDocuments({
-      projection: { _id: 0, },
-    });
+      this.#ensureString(email, 'email');
+
+      const record = await this.dbAPI.findRecord({
+        filter    : { email: email, },
+        projection: { _id: 0, },
+      }, (error) => { throw error; });
+
+      return record;
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async updateByEmail ({ email, setter }={}) {
-    this.#ensureInit();
+  async findAll (onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(email, 'email');
-    this.#ensureObject(setter, 'setter');
+      const records = await this.dbAPI.findRecords({
+        projection: { _id: 0, },
+      }, (error) => { throw error; });
 
-    Object.entries(setter).forEach(([key, value]) => {
-      this.#ensureString(value, `setter.${key}`);
-    });
+      return records;
 
-    await this.dbAPI.updateDocument({
-      filter: { email: email, },
-      update: { $set: setter, },
-    });
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async deleteByEmail ({ email }={}) {
-    this.#ensureInit();
+  async updateByEmail ({ email, setter }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(email, 'email');
+      this.#ensureString(email, 'email');
+      this.#ensureObject(setter, 'setter');
 
-    const normalized_email = email.trim().toLowerCase();
+      Object.entries(setter).forEach(([key, value]) => {
+        this.#ensureString(value, `setter.${key}`);
+      });
 
-    await this.dbAPI.deleteDocument({ filter: { email: normalized_email, }, });
+      await this.dbAPI.updateRecord({
+        filter: { email: email, },
+        update: { $set: setter, },
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async deleteAll ({ firm }={}) {
-    this.#ensureInit();
+  async deleteByEmail ({ email }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    if (await this.#validateFirm(firm)) {  } // Something to validate with an API, preferred OAuth to delete everything
+      this.#ensureString(email, 'email');
 
-    await this.dbAPI.clearCollection();
+      await this.dbAPI.deleteRecord({ filter: { email: email } }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
+  }
+
+  async deleteAll ({ firm }={}, onError=null) {
+    try {
+      this.#ensureInit();
+
+      await this.#validateFirm(firm, (error) => { throw error; });
+
+      await this.dbAPI.clearCollection((error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 };

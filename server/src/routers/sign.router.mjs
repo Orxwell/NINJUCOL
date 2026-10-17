@@ -35,13 +35,18 @@ routerSIGN.get('/sign_in',
 
     try {
       return res.render(publicSignInEJS, {
-        title: `Login | NINJUCOL`,
+        title: `SingIn | NINJUCOL`,
 
         error: error,
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 
@@ -82,26 +87,17 @@ routerSIGN.post('/sign_up',
         email    : email,
         password : password,
 
-        roles: {},
+        roles: { isAdmin: false, },
         status: 'PENDING',
-      });
+      }, (error) => { throw error; });
 
-    } catch (err) {
-      if (err.code === 'ERR-3') {
-        return res.redirect('/error_at_post?' +
-          `error=${encodeURIComponent('Account already exist.')}`
-        );
-      }
-      
-      return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(err.message)}`
-      );
-    }
-
-    try {
       return res.sendStatus(200);
 
-    } catch (_) { return res.sendStatus(503); }
+    } catch (error) {
+      return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 
@@ -117,37 +113,25 @@ routerSIGN.post('/sign_in',
     const { email, password } = req.body;
 
     try {
-      const auth = await service.account.auth({
+      const { message, status } = await service.account.auth({
         email   : email,
         password: password,
-      });
+      }, (error) => { throw error; });
 
-      if (auth.status === 'DENIED') {
+      if (status === 'DENIED') {
         return res.redirect('/sign_in?' +
-          `error=${encodeURIComponent('Invalid password.')}`
-        );
+          `error=${encodeURIComponent(message)}`);
       }
 
-    } catch (err) {
-      if (err.code === 'ERR-2') {
-        return res.redirect('/sign_in?' +
-          `error=${encodeURIComponent('Invalid email.')}`);
-      }
-      
-      return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(err.message)}`
-      );
-    }
+      let token_body = await service.token.findByEmail({ email: email, }, (error) => { throw error; });
+      if (!token_body) {
+        token_body = await service.token.generate({ email: email, }, (error) => { throw error; });
 
-    try {
-      const found_token = await service.token.findByEmail({ email: email, });
-
-      let token_body;
-      if (found_token) { token_body = found_token; }
-      else {
-        token_body = await service.token.generate({ email: email, });
-
-        await service.token.save(token_body);
+        await service.token.save({
+          token     : token_body.token,
+          email     : token_body.email,
+          expiration: token_body.expiration,
+        }, (error) => { throw error; });
       }
 
       await service.mailer.send({
@@ -169,9 +153,9 @@ routerSIGN.post('/sign_in',
 
       return res.redirect('/dashboard');
 
-    } catch (err) {
+    } catch (error) {
       return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(err.message)}`
+        `error=${encodeURIComponent(error.message)}`
       );
     }
   }
@@ -186,20 +170,18 @@ routerSIGN.post('/sign_out',
       `error=${encodeURIComponent('Usted a sido redireccionado porque no cuenta con un token válido.')}`);
 
     try {
-      const token_body = await service.token.findByToken({ token: auth_token });
+      const token_body = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
       
-      if (!token_body) {
-        return res.redirect('/sign_in?' +
-          `error=${encodeURIComponent('Sesión expirada.')}`);
-      }
+      if (!token_body) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
 
-      await service.token.delete({ token: token_body.token });
+      await service.token.deleteByToken({ token: token_body.token }, (error) => { throw error; });
 
       return res.redirect('/sign_in');
 
-    } catch (err) {
+    } catch (error) {
       return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(err.message)}`
+        `error=${encodeURIComponent(error.message)}`
       );
     }
   }

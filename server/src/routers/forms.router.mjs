@@ -23,12 +23,13 @@ routerFORMS.get('/form/donation',
   }),
   async (req, res) => {
     try {
-      return res.render(publicHomeEJS, {
-        title: `Home | NINJUCOL`,
-
-        server_url: env.SERVER_URL,
-      });
-    } catch (_) { return res.sendStatus(503); }
+      return res.sendStatus(100);
+      
+    } catch (error) {
+      return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 // >>-------- POST - ABOVE --------<<

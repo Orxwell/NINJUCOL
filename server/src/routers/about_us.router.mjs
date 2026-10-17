@@ -25,7 +25,12 @@ routerABOUT_US.get('/about_us',
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+      
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 // >>-------- GET - ABOVE --------<<

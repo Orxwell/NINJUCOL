@@ -28,24 +28,24 @@ routerDASHBOARD.get('/dashboard',
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
 
     try {
-      const token_body = await service.token.findByToken({ token: auth_token });
+      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
       
-      if (!token_body) return res.redirect('/sign_in?' +
+      if (!found_token) return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
 
-      const account = await service.account.findByEmail({ email: token_body.email, });
+      const found_account = await service.account.findByEmail({ email: found_token.email, }, (error) => { throw error; });
 
       return res.render(privateDashboardEJS, {
         title: `Dashboard | NINJUCOL`,
 
-        account: account,
+        account: found_account,
 
         server_url: env.SERVER_URL,
       });
 
-    } catch (err) {
-      return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(err.message)}`
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
       );
     }
   }
@@ -73,17 +73,106 @@ routerDASHBOARD.post('/dashboard/add/new',
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
 
+    const data = req.query;
+
     try {
-      const token_body = await service.token.findByToken({ token: auth_token });
+      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
       
-      if (!token_body) return res.redirect('/sign_in?' +
+      if (!found_token) return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
 
-      //* Guardar la noticia, con la capa de servicio NewsService
+      await service.new.create({
+        title      : data.title,
+        author     : data.author,
+        resume     : data.resume,
+        description: data.description,
+        image_url  : data.image_url,
+        video_url  : data.video_url,
+      }, (error) => { throw error; });
+
+      return res.sendStatus(200);
 
     } catch (err) {
       return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(err.message)}`
+      );
+    }
+  },
+)
+
+routerDASHBOARD.post('/dashboard/del/new',
+  middleware.queryParams({ scheme: { uuid: 'string' } }),
+  async (res, req) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+
+    const { uuid } = req.query;
+
+    try {
+      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
+      
+      if (!found_token) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+
+      await service.new.deleteByUUID({ uuid: uuid }, (error) => { throw error; })
+
+      return res.sendStatus(200);
+
+    } catch (error) {
+      return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
+  },
+)
+
+routerDASHBOARD.post('/dashboard/upd/new',
+  middleware.queryParams({ scheme: { uuid: 'string' } }),
+  middleware.bodyParams({
+    scheme: {
+      new: {
+        title: 'string',
+        author: 'string',
+        resume: 'string',
+        description: 'string',
+        image_url: 'string',
+        video_url: 'string',
+      },
+    }
+  }),
+  async (res, req) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+
+    const { uuid } = req.query;
+
+    try {
+      const found_token = await service.token.findByToken({ token: auth_token });
+      
+      if (!found_token) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+
+      await service.new.updateByUUID({
+        uuid: uuid,
+        setter: {
+          title      : data.title,
+          author     : data.author,
+          resume     : data.resume,
+          description: data.description,
+          image_url  : data.image_url,
+          video_url  : data.video_url,
+        }
+      }, (error) => { throw error; });
+
+      return res.sendStatus(200);
+
+    } catch (error) {
+      return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error.message)}`
       );
     }
   },

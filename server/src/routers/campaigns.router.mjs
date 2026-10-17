@@ -23,7 +23,7 @@ routerCAMPAIGNS.get('/campaigns',
   middleware.queryParams({}),
   async (req, res) => {
     try {
-      const found_campaigns = await service.campaigns.findAll();
+      const found_campaigns = await service.campaigns.findAll((error) => { throw error; });
 
       return res.render(publicCampaignsEJS, {
         title: `Campaigns | NINJUCOL`,
@@ -32,7 +32,12 @@ routerCAMPAIGNS.get('/campaigns',
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 // >>-------- GET - ABOVE --------<<

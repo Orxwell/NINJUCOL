@@ -68,8 +68,8 @@ routerERROR.get('/*splat',
     try {
       return res.redirect('/error_at_get' +
         `error=${encodeURIComponent('No existe esta URL.')}`);
-    }
-    catch (_) { return res.sendStatus(503); }
+
+    } catch (_) { return res.sendStatus(503); }
   }
 );
 // >>-------- GET - ABOVE --------<<
@@ -81,8 +81,8 @@ routerERROR.post('/*splat',
     try {
       return res.redirect('/error_at_post' +
         `error=${encodeURIComponent('No existe esta URL.')}`);
-    }
-    catch (_) { return res.sendStatus(503); }
+
+    } catch (_) { return res.sendStatus(503); }
   }
 );
 // >>-------- POST - ABOVE --------<<

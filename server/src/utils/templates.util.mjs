@@ -7,11 +7,11 @@ const temp = {
   //api_EJS: join(global.apiPath, '/.api.ejs'),
 
   // Templates for handling HTTP errors
-  error_at_getEJS : join(global.errorsPath, '/at_get.error.ejs' ),
-  error_at_postEJS: join(global.errorsPath, '/at_post.error.ejs'),
+  error_atGetEJS : join(global.errorsPath, '/at_get.error.ejs' ),
+  error_atPostEJS: join(global.errorsPath, '/at_post.error.ejs'),
 
   // Templates for handling mails
-  mail_sign_inEJS: join(global.mailsPath, '/sing_in.mail.ejs'),
+  mail_signInEJS: join(global.mailsPath, '/sing_in.mail.ejs'),
 
   // Private templates - Staff authentication
   private_dashboardEJS: join(global.privatePath, '/dashboard.private.ejs'),
@@ -29,10 +29,10 @@ const temp = {
 
 //export const apiEJS = temp.api_EJS;
 
-export const errorAtGetEJS  = temp.error_at_getEJS;
-export const errorAtPostEJS = temp.error_at_postEJS;
+export const errorAtGetEJS  = temp.error_atGetEJS;
+export const errorAtPostEJS = temp.error_atPostEJS;
 
-export const mailSignInEJS = temp.mail_sign_inEJS;
+export const mailSignInEJS = temp.mail_signInEJS;
 
 export const privateDashboardEJS = temp.private_dashboardEJS;
 

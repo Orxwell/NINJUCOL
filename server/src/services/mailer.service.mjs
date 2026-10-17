@@ -1,13 +1,14 @@
+// Controllers for service
+import controller from '#controllers/handler.controller.mjs';
+
 // External & Internal Libraries
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
-import nodemailer from 'nodemailer';
-import ejs        from 'ejs';
 
-import { env } from '#importers/env.importer.mjs';
 
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 export default class MailerService {
   constructor () {
@@ -19,23 +20,26 @@ export default class MailerService {
     };
 
     this.is_initialized = false;
+    this.mailerAPI = undefined;
   }
 
-  async init () {
-    // Instantiating controllers -----------¬
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: env.CORP_EMAIL_DOMAIN,
-        pass: env.CORP_EMAIL_KEY,
-      },
-      tls: { rejectUnauthorized: false }
-    });
-    // ______________________________________
+  async init (onError=null) {
+    try {
+      // Setting controllers
+      this.mailerAPI = controller.mailer;
 
-    this.is_initialized = true;
+      this.is_initialized = true;
+
+      return 'DONE';
+      
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
   #ensureInit () {
@@ -65,44 +69,51 @@ export default class MailerService {
     }
   }
 
-  async #validateFirm (firm) {
+  async #validateFirm (firm, onError=null) {
+    try {
+      this.#ensureInit();
 
-  }
+      return 'DONE';
 
-  async send ({ to, subject, text, ejs_path, ejs_args }={}) {
-    this.#ensureInit();
-
-    this.#ensureString(to      , 'to'      );
-    this.#ensureString(subject , 'subject' );
-    this.#ensureString(text    , 'text'    );
-    this.#ensureString(ejs_path, 'ejs_path');
-    this.#ensureObject(ejs_args, 'ejs_args');
-
-    let html;
-    try { html = await ejs.renderFile(ejs_path, ejs_args); }
-    catch (_) {
-      const error = new Error(this.errors['ERR-2']);
-      error.code = 'ERR-2';
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
       throw error;
     }
+  }
 
-    const mail = {
-      from: env.CORP_EMAIL_DOMAIN,
-      to  : to,
+  async send ({ to, subject, text, ejs_path, ejs_args }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-      subject: subject,
-      text   : text,
-      html   : html,
-    }
+      this.#ensureString(to      , 'to');
+      this.#ensureString(subject , 'subject');
+      this.#ensureString(text    , 'text');
+      this.#ensureString(ejs_path, 'ejs_path');
+      this.#ensureObject(ejs_args, 'ejs_args');
 
-    if (await this.#validateFirm(firm)) {  } // Something to validate with an API, preferred OAuth to delete everything
+      await this.#validateFirm(firm, (error) => { throw error; });
 
-    this.transporter.sendMail(mail, (error, info) => {
-      if (error) {
-        const cache_error = new Error(this.errors['ERR-3'] + info);
-        cache_error.code = 'ERR-3';
-        throw cache_error;
+      await this.mailerAPI.send({
+        to      : to,
+        subject : subject,
+        text    : text,
+        ejs_path: ejs_path,
+        ejs_args: ejs_args,
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
       }
-    });
+  
+      throw error;
+    }
   }
 };

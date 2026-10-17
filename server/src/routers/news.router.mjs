@@ -29,7 +29,7 @@ routerNEWS.get('/news',
   }),
   async (req, res) => {
     try {
-      const found_news = await service.news.findAll();
+      const found_news = await service.news.findAll((error) => { throw error; });
       
       return res.render(publicNewsEJS, {
         title: `News | NINJUCOL`,
@@ -38,7 +38,12 @@ routerNEWS.get('/news',
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 
@@ -50,7 +55,7 @@ routerNEWS.get('/news/new',
     const { uuid } = req.query;
 
     try {
-      const found_new = await service.news.findByUUID({ uuid: uuid, });
+      const found_new = await service.news.findByUUID({ uuid: uuid }, (error) => { throw error; });
 
       if (!found_new) return res.redirect('/news' +
         `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
@@ -62,7 +67,12 @@ routerNEWS.get('/news/new',
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 // >>-------- GET - ABOVE --------<<

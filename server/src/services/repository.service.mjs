@@ -1,13 +1,15 @@
-// Controllers for APIs
-import MongoAPIcontroller from '#controllers/mongodb.controller.mjs';
+// Controllers for service
+import controller from '#controllers/handler.controller.mjs';
 
 // External & Internal Libraries
 import { fileURLToPath } from 'url';
 import { randomUUID }    from 'crypto';
 import { basename }      from 'path';
 
+
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 export default class RepositoryService {
   constructor () {
@@ -20,19 +22,29 @@ export default class RepositoryService {
     };
 
     this.is_initialized = false;
+    this.dbAPI = undefined;
   }
 
-  async init () {
-    // Instantiating controllers -----------¬
-    this.dbAPI = new MongoAPIcontroller();
-    await this.dbAPI.connect();
+  async init (onError=null) {
+    try {
+      // Setting controllers
+      this.dbAPI = controller.dbAPI;
+      this.dbAPI.setCollection({ collection: this.collection });
 
-    this.dbAPI.setCollection({ collection: this.collection });
-    // ______________________________________
+      this.is_initialized = true;
+      
+      await this.#createIndexes((error) => { throw error; });
 
-    this.is_initialized = true;
+      return 'DONE';
+      
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
 
-    await this.#createIndexes();
+      throw error;
+    }
   }
 
   #ensureInit () {
@@ -70,116 +82,200 @@ export default class RepositoryService {
     }
   }
 
-  async #createIndexes () {
-    this.#ensureInit();
+  async #createIndexes (onError=null) {
+    try {
+      this.#ensureInit();
 
-    await this.dbAPI.createIndexes({
-      indexes: [
-        {
-          key   : { 'uuid': 1, },
-          name  : 'uuid_unique',
-          unique: true,
+      await this.dbAPI.createIndexes({
+        indexes: [
+          {
+            key   : { 'uuid': 1, },
+            name  : 'uuid_unique',
+            unique: true,
+          },
+        ],
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
+  }
+
+  async #validateFirm (firm, onError=null) {
+    try {
+      this.#ensureInit();
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
+  }
+
+  async create ({ title, description, image_url, resource_url }={}, onError=null) {
+    try {
+      this.#ensureInit();
+
+      this.#ensureString(title       , 'title');
+      this.#ensureString(description , 'description');
+      this.#ensureString(image_url   , 'image_url');
+      this.#ensureString(resource_url, 'resource_url');
+
+      const uuid = randomUUID();
+
+      const date = new Date().toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+
+      await this.dbAPI.createRecord({
+        document: {
+          uuid: uuid,
+
+          title       : title,
+          description : description,
+          image_url   : image_url,
+          resource_url: resource_url,
+
+          date: date,
         },
-      ],
-    });
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 
-  async #validateFirm (firm) {
+  async findByUUID ({ uuid }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
+      this.#ensureString(uuid, 'uuid');
+      
+      const record = await this.dbAPI.findRecord({
+        filter    : { 'uuid': uuid, },
+        projection: { _id: 0, },
+      }, (error) => { throw error; });
+
+      return record;
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 
-  async create ({ title, description, image_url, resource_url }={}) {
-    this.#ensureInit();
+  async findAll (onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(title       , 'title'       );
-    this.#ensureString(description , 'description' );
-    this.#ensureString(image_url   , 'image_url'   );
-    this.#ensureString(resource_url, 'resource_url');
+      const records = await this.dbAPI.findRecords({
+        projection: { _id: 0, },
+      }, (error) => { throw error; });
 
-    const uuid = randomUUID();
-    
-    const normalized_title        = title.trim();
-    const normalized_description  = description.trim();
-    const normalized_image_url    = image_url.trim();
-    const normalized_resource_url = resource_url.trim();
+      return records;
 
-    const date = new Date().toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    });
-
-    await this.dbAPI.createDocument({
-      document: {
-        uuid: uuid,
-
-        title       : normalized_title,
-        description : normalized_description,
-        image_url   : normalized_image_url,
-        resource_url: normalized_resource_url,
-
-        date: date,
-      },
-    });
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 
-  async findByUUID ({ uuid }={}) {
-    this.#ensureInit();
+  async updateByUUID ({ uuid, title, description, image_url }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(uuid, 'uuid');
-    
-    return await this.dbAPI.findDocument({
-      filter    : { 'uuid': uuid, },
-      projection: { _id: 0, },
-    });
-  }
+      this.#ensureObject(uuid, 'uuid');
 
-  async findAll () {
-    this.#ensureInit();
+      this.#ensureString(title      , 'title');
+      this.#ensureString(description, 'description');
+      this.#ensureString(image_url  , 'image_url');
 
-    return await this.dbAPI.findDocuments({
-      projection: { _id: 0, uuid: 0, },
-    });
-  }
-
-  async updateByUUID ({ uuid, title, description, image_url }={}) {
-    this.#ensureInit();
-
-    this.#ensureObject(uuid, 'uuid');
-
-    this.#ensureString(title      , 'title'      );
-    this.#ensureString(description, 'description');
-    this.#ensureString(image_url  , 'image_url'  );
-
-    const normalized_title       = title.trim();
-    const normalized_description = description.trim();
-    const normalized_image_url   = image_url.trim();
-
-    await this.dbAPI.updateDocument({
-      filter: { uuid: uuid, },
-      update: {
-        $set: {
-          title      : normalized_title,
-          description: normalized_description,
-          image_url  : normalized_image_url,
+      await this.dbAPI.updateDocument({
+        filter: { uuid: uuid, },
+        update: {
+          $set: {
+            title      : title,
+            description: description,
+            image_url  : image_url,
+          },
         },
-      },
-    });
+      }, (error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 
-  async deleteByUUID ({ uuid }={}) {
-    this.#ensureInit();
+  async deleteByUUID ({ uuid }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    this.#ensureString(uuid, 'uuid');
+      this.#ensureString(uuid, 'uuid');
 
-    await this.dbAPI.deleteDocument({ filter: { 'uuid': uuid, }, });
+      await this.dbAPI.deleteDocument({ filter: { 'uuid': uuid }, }, (error) => { throw error; });
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+  
+      throw error;
+    }
   }
 
-  async deleteAll ({ firm }={}) {
-    this.#ensureInit();
+  async deleteAll ({ firm }={}, onError=null) {
+    try {
+      this.#ensureInit();
 
-    if (await this.#validateFirm(firm)) {  } // Something to validate with an API, preferred OAuth to delete everything
+      await this.#validateFirm(firm, (error) => { throw error; });
 
-    await this.dbAPI.clearCollection();
+      await this.dbAPI.clearCollection((error) => { throw error; });
+
+      return 'DONE';
+
+    } catch (error) {
+      if (typeof onError === 'function')  {
+        onError(error);
+        return;
+      }
+
+      throw error;
+    }
   }
 };

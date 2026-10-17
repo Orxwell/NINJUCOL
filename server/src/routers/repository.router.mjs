@@ -23,7 +23,7 @@ routerREPOSITORY.get('/repository',
   middleware.queryParams({}),
   async (req, res) => {
     try {
-      const found_repository = await service.repository.findAll();
+      const found_repository = await service.repository.findAll((error) => { throw error; });
 
       return res.render(publicRepositoryEJS, {
         title: `Repository | NINJUCOL`,
@@ -32,7 +32,12 @@ routerREPOSITORY.get('/repository',
 
         server_url: env.SERVER_URL,
       });
-    } catch (_) { return res.sendStatus(503); }
+
+    } catch (error) {
+      return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error.message)}`
+      );
+    }
   }
 );
 // >>-------- GET - ABOVE --------<<
