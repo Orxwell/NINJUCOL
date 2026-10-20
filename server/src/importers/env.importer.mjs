@@ -70,11 +70,31 @@ temp.CORP_EMAIL_KEY = auditENV({
 });
 
 
+// Instagram configuration...
+temp.INSTAGRAM_API_TOKEN = auditENV({
+  name    : 'INSTAGRAM_API_TOKEN',
+  type    : 'string',
+  required: true,
+});
+temp.INSTAGRAM_API_URI = auditENV({
+  name    : 'INSTAGRAM_API_URI',
+  type    : 'string',
+  required: true,
+});
+temp.INSTAGRAM_TTL_HOURS = auditENV({
+  name  : 'INSTAGRAM_TTL_HOURS',
+  type  : 'number',
+  preset: 1,
+});
+temp.INSTAGRAM_API_URI = temp.INSTAGRAM_API_URI
+  .replace('<token>', encodeURIComponent(temp.INSTAGRAM_API_TOKEN));
+
+
 // Token configuration...
 temp.TOKEN_LIFE_SECONDS = auditENV({
-  name    : 'TOKEN_LIFE_SECONDS',
-  type    : 'number',
-  preset  : 3600,
+  name  : 'TOKEN_LIFE_SECONDS',
+  type  : 'number',
+  preset: 3600,
 });
 
 
@@ -100,8 +120,13 @@ export const env = Object.freeze({
   URI_CLUSTER     : temp.URI_CLUSTER,
 
   // Corporate-Email configuration...
-  CORP_EMAIL_USER: temp.CORP_EMAIL_USER,
-  CORP_EMAIL_KEY : temp.CORP_EMAIL_KEY,
+  CORP_EMAIL_DOMAIN: temp.CORP_EMAIL_DOMAIN,
+  CORP_EMAIL_KEY   : temp.CORP_EMAIL_KEY,
+
+  // Instagram configuration...
+  INSTAGRAM_API_TOKEN: temp.INSTAGRAM_API_TOKEN,
+  INSTAGRAM_API_URI  : temp.INSTAGRAM_API_URI,
+  INSTAGRAM_TTL_HOURS: temp.INSTAGRAM_TTL_HOURS,
 
   // Token configuration...
   TOKEN_LIFE_SECONDS: temp.TOKEN_LIFE_SECONDS,

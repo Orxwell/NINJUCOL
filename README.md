@@ -24,52 +24,114 @@ El repositorio organiza las secciones del sitio en archivos HTML independientes:
 - **JavaScript:** scripts del lado del navegador.
 - **SVG:** recursos gráficos vectoriales.
 
-La estructura pública consultada no muestra un gestor de paquetes ni un proceso de compilación obligatorio.
+La estructura publicada no muestra todos los archivos del Front-End, sólo son ejemplos; el Back-End es más fidedigno al puesto en producción.
 
 ## Estructura del repositorio
 
 ```text
 NINJUCOL/
-├── css/                 # Hojas de estilo
-├── js/                  # Scripts del navegador
-├── svg/                 # Recursos vectoriales
-├── about_us.html        # Información institucional
-├── campaigns.html       # Campañas
-├── home.html            # Página de inicio
-├── join_us.html         # Participación
-├── news.html            # Noticias
-├── repository.html      # Repositorio de contenido
-├── LICENSE              # Licencia MIT
-└── README.md            # Documentación
+├── .vscode/
+├── node_modules/ # oculto
+├── server/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── handler.controller.mjs
+│   │   │   ├── mailer.controller.mjs
+│   │   │   └── mongodb.controller.mjs
+│   │   ├── importers/
+│   │   │   ├── env.importer.mjs
+│   │   │   └── mongodb.importer.mjs
+│   │   ├── middlewares/
+│   │   │   ├── body.middleware.mjs
+│   │   │   ├── handler.middleware.mjs
+│   │   │   ├── query.middleware.mjs
+│   │   │   └── route.middleware.mjs
+│   │   ├── routers/
+│   │   │   ├── about_us.router.mjs
+│   │   │   ├── api.router.mjs
+│   │   │   ├── campaigns.router.mjs
+│   │   │   ├── dashboard.router.mjs
+│   │   │   ├── error.router.mjs
+│   │   │   ├── forms.router.mjs
+│   │   │   ├── handler.router.mjs
+│   │   │   ├── home.router.mjs
+│   │   │   ├── join_us.router.mjs
+│   │   │   ├── news.router.mjs
+│   │   │   ├── repository.router.mjs
+│   │   │   └── sign.router.mjs
+│   │   ├── services/
+│   │   │   ├── account.service.mjs
+│   │   │   ├── campaign.service.mjs
+│   │   │   ├── donation.service.mjs
+│   │   │   ├── handler.service.mjs
+│   │   │   ├── mailer.service.mjs
+│   │   │   ├── new.service.mjs
+│   │   │   ├── repository.service.mjs
+│   │   │   └── token.service.mjs
+│   │   ├── utils/
+│   │   │   ├── functions.util.mjs
+│   │   │   ├── paths.util.mjs
+│   │   │   └── templates.util.mjs
+│   │   ├── app.mjs
+│   │   ├── bootstrap.mjs
+│   │   └── server.mjs
+│   ├── static/
+│   │   ├── css/
+│   │   │   ├── components/
+│   │   │   │   └── footer.component.css
+│   │   │   ├── errors/
+│   │   │   │   ├── at_post.error.ejs
+│   │   │   │   └── at_get.error.ejs
+│   │   │   ├── private/
+│   │   │   │   └── dashboard.private.ejs
+│   │   │   └── public/
+│   │   │       └── home.public.css
+│   │   ├── ico/
+│   │   │   ├── errors/
+│   │   │   ├── private/
+│   │   │   └── public/
+│   │   │       └── favicon.public.ico
+│   │   ├── js/
+│   │   │   ├── errors/
+│   │   │   ├── private/
+│   │   │   └── public/
+│   │   │       └── scroll.public.ejs
+│   │   ├── pdf/
+│   │   │   ├── errors/
+│   │   │   ├── private/
+│   │   │   └── public/
+│   │   ├── png/
+│   │   │   ├── errors/
+│   │   │   ├── private/
+│   │   │   └── public/
+│   │   ├── wav/
+│   │   │   ├── errors/
+│   │   │   ├── private/
+│   │   │   └── public/
+│   │   └── webp/
+│   │       ├── errors/
+│   │       ├── private/
+│   │       └── public/
+│   └── static/
+│       ├── api/
+│       ├── components/
+│       │   └── footer.component.ejs
+│       ├── errors/
+│       │   ├── at_post.error.ejs
+│       │   └── at_get.error.ejs
+│       ├── mails/
+│       │   └── sign_in.mail.ejs
+│       ├── private/
+│       │   └── dashboard.private.ejs
+│       └── public/
+│           └── home.public.mjs
+├── .env # oculto
+├── .gitignore # oculto
+├── package.json
+├── pnpm-lock.yaml # oculto
+├── pnpm-workspace.yaml # oculto
+└── README.md
 ```
-
-## Instalación y ejecución local
-
-### Requisitos
-
-- Navegador web moderno.
-- Git (opcional, para clonar el repositorio).
-
-### Pasos
-
-1. Clona el repositorio:
-
-   ```bash
-   git clone https://github.com/Orxwell/NINJUCOL.git
-   cd NINJUCOL
-   ```
-
-2. Abre `home.html` en tu navegador.
-
-Para servir las páginas desde un servidor HTTP local, puedes ejecutar lo siguiente si tienes Python 3 instalado:
-
-```bash
-python -m http.server 8000
-```
-
-Después, visita <http://localhost:8000/home.html>.
-
-> El servidor de Python es únicamente una opción para desarrollo local; no forma parte de una infraestructura de backend verificada para este proyecto.
 
 ## Objetivos y evolución del proyecto
 

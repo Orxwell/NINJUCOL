@@ -7,7 +7,6 @@ import bcryptjs from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { randomUUID }    from 'crypto';
 import { basename }      from 'path';
-import { error } from 'console';
 
 
 const abspath  = fileURLToPath(import.meta.url);
@@ -26,14 +25,15 @@ export default class AccountService {
     };
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
-      // Stting collection
-      this.dbAPI = controller.dbAPI;
-      this.dbAPI.setCollection({ collection: this.collection });
+      // Setting collection
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
 
       this.is_initialized = true;
       
@@ -112,7 +112,7 @@ export default class AccountService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -163,7 +163,7 @@ export default class AccountService {
       });
 
       await this.dbAPI.createRecord({
-        document: {
+        record: {
           uuid: uuid,
           
           firstname: firstname,
@@ -210,7 +210,7 @@ export default class AccountService {
         status: 'DENIED',
       };
 
-      const status = await bcryptjs.compare(password, account.profile.hashed_password);
+      const status = await bcryptjs.compare(password, account.hashed_password);
 
       if (!status) return {
         message: `Invalid password.`,
@@ -327,7 +327,7 @@ export default class AccountService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

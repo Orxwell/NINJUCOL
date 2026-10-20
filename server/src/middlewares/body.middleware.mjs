@@ -4,8 +4,10 @@ import { basename }      from 'path';
 
 import { errorHTTP } from '#utils/functions.util.mjs';
 
+
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 function validatingType ({ cast }={}) {
   if (cast === null) return 'null';
@@ -23,9 +25,9 @@ function validatingType ({ cast }={}) {
   return false;
 }
 
-export default function handlingBodyParams ({
+export default function handlingBody ({
   scheme={},
-  mode='reply'
+  mode='reply',
 }={}) {
   // ------------ Middleware's configuration ------------
   // Checking: scheme

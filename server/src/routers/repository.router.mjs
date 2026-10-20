@@ -20,7 +20,7 @@ const routerREPOSITORY = Router();
 // ~~~~~~~~~~~ROUTER-REPOSITORY~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerREPOSITORY.get('/repository',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     try {
       const found_repository = await service.repository.findAll((error) => { throw error; });
@@ -35,8 +35,7 @@ routerREPOSITORY.get('/repository',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

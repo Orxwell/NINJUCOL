@@ -20,10 +20,10 @@ const routerCAMPAIGNS = Router();
 // ~~~~~~~~~~~ROUTER-CAMPAIGNS~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerCAMPAIGNS.get('/campaigns',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     try {
-      const found_campaigns = await service.campaigns.findAll((error) => { throw error; });
+      const found_campaigns = await service.campaign.findAll((error) => { throw error; });
 
       return res.render(publicCampaignsEJS, {
         title: `Campaigns | NINJUCOL`,
@@ -35,8 +35,7 @@ routerCAMPAIGNS.get('/campaigns',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

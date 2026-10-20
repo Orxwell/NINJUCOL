@@ -22,13 +22,16 @@ export default class CampaignsService {
     };
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Setting collection
-      this.dbAPI = controller.dbAPI;
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+      
       this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
@@ -108,7 +111,7 @@ export default class CampaignsService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -124,13 +127,14 @@ export default class CampaignsService {
     }
   }
 
-  async create ({ title, description, image_url }={}, onError=null) {
+  async create ({ title, description, image_uri }={}, onError=null) {
     try {
       this.#ensureInit();
 
       this.#ensureString(title      , 'title');
       this.#ensureString(description, 'description');
-      this.#ensureString(image_url  , 'image_url');
+
+      this.#ensureString(image_uri, 'image_uri');
 
       const uuid = randomUUID();
 
@@ -146,7 +150,8 @@ export default class CampaignsService {
 
           title      : title,
           description: description,
-          image_url  : image_url,
+
+          image_uri: image_uri,
 
           date: date,
         },
@@ -191,7 +196,7 @@ export default class CampaignsService {
     try {
       this.#ensureInit();
 
-      const records = await this.dbAPI.findDocuments({
+      const records = await this.dbAPI.findRecords({
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
@@ -207,23 +212,25 @@ export default class CampaignsService {
     }
   }
 
-  async updateByUUID ({ uuid, title, description, image_url }={}, onError=null) {
+  async updateByUUID ({ uuid, setter }={}, onError=null) {
     try {
       this.#ensureInit();
 
       this.#ensureObject(uuid, 'uuid');
+      this.#ensureObject(setter, 'setter');
 
-      this.#ensureString(title      , 'title');
-      this.#ensureString(description, 'description');
-      this.#ensureString(image_url  , 'image_url');
+      Object.entries(setter).forEach(([key, value]) => {
+        this.#ensureString(value, `setter.${key}`);
+      });
 
       await this.dbAPI.updateRecord({
         filter: { uuid: uuid, },
         update: {
           $set: {
-            title      : title,
-            description: description,
-            image_url  : image_url,
+            title      : setter.title,
+            description: setter.description,
+            
+            image_uri: setter.image_uri,
           },
         },
       }, (error) => { throw error; });
@@ -264,7 +271,7 @@ export default class CampaignsService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

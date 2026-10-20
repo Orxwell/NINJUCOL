@@ -17,7 +17,7 @@ const routerABOUT_US = Router();
 // ~~~~~~~~~~~ROUTER-ABOUT_US~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerABOUT_US.get('/about_us',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     try {
       return res.render(publicAboutUsEJS, {
@@ -28,8 +28,7 @@ routerABOUT_US.get('/about_us',
       
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

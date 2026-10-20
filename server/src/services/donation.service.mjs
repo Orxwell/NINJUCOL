@@ -22,13 +22,16 @@ export default class DonationsService {
     };
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Setting collection
-      this.dbAPI = controller.dbAPI;
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+
       this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
@@ -108,7 +111,7 @@ export default class DonationsService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -203,7 +206,7 @@ export default class DonationsService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

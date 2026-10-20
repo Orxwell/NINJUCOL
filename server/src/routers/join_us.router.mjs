@@ -17,7 +17,7 @@ const routerJOIN_US = Router();
 // ~~~~~~~~~~~ROUTER-REPOSITORY~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerJOIN_US.get('/join_us',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     try {
       return res.render(publicJoinUsEJS, {
@@ -28,8 +28,7 @@ routerJOIN_US.get('/join_us',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

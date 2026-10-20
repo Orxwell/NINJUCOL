@@ -26,7 +26,7 @@ const routerSIGN = Router();
 //* sign_up
 
 routerSIGN.get('/sign_in',
-  middleware.queryParams({
+  middleware.query({
     scheme  : { error: 'string', },
     optional: { error: null,     },
   }),
@@ -44,8 +44,7 @@ routerSIGN.get('/sign_in',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );
@@ -56,8 +55,8 @@ routerSIGN.get('/sign_in',
 
 // >>-------- POST - BELOW --------<<
 routerSIGN.post('/sign_up',
-  middleware.queryParams({}),
-  middleware.bodyParams({
+  middleware.query({}),
+  middleware.body({
     scheme: {
       firstname: 'string',
       lastname : 'string',
@@ -95,15 +94,14 @@ routerSIGN.post('/sign_up',
 
     } catch (error) {
       return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );
 
 routerSIGN.post('/sign_in',
-  middleware.queryParams({}),
-  middleware.bodyParams({
+  middleware.query({}),
+  middleware.body({
     scheme: {
       email   : 'string',
       password: 'string',
@@ -124,6 +122,7 @@ routerSIGN.post('/sign_in',
       }
 
       let token_body = await service.token.findByEmail({ email: email, }, (error) => { throw error; });
+
       if (!token_body) {
         token_body = await service.token.generate({ email: email, }, (error) => { throw error; });
 
@@ -132,17 +131,20 @@ routerSIGN.post('/sign_in',
           email     : token_body.email,
           expiration: token_body.expiration,
         }, (error) => { throw error; });
+
+        const { firstname, lastname } = await service.account.findByEmail({ email: email }, (error) => { throw error; });
+
+        await service.mailer.send({
+          to: email,
+          subject: 'Has accedido correctamente. | NINJUCOL',
+          text: 'Correo automatizado.',
+          ejs_path: mailSignInEJS,
+          ejs_args: {
+            firstname: firstname,
+            lastname : lastname,
+          }
+        }, (error) => { throw error; });
       }
-
-      await service.mailer.send({
-        to: email,
-        subject: 'Prueba 0',
-        text: 'Esto es una prueba para verificar funcionamiento.',
-        ejs_path: mailSignInEJS,
-        ejs_args: {
-
-        }
-      });
 
       res.cookie('auth_token', token_body.token, {
         httpOnly: true,
@@ -155,14 +157,13 @@ routerSIGN.post('/sign_in',
 
     } catch (error) {
       return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );
 
 routerSIGN.post('/sign_out',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     const { auth_token } = req.cookies;
 
@@ -181,8 +182,7 @@ routerSIGN.post('/sign_out',
 
     } catch (error) {
       return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

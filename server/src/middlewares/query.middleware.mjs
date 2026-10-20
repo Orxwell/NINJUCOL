@@ -4,8 +4,10 @@ import { basename }      from 'path';
 
 import { errorHTTP } from '#utils/functions.util.mjs';
 
+
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 function castingType ({ cast='' }={}) {
   if (typeof cast !== 'string') return undefined;
@@ -24,10 +26,10 @@ function castingType ({ cast='' }={}) {
   return 'string';
 }
 
-export default function handlingQueryParams ({
+export default function handlingQuery ({
   scheme={},
   optional={},
-  mode='reply'
+  mode='reply',
 }={}) {
   // ------------ Middleware's configuration ------------
   // Checking: scheme
@@ -78,7 +80,7 @@ export default function handlingQueryParams ({
 
   // ------------ Middleware's callback ------------
   return (req, res, next) => {
-    // ~~ExpressV5-LocalPatch, req.query is now mutable.~~
+    // ExpressV5-LocalPatch, req.query is now mutable.
     Object.defineProperty(req, 'query', {
       value: req.query ? { ...req.query } : {}, 
       writable: true,
@@ -92,7 +94,7 @@ export default function handlingQueryParams ({
       next: next,
       mode: mode,
 
-      middleware: 'queryParams',
+      middleware: 'query',
     };
   
     // Getting the request-queries: { a: 'etc' }

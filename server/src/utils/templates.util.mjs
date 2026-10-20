@@ -3,15 +3,12 @@ import { join } from 'path';
 import global from '#utils/paths.util.mjs';
 
 const temp = {
-  // Templates for handling API resources
-  //api_EJS: join(global.apiPath, '/.api.ejs'),
-
   // Templates for handling HTTP errors
   error_atGetEJS : join(global.errorsPath, '/at_get.error.ejs' ),
   error_atPostEJS: join(global.errorsPath, '/at_post.error.ejs'),
 
   // Templates for handling mails
-  mail_signInEJS: join(global.mailsPath, '/sing_in.mail.ejs'),
+  mail_signInEJS: join(global.mailsPath, '/sign_in.mail.ejs'),
 
   // Private templates - Staff authentication
   private_dashboardEJS: join(global.privatePath, '/dashboard.private.ejs'),
@@ -27,7 +24,6 @@ const temp = {
   public_signInEJS     : join(global.publicPath, '/sign_in.public.ejs'),
 };
 
-//export const apiEJS = temp.api_EJS;
 
 export const errorAtGetEJS  = temp.error_atGetEJS;
 export const errorAtPostEJS = temp.error_atPostEJS;

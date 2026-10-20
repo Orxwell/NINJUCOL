@@ -32,14 +32,15 @@ export default class TokenService {
     this.token_life_ms = env.TOKEN_LIFE_SECONDS * 1000;
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Stting collection
-      this.dbAPI = controller.dbAPI;
-      this.dbAPI.setCollection({ collection: this.collection });
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
 
       this.is_initialized = true;
 
@@ -118,7 +119,7 @@ export default class TokenService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -281,7 +282,7 @@ export default class TokenService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

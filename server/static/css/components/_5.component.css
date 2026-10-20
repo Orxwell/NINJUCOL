@@ -1,0 +1,115 @@
+/*
+==========================================
+(CLASE ._5)
+==========================================
+*/
+
+section._5 {
+  position: relative;
+  /* Expansión a 100vw para cubrir la pantalla de lado a lado */
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  
+  background-color: var(--color-sea-dark, #3B6B9C);
+  padding: 90px 20px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+}
+
+section._5 ._5-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  box-sizing: border-box;
+}
+
+/* Columna de Texto */
+section._5 ._5-info-texto {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  padding: 0;
+  gap: 20px;
+  flex: 1.2;
+}
+
+section._5 ._5-info-texto p {
+  font-family: var(--font-body);
+  color: #F1F5F9;
+  font-size: clamp(14px, 1.5vw, 1.02rem);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Frase clave resaltada con acento Amarillo Butter */
+section._5 ._5-info-texto span {
+  font-family: var(--font-body);
+  color: var(--color-butter, #F2D88F);
+  font-size: clamp(14px, 1.5vw, 1.05rem);
+  font-weight: 600;
+  line-height: 1.6;
+  display: block;
+  border-left: 4px solid var(--color-butter, #F2D88F);
+  padding-left: 16px;
+  margin-top: 10px;
+}
+
+/* Columna de Imagen */
+section._5 ._5-info-imagen {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+section._5 ._5-img-card {
+  width: 100%;
+  max-width: 480px;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  background-color: #28384c;
+}
+
+section._5 ._5-img-card > svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+section._5 ._5-img-card > svg image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- RESPONSIVE--- */
+@media (max-width: 960px) {
+  section._5 ._5-container {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  section._5 ._5-info-imagen {
+    justify-content: center;
+    width: 100%;
+  }
+
+  section._5 ._5-img-card {
+    max-width: 100%;
+    height: 320px;
+  }
+}

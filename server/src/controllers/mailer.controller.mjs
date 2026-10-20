@@ -14,29 +14,30 @@ const filename = basename(abspath);
 
 export default class MailerController {
   constructor () {
-    this.collection = null;
-
     this.errors = {
       'ERR-0': `Internal-Server-Error, from ${filename}: MailerController instance needs to be initialized.`,
       'ERR-1': `Internal-Server-Error, from ${filename}: Internal troubles rendering EJS-file.`,
       'ERR-2': `Internal-Server-Error, from ${filename}: Internal troubles sending the email.`,
     };
 
-    this.mailer = undefined;
+    this.is_initialized = false;
+    this.mailer = null;
   }
 
-  async init ({ host, port, secure }={}, onError=null) {
+  async init ({ host='smtp.gmail.com', port=465, secure=true }={}, onError=null) {
     try {
       this.mailer = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        host: host,
+        port: port,
+        secure: secure,
         auth: {
           user: env.CORP_EMAIL_DOMAIN,
           pass: env.CORP_EMAIL_KEY,
         },
         tls: { rejectUnauthorized: false }
       });
+
+      this.is_initialized = true;
 
     } catch (error) {
       if (typeof onError === 'function')  {

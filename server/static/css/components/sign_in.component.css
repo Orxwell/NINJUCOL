@@ -1,0 +1,316 @@
+/*
+==========================================
+SIGN_IN COMPONENT   
+==========================================
+*/
+
+section.signin-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  
+  min-height: calc(100vh - 120px);
+  padding: 60px 20px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-sea-dark, #3B6B9C),
+    var(--color-sea, #6698CC),
+    #1E3A5F,
+    var(--color-sea-dark, #3B6B9C)
+  );
+  background-size: 300% 300%;
+  animation: gradientMovement 12s ease infinite;
+  
+}
+
+.signin-container {
+  max-width: 1050px;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  min-height: 580px;
+}
+
+/* ------------------------------------------
+   COLUMNA IZQUIERDA: MARCA Y DECORACIÓN
+   ------------------------------------------ */
+.signin-brand-col {
+  flex: 1;
+  position: relative;
+  background-color: var(--color-sea-dark);
+  background-image: url('/api/webp/public/hero-bg.webp');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 50px 40px;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.signin-brand-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg, 
+    rgba(59, 107, 156, 0.5) 0%, 
+    rgba(25, 48, 73, 0.92) 100%
+  );
+  z-index: 1;
+}
+
+.signin-brand-content {
+  position: relative;
+  z-index: 2;
+}
+
+.signin-badge {
+  display: inline-block;
+  background-color: var(--color-tangerine);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.signin-brand-content h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 12px 0;
+  color: #ffffff;
+}
+
+.signin-brand-content p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* ------------------------------------------
+   COLUMNA DERECHA: FORMULARIO
+   ------------------------------------------ */
+.signin-form-col {
+  flex: 1.1;
+  padding: 50px 45px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+.signin-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.signin-header {
+  margin-bottom: 32px;
+}
+
+.signin-header h2 {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-sea-dark);
+  margin: 0 0 8px 0;
+  letter-spacing: 0.5px;
+}
+
+.signin-header p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Campos de entrada */
+.signin-form-group {
+  margin-bottom: 22px;
+}
+
+.signin-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.signin-form-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.signin-forgot-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--color-sea);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.signin-forgot-link:hover {
+  color: var(--color-sea-dark);
+  text-decoration: underline;
+}
+
+.signin-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.signin-input-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.signin-input-wrapper input {
+  width: 100%;
+  padding: 13px 14px 13px 44px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #1e293b;
+  background-color: #f8fafc;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.signin-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--color-sea);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(102, 152, 204, 0.15);
+}
+
+/* Checkbox "Recordar sesión" */
+.signin-form-remember {
+  margin-bottom: 25px;
+}
+
+.signin-checkbox-container {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #64748b;
+  cursor: pointer;
+  user-select: none;
+}
+
+.signin-checkbox-container input {
+  margin-right: 10px;
+  accent-color: var(--color-sea);
+  width: 16px;
+  height: 16px;
+}
+
+/* Botón de Submit */
+.signin-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--color-tangerine);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(240, 140, 33, 0.25);
+  transition: all 0.2s ease;
+}
+
+.signin-btn:hover {
+  background-color: #d97712;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(240, 140, 33, 0.35);
+}
+
+/* Footer / Registro */
+.signin-footer {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.signin-footer p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 6px 0;
+}
+
+.signin-signup-link {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-sea-dark);
+  text-decoration: none;
+}
+
+.signin-signup-link:hover {
+  color: var(--color-tangerine);
+  text-decoration: underline;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 850px) {
+  .signin-container {
+    flex-direction: column;
+    max-width: 480px;
+  }
+
+  .signin-brand-col {
+    min-height: 220px;
+    padding: 30px;
+  }
+
+  .signin-form-col {
+    padding: 35px 25px;
+  }
+}
+@keyframes gradientMovement {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

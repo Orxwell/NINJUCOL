@@ -20,13 +20,14 @@ export default class MailerService {
     };
 
     this.is_initialized = false;
-    this.mailerAPI = undefined;
+    this.mailerAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Setting controllers
-      this.mailerAPI = controller.mailer;
+      this.mailerAPI = new controller.mailerAPI();
+      await this.mailerAPI.init((error) => { throw error; });
 
       this.is_initialized = true;
 
@@ -69,22 +70,6 @@ export default class MailerService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
-    try {
-      this.#ensureInit();
-
-      return 'DONE';
-
-    } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
-  
-      throw error;
-    }
-  }
-
   async send ({ to, subject, text, ejs_path, ejs_args }={}, onError=null) {
     try {
       this.#ensureInit();
@@ -94,8 +79,6 @@ export default class MailerService {
       this.#ensureString(text    , 'text');
       this.#ensureString(ejs_path, 'ejs_path');
       this.#ensureObject(ejs_args, 'ejs_args');
-
-      await this.#validateFirm(firm, (error) => { throw error; });
 
       await this.mailerAPI.send({
         to      : to,

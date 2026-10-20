@@ -34,6 +34,34 @@ export async function getFiles(directoryPath) {
   } catch (_) { return; }
 }
 
+export function isValidMimeType(buffer, mime_type) {
+  if (!Buffer.isBuffer(buffer)) return false;
+
+  if (mime_type === 'image/png') {
+    const signature = Buffer.from([
+      137, 80, 78, 71, 13, 10, 26, 10,
+    ]);
+
+    return (
+      buffer.length >= 8 &&
+      buffer.subarray(0, 8).equals(signature)
+    );
+  }
+
+  if (mime_type === 'image/jpeg') {
+    return (
+      buffer.length >= 4 &&
+      buffer[0] === 0xff &&
+      buffer[1] === 0xd8 &&
+      buffer[2] === 0xff &&
+      buffer[buffer.length - 2] === 0xff &&
+      buffer[buffer.length - 1] === 0xd9
+    );
+  }
+
+  return false;
+}
+
 export function errorHTTP ({ header={}, body={} }={}) {
   function buildError ({ status=500, id='ERR-0', message=''}={}) {
     const error = new Error(message);

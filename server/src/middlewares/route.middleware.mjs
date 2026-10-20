@@ -4,8 +4,10 @@ import { basename }      from 'path';
 
 import { errorHTTP } from '#utils/functions.util.mjs';
 
+
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
 
 function castingType ({ cast='' }={}) {
   if (typeof cast !== 'string') return undefined;
@@ -24,9 +26,9 @@ function castingType ({ cast='' }={}) {
   return 'string';
 }
 
-export default function handlingRouteParams ({
+export default function handlingRoute ({
   scheme={},
-  mode='reply'
+  mode='reply',
 }={}) {
   // ------------ Middleware's configuration ------------
   // Checking: scheme
@@ -105,7 +107,7 @@ export default function handlingRouteParams ({
 
     if (!internal_keys.every((param, i) => param === request_keys[i])) {
       const expected_params = internal_keys.join('/');
-      const actual_params   = request_keys.join('/') ;
+      const actual_params   = request_keys.join('/');
 
       return errorHTTP({
         header: header,

@@ -17,7 +17,7 @@ const routerHOME = Router();
 // ~~~~~~~~~~~ROUTER-HOME~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerHOME.get('/',
-  middleware.queryParams({}),
+  middleware.query({}),
   async (req, res) => {
     try {
       return res.render(publicHomeEJS, {
@@ -28,8 +28,7 @@ routerHOME.get('/',
       
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

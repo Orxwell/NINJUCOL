@@ -1,16 +1,18 @@
+/* White mode */
 :root {
-  --bg-color: #d6d6d6;
-  --fg-color: #d8d8d8;
-  --fg-color-t: #bcbcbc80;
-
-  --day-color: #82b4f1;
-  --night-color: #0d1e32;
-
-  --text-color: #070f1a;
-
-  --button-bg-color: #4388d6;
-  --button-text-color: #d2d2d2;
+  --color-sea: #6698CC;             /* Azul medio profundo (Navegación / Header) */
+  --color-sea-dark: #3B6B9C;        /* Azul oscuro para bordes y contrastes */
+  --color-tangerine: #F08C21;       /* Naranja para el botón Donar */
+  --color-tangerine-hover: #D97712;
+  --color-matcha: #B4B534;          /* Verde para detalles pequeños */
+  --color-butter: #F2D88F;          /* Amarillo suave para indicadores */
+  --color-topbar-bg: #F1F5F9;       /* Gris neutro suave */
+  --color-topbar-text: #334155;
+  
+  --font-heading: 'Oswald', system-ui, -apple-system, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
+/* Dark mode */
 :root[data-theme="dark"] {
   --bg-color: #0d1e32;
   --fg-color: #172b43;
@@ -24,53 +26,54 @@
   --button-text-color: #0d1e32;
 }
 
-@property --a-bg { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@property --a-bg { 
+  syntax: '<angle>'; 
+  inherits: false; 
+  initial-value: 0deg; 
+}
+
 html {
   user-select: none;
-  
-  color-scheme: dark;
-  font-family: "Inter", -apple-system, sans-serif;
+  font-family: var(--font-body);
 
-  background-image:
-    /* sky */
-    linear-gradient(var(--a-bg), var(--night-color), var(--day-color));
-
+  background-image: linear-gradient(var(--a-bg), var(--night-color), var(--day-color));
   background-blend-mode: screen, normal;
   
   animation: animatedBackground 100s linear infinite;
-
   overflow-x: clip;
-}
-
-h1, h2, h3, h4, p, span, a {
-  color: var(--text-color);
 }
 
 body {
+  font-family: var(--font-body);
   width: 100%;
   max-width: 100%;
-
+  margin: 0 auto;
   transition: all .25s ease-in-out;
-
   overflow-x: clip;
 }
 
-main {
-  padding: 20px 0;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
 
+main {
+  width: 100%;
+  max-width: 1200px; /*MAX*/
+  margin: 0 auto;    
+  padding: 30px 20px;  
   min-height: calc(100vh - 217px);
-  
   display: flex;
   flex-direction: column;
-
   align-items: center;
-
   gap: 20px;
+  box-sizing: border-box;
 }
+
 @keyframes animatedBackground {
   0%   { --a-bg: 0deg; }
   100% { --a-bg: 360deg; }
 }
+
 main section h1 {
   font-size: 2rem;
   font-weight: 800;
@@ -88,17 +91,21 @@ main section span {
   font-weight: 600;
 }
 
-body>header {
+body > header:not(#top):not(#bar) {
   border-style: solid;
   border-color: var(--text-color);
   border-width: 0 0 1px 0;
 }
 
-svg {
+svg:not(#bar svg):not(#top svg) {
   background-color: var(--bg-color);
   color: var(--fg-color);
 }
 
-hr { width: 100%; }
+hr { 
+  width: 100%; 
+}
 
-html::-webkit-scrollbar { display: none; }
+html::-webkit-scrollbar { 
+  display: none; 
+}

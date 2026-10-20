@@ -23,13 +23,13 @@ const routerNEWS = Router();
 // ~~~~~~~~~~~ROUTER-NEWS~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerNEWS.get('/news',
-  middleware.queryParams({
+  middleware.query({
     scheme  : { error: 'string',  },
     optional: { error: undefined, },
   }),
   async (req, res) => {
     try {
-      const found_news = await service.news.findAll((error) => { throw error; });
+      const found_news = await service.new.findAll((error) => { throw error; });
       
       return res.render(publicNewsEJS, {
         title: `News | NINJUCOL`,
@@ -41,21 +41,20 @@ routerNEWS.get('/news',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );
 
 routerNEWS.get('/news/new',
-  middleware.queryParams({
+  middleware.query({
     scheme: { uuid: 'string', },
   }),
   async (req, res) => {
     const { uuid } = req.query;
 
     try {
-      const found_new = await service.news.findByUUID({ uuid: uuid }, (error) => { throw error; });
+      const found_new = await service.new.findByUUID({ uuid: uuid }, (error) => { throw error; });
 
       if (!found_new) return res.redirect('/news' +
         `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
@@ -70,8 +69,7 @@ routerNEWS.get('/news/new',
 
     } catch (error) {
       return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
+        `error=${encodeURIComponent(error)}`);
     }
   }
 );

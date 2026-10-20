@@ -22,14 +22,15 @@ export default class RepositoryService {
     };
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Setting controllers
-      this.dbAPI = controller.dbAPI;
-      this.dbAPI.setCollection({ collection: this.collection });
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
 
       this.is_initialized = true;
       
@@ -108,7 +109,7 @@ export default class RepositoryService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -124,14 +125,15 @@ export default class RepositoryService {
     }
   }
 
-  async create ({ title, description, image_url, resource_url }={}, onError=null) {
+  async create ({ title, description, image_uri, resource_uri }={}, onError=null) {
     try {
       this.#ensureInit();
 
-      this.#ensureString(title       , 'title');
-      this.#ensureString(description , 'description');
-      this.#ensureString(image_url   , 'image_url');
-      this.#ensureString(resource_url, 'resource_url');
+      this.#ensureString(title      , 'title');
+      this.#ensureString(description, 'description');
+
+      this.#ensureString(image_uri   , 'image_uri');
+      this.#ensureString(resource_uri, 'resource_uri');
 
       const uuid = randomUUID();
 
@@ -145,10 +147,11 @@ export default class RepositoryService {
         document: {
           uuid: uuid,
 
-          title       : title,
-          description : description,
-          image_url   : image_url,
-          resource_url: resource_url,
+          title      : title,
+          description: description,
+
+          image_uri   : image_uri,
+          resource_uri: resource_uri,
 
           date: date,
         },
@@ -209,23 +212,26 @@ export default class RepositoryService {
     }
   }
 
-  async updateByUUID ({ uuid, title, description, image_url }={}, onError=null) {
+  async updateByUUID ({ uuid, setter }={}, onError=null) {
     try {
       this.#ensureInit();
 
-      this.#ensureObject(uuid, 'uuid');
+      this.#ensureString(uuid, 'uuid');
+      this.#ensureObject(setter, 'setter');
 
-      this.#ensureString(title      , 'title');
-      this.#ensureString(description, 'description');
-      this.#ensureString(image_url  , 'image_url');
+      Object.entries(setter).forEach(([key, value]) => {
+        this.#ensureString(value, `setter.${key}`);
+      });
 
-      await this.dbAPI.updateDocument({
+      await this.dbAPI.updateRecord({
         filter: { uuid: uuid, },
         update: {
           $set: {
-            title      : title,
-            description: description,
-            image_url  : image_url,
+            title      : setter.title,
+            description: setter.description,
+
+            image_uri   : setter.image_uri,
+            resource_uri: setter.resource_uri,
           },
         },
       }, (error) => { throw error; });
@@ -248,7 +254,7 @@ export default class RepositoryService {
 
       this.#ensureString(uuid, 'uuid');
 
-      await this.dbAPI.deleteDocument({ filter: { 'uuid': uuid }, }, (error) => { throw error; });
+      await this.dbAPI.deleteRecord({ filter: { 'uuid': uuid }, }, (error) => { throw error; });
     } catch (error) {
       if (typeof onError === 'function')  {
         onError(error);
@@ -263,7 +269,7 @@ export default class RepositoryService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

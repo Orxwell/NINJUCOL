@@ -20,7 +20,7 @@ const routerERROR = Router();
 // ~~~~~~~~~~~ROUTER-ERRORS~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerERROR.get('/error_at_get',
-  middleware.queryParams({
+  middleware.query({
     scheme  : { error: 'string', },
     optional: { error: null,     },
   }),
@@ -42,7 +42,7 @@ routerERROR.get('/error_at_get',
 );
 
 routerERROR.get('/error_at_post',
-  middleware.queryParams({
+  middleware.query({
     scheme  : { error: 'string', },
     optional: { error: null,     },
   }),

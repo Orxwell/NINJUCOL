@@ -22,14 +22,15 @@ export default class NewsService {
     };
 
     this.is_initialized = false;
-    this.dbAPI = undefined;
+    this.dbAPI = null;
   }
 
   async init (onError=null) {
     try {
       // Setting collection
-      this.dbAPI = controller.dbAPI;
-      this.dbAPI.setCollection({ collection: this.collection });
+      this.dbAPI = new controller.dbAPI();
+      await this.dbAPI.init((error) => { throw error; });
+      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
 
       this.is_initialized = true;
       
@@ -108,7 +109,7 @@ export default class NewsService {
     }
   }
 
-  async #validateFirm (firm, onError=null) {
+  async #validateFirm (firm=null, onError=null) {
     try {
       this.#ensureInit();
 
@@ -124,7 +125,7 @@ export default class NewsService {
     }
   }
 
-  async create ({ title, author, resume, description, image_url, video_url }={}, onError=null) {
+  async create ({ title, author, resume, description, video_url, image_uri }={}, onError=null) {
     try {
       this.#ensureInit();
 
@@ -132,8 +133,9 @@ export default class NewsService {
       this.#ensureString(author     , 'author');
       this.#ensureString(resume     , 'resume');
       this.#ensureString(description, 'description');
-      this.#ensureString(image_url  , 'image_url');
       this.#ensureString(video_url  , 'video_url');
+      
+      this.#ensureString(image_uri, 'image_uri');
 
       const uuid = randomUUID();
 
@@ -151,8 +153,9 @@ export default class NewsService {
           author     : author,
           resume     : resume,
           description: description,
-          image_url  : image_url,
           video_url  : video_url,
+
+          image_uri: image_uri,
 
           date: date,
         },
@@ -180,8 +183,9 @@ export default class NewsService {
           title      : 1,
           author     : 1,
           description: 1,
-          image_url  : 1,
           video_url  : 1,
+
+          image_uri: 1,
 
           date: 1,
         },
@@ -207,9 +211,10 @@ export default class NewsService {
         projection: { _id: 0,
           uuid: 1,
 
-          title    : 1,
-          resume   : 1,
-          image_url: 1,
+          title : 1,
+          resume: 1,
+
+          image_uri: 1,
 
           date: 1,
         },
@@ -242,12 +247,13 @@ export default class NewsService {
         filter: { uuid: uuid, },
         update: {
           $set: {
-            title      : title,
-            author     : author,
-            resume     : resume,
-            description: description,
-            image_url  : image_url,
-            video_url  : video_url,
+            title      : setter.title,
+            author     : setter.author,
+            resume     : setter.resume,
+            description: setter.description,
+            video_url  : setter.video_url,
+
+            image_uri: setter.image_uri,
           },
         },
       }, (error) => { throw error; });
@@ -288,7 +294,7 @@ export default class NewsService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error) => { throw error; });
+      await this.#validateFirm(null, (error) => { throw error; });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 
