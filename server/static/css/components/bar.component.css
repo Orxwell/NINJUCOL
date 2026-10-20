@@ -70,7 +70,7 @@ header#bar .brand-section div span {
 
 /* --- SECTION: MENU --- */
 header#bar nav#alt {
-  padding: 8px 24px;
+  padding: 8px 8px;
   display: flex;
   align-items: center;
 

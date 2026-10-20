@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
 
-    <%- include('../components/links.component.ejs', { page: 'home', }) %>
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'public', name: 'home' }], }) %>
 
     <%- include('../components/scripts.component.ejs') %>
 

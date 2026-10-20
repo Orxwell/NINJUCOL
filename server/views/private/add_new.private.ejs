@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="<%= server_url %>/css/public/reset.public.css">
+  <link rel="stylesheet" href="<%= server_url %>/css/private/dashboard.private.css">
+  <link rel="stylesheet" href="<%= server_url %>/css/private/add_new.private.css">
+</head>
+<body>
+  <main class="dashboard-section">
+    <div class="add-new-container">
+      <h2>Crear Nueva Noticia</h2>
+      <form action="/dashboard/add/new" method="POST" class="add-new-form">
+        <div class="add-new-group">
+          <label>Título:</label>
+          <input type="text" name="new[title]" required>
+        </div>
+        <div class="add-new-group">
+          <label>Autor:</label>
+          <input type="text" name="new[author]" required>
+        </div>
+        <div class="add-new-group">
+          <label>Resumen:</label>
+          <textarea name="new[resume]" rows="2" required></textarea>
+        </div>
+        <div class="add-new-group">
+          <label>Descripción completa:</label>
+          <textarea name="new[description]" rows="5" required></textarea>
+        </div>
+        <div class="add-new-group">
+          <label>URL de la Imagen:</label>
+          <input type="url" name="new[image_url]">
+        </div>
+        <div class="add-new-group">
+          <label>URL del Video (Opcional):</label>
+          <input type="url" name="new[video_url]">
+        </div>
+        <button type="submit" class="add-new-btn-submit">Guardar Noticia</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

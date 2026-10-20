@@ -60,7 +60,7 @@ main {
   width: 100%;
   max-width: 1200px; /*MAX*/
   margin: 0 auto;    
-  padding: 30px 20px;  
+  padding: 0 20px;  
   min-height: calc(100vh - 217px);
   display: flex;
   flex-direction: column;

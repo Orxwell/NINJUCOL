@@ -1,0 +1,38 @@
+<section class="_4">
+  <div class="_4-grid-full">
+    <!-- Columna Izquierda: Contenido de Texto -->
+    <div class="_4-col-texto">
+      <div class="_4-inner-wrapper">
+        <div class="_4-dots">
+          <span></span><span></span><span></span>
+        </div>
+
+        <h2 class="_4-titulo">NUESTRA FUNDACIÓN</h2>
+
+        <p class="_4-descripcion">
+          Somos facilitadores de procesos restaurativos en entornos escolares. A través del diálogo y metodologías lúdicas, acompañamos a estudiantes, docentes y familias.
+        </p>
+
+        <p class="_4-descripcion">
+          Transformamos los conflictos en aprendizaje y fortalecemos comunidades educativas basadas en el respeto, la corresponsabilidad y la inclusión.
+        </p>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Imagen 50% con SVG/WebP -->
+    <div class="_4-col-imagen">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+        <image
+          href="<%= server_url %>/api/webp/public/_3.public.webp<%= `?v=${Date.now()}` %>"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid slice"
+          style="opacity: 0; transition: opacity .5s ease-in;"
+          onload="this.style.opacity='1'"
+        />
+      </svg>
+    </div>
+  </div>
+</section>

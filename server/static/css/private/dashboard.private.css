@@ -1,6 +1,6 @@
 /* General*/
-@import "../reset.public.css";
-@import "../styles.public.css";
+@import "../public/reset.public.css";
+@import "../public/styles.public.css";
 
 /* Components */
 @import "../components/top.component.css";
@@ -15,10 +15,6 @@ DASHBOARD PRIVATE
 .dashboard-section {
   width: 100vw;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
   min-height: calc(100vh - 130px);
   background-color: #F8FAFC;
   padding: 80px 20px;

@@ -66,7 +66,7 @@ routerERROR.get('/error_at_post',
 routerERROR.get('/*splat',
   async (req, res) => {
     try {
-      return res.redirect('/error_at_get' +
+      return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('No existe esta URL.')}`);
 
     } catch (_) { return res.sendStatus(503); }
@@ -79,7 +79,7 @@ routerERROR.get('/*splat',
 routerERROR.post('/*splat',
   async (req, res) => {
     try {
-      return res.redirect('/error_at_post' +
+      return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent('No existe esta URL.')}`);
 
     } catch (_) { return res.sendStatus(503); }

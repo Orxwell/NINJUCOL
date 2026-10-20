@@ -39,6 +39,12 @@ routerDASHBOARD.get('/dashboard',
       const found_campaigns  = await service.campaign.findAll((error) => { throw error; });
       const found_repository = await service.repository.findAll((error) => { throw error; });
 
+      console.log({
+        news      : found_news,
+        campaigns : found_campaigns,
+        repository: found_repository,
+      });
+
       return res.render(privateDashboardEJS, {
         title: `Dashboard | NINJUCOL`,
 

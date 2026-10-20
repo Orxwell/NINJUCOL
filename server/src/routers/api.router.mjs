@@ -58,10 +58,7 @@ routerAPI.get('/api',
         availableEndpoints: endpoints,
       });
       
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+    } catch (error) { return res.sendStatus(503); }
   }
 );
 
@@ -85,10 +82,7 @@ routerAPI.get('/api/:route',
         availableEndpoints: endpoints,
       });
       
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+    } catch (error) { return res.sendStatus(503); }
   }
 );
 
@@ -128,14 +122,15 @@ routerAPI.get('/api/:route/:to',
         availableEndpoints: endpoints,
       });
       
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+    } catch (error) { return res.sendStatus(503); }
   }
 );
 
 routerAPI.get('/api/:route/:to/:file',
+  middleware.query({
+    scheme  : { v: 'number' },
+    optional: { v: null },
+  }),
   middleware.route({
     scheme: {
       route: 'string',
@@ -167,10 +162,7 @@ routerAPI.get('/api/:route/:to/:file',
 
       return res.sendFile(requested_path);
       
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+    } catch (error) { return res.sendStatus(503); }
   }
 );
 // >>-------- GET - ABOVE --------<<

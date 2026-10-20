@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="<%= server_url %>/css/public/reset.public.css">
+  <link rel="stylesheet" href="<%= server_url %>/css/private/dashboard.private.css">
+  <link rel="stylesheet" href="<%= server_url %>/css/private/add_repository.private.css">
+</head>
+<body>
+  <main class="dashboard-section">
+    <div class="add-repository-container">
+      <h2>Crear Nuevo Recurso</h2>
+      <form action="/dashboard/add/repository" method="POST" class="add-repository-form">
+        <div class="add-repository-group">
+          <label>Título:</label>
+          <input type="text" name="repository[title]" required>
+        </div>
+        <div class="add-repository-group">
+          <label>Descripción:</label>
+          <textarea name="repository[description]" rows="5" required></textarea>
+        </div>
+        <div class="add-repository-group">
+          <label>URL de la Imagen:</label>
+          <input type="url" name="repository[image_url]" required>
+        </div>
+        <div class="add-repository-group">
+          <label>URL del Recurso (Archivo / Descarga):</label>
+          <input type="url" name="repository[resource_url]" required>
+        </div>
+        <button type="submit" class="add-repository-btn-submit">Guardar Recurso</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

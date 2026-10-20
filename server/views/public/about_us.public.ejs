@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
 
-    <%- include('../components/links.component.ejs', { page: 'about_us', }) %>
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'public', name: 'about_us' }], }) %>
 
     <%- include('../components/scripts.component.ejs') %>
 
@@ -21,11 +21,10 @@
 
     <main>
       <article>
-        <%- include('../components/_1.component.ejs') %>
-
-        <%- include('../components/donations.component.ejs') %>
-  
-        <%- include('../components/_2.component.ejs') %>
+        <%- include('../components/_4.component.ejs') %>
+        <%- include('../components/_5.component.ejs') %>
+        <%- include('../components/_6.component.ejs') %>
+        <%- include('../components/_7.component.ejs') %>
 
         <%- include('../components/donations.component.ejs') %>
       </article>

@@ -2,17 +2,19 @@
 <link
   rel="icon"
   type="image/x-icon"
-  href="<%= server_url %>/api/ico/logo/favicon.ico<%= `?v=${Date.now()}` %>"
+  href="<%= server_url %>/api/ico/public/favicon.public.ico<%= `?v=${Date.now()}` %>"
 />
 
 <!-- CSS -->
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="<%= server_url %>/api/css/public/<%= page %>.public.css<%= `?v=${Date.now()}` %>"
-/>
+<% pages.forEach(page => { %>
+  <link
+    rel="stylesheet"
+    type="text/css"
+    href="<%= server_url %>/api/css/<%= page.route %>/<%= page.name %>.<%= page.route %>.css<%= `?v=${Date.now()}` %>"
+  />
+<% }); %>
 
 <!-- FONTS -->
-<link rel="preconnect" href="https://googleapis.com">
-<link rel="preconnect" href="https://gstatic.com" crossorigin>
-<link href="https://googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">

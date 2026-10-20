@@ -58,6 +58,13 @@ section._3 ._3-header p {
 section._3 ._3-grid {
   width: 100%;
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+section._3 ._4-grid {
+  width: 100%;
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 25px;
 }

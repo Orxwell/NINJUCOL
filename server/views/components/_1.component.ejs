@@ -1,17 +1,7 @@
 <section class="_1">
-  <div>
-    <h2>Fundación Niñez y Juventud</h2>
-
-    <p>Trabajamos con entornos escolares donde niñas, niños y jóvenes puedan crecer, educarse y relacionarse desde el diálogo, la responsabilidad y el cuidado.</p>
-  </div>
-
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="100%"
-    height="100%"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
     <image
-      href="<%= server_url %>/api/webp/public/banner_1.webp<%= `?v=${Date.now()}` %>"
+      href="<%= server_url %>/api/webp/public/_1.public.webp<%= `?v=${Date.now()}` %>"
       x="0"
       y="0"
       width="100%"
@@ -21,4 +11,17 @@
       onload="this.style.opacity='1'"
     />
   </svg>
+
+  <div class="hero-overlay"></div>
+  
+  <div class="hero-content">
+    <span class="hero-badge">PREVENCIÓN & CONVIVENCIA</span>
+    <h2>Fundación Niñez y Juventud</h2>
+    <p class="hero-subtitle">Convivencia que se construye y vínculos que se restauran.</p>
+    <p>Trabajamos con entornos escolares donde niñas, niños y jóvenes puedan crecer, educarse y relacionarse desde el diálogo, la responsabilidad y el cuidado.</p>
+    <div class="hero-actions">
+      <a href="/donate" class="btn-donate-now">DONAR AHORA</a>
+      <a href="/about_us" class="btn-about-us">Sobre Nosotros</a>
+    </div>
+  </div>
 </section>
