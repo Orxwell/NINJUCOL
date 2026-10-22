@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'private', name: 'add_new' }] }) %>
+
+    <%- include('../components/scripts.component.ejs', { resources: [{ route: 'private', name: 'multipart' }] }) %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('../components/top.component.ejs', { page: 'add_new', }) %>
+    
+    <%- include('../components/bar.component.ejs', { page: 'add_new', }) %>
+
+    <script>
+      const allowedTypesByInput = {
+        resource: [
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+        ],
+      };
+    </script>
+
+    <main class="dashboard-section">
+      <div class="add-new-container">
+        <h2>Crear nueva noticia</h2>
+
+        <form
+          action="/dashboard/upd/new"
+          method="POST"
+          class="add-new-form"
+          enctype="multipart/form-data"
+        >
+          <div class="add-new-group">
+            <label>Título:</label>
+
+            <input
+              type="text"
+              name="title"
+              value="<%= data.title %>"
+              required
+            />
+          </div>
+
+          <div class="add-new-group">
+            <label>Autor:</label>
+
+            <input
+              type="text"
+              name="author"
+              value="<%= data.author %>"
+              required
+            />
+          </div>
+
+          <div class="add-new-group">
+            <label>Resumen:</label>
+
+            <textarea
+              name="resume"
+              rows="2"
+              value="<%= data.resume %>"
+              required
+            ></textarea>
+          </div>
+
+          <div class="add-new-group">
+            <label>Descripción:</label>
+
+            <textarea
+              name="description"
+              rows="5"
+              value="<%= data.description %>"
+              required
+            ></textarea>
+          </div>
+
+          <div class="add-new-group">
+            <label>Portada:</label>
+
+            <input
+              type="file"
+              id="resource"
+              name="resource"
+              accept=".jpg,.jpeg,.png,.webp"
+            />
+          </div>
+
+          <div class="add-new-group">
+            <label>URL de YouTube (opcional):</label>
+
+            <input
+              type="url"
+              id="video_url"
+              name="video_url"
+              value="https://www.youtube.com/watch?v=jNQXAC9IVRw"
+            />
+
+            <script>
+              const $npt = document.getElementById('video_url');
+
+              $npt.form.addEventListener('submit', () => {
+                if (!$npt.value.trim()) {
+                  $npt.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+                }
+              });
+            </script>
+          </div>
+
+          <button type="submit" class="add-new-btn-submit">Guardar</button>
+        </form>
+
+        <a href="/dashboard">Regresar</a>
+      </div>
+    </main>
+
+    <%- include('../components/footer.component.ejs') %>
+  </body>
+</html>

@@ -73,7 +73,7 @@ export default function handlingRoute ({
       next: next,
       mode: mode,
       
-      middleware: 'routeParams',
+      middleware: 'route',
     };
 
     // Getting the request-params: { a: 'etc' }

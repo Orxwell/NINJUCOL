@@ -50,7 +50,7 @@ export default function handlingBody ({
       next: next,
       mode: mode,
 
-      middleware: 'bodyParams',
+      middleware: 'body',
     };
 
     // Getting the request-body: { a: 'etc' }

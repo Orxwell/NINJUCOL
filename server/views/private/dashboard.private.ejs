@@ -55,10 +55,10 @@
                         </div>
 
                         <div class="dashboard-item-actions">
-                          <a href="/dashboard/upd/new?<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
+                          <a href="/dashboard/upd/new?uuid=<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
 
                           <form
-                            action="/dashboard/del/new<%= item.uuid %>"
+                            action="/dashboard/del/new?uuid=<%= item.uuid %>"
                             method="POST"
                             onsubmit="return confirm('¿Eliminar esta noticia?');"
                           >
