@@ -166,7 +166,7 @@ routerSIGN.post('/sign_in',
     if (res.headersSent) return;
 
     await service.mailer.send({
-      to: email,
+      to: data.email,
       subject: 'Has accedido correctamente. | NINJUCOL',
       text: 'Correo automatizado.',
       ejs_path: mailSignInEJS,
