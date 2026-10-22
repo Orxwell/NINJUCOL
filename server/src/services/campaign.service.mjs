@@ -157,7 +157,7 @@ export default class CampaignsService {
       });
 
       await this.dbAPI.createRecord({
-        document: {
+        record: {
           uuid: uuid,
 
           title      : title,

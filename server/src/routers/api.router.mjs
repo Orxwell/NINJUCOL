@@ -49,14 +49,16 @@ routerAPI.get('/api',
     try {
       const folders = await getFolders(paths.staticPath);
 
-      if (!folders) return res.sendStatus(404);
+      if (!folders) return res.status(404)
+        .json({ error: 'Sorry: folders not found' });
       
       const endpoints = folders.map(folder => `${env.SERVER_URL}/api/${folder}`);
 
-      return res.status(202).json({
-        availableFolders  : folders,
-        availableEndpoints: endpoints,
-      });
+      return res.status(202)
+        .json({
+          availableFolders  : folders,
+          availableEndpoints: endpoints,
+        });
       
     } catch (error) { return res.sendStatus(503); }
   }
@@ -73,14 +75,16 @@ routerAPI.get('/api/:route',
     try {
       const folders = await getFolders(ROUTE_SPECS[route].path);
 
-      if (!folders) return res.sendStatus(404);
+      if (!folders) return res.status(404)
+        .json({ error: 'Sorry: folders not found' });
 
       const endpoints = folders.map(folder => `${env.SERVER_URL}/api/${route}/${folder}`);
 
-      return res.status(202).json({
-        availableFolders  : folders,
-        availableEndpoints: endpoints,
-      });
+      return res.status(202)
+        .json({
+          availableFolders  : folders,
+          availableEndpoints: endpoints,
+        });
       
     } catch (error) { return res.sendStatus(503); }
   }
@@ -97,39 +101,49 @@ routerAPI.get('/api/:route/:to',
   async (req, res) => {
     const { route, to } = req.params;
 
-    if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
+    if (!ROUTE_SPECS[route]) return res.status(400)
+      .json({ error: `Unknown route: ${route}` });
+
+    if (to === 'private') {
+      const { auth_token } = req.cookies;
+
+      if (!auth_token) return res.status(401)
+        .json({ error: 'Unauthorized response: token not provided' });
+
+      await service.token.findByToken({ token: auth_token }, (error, info) => {
+        if (error) return res.redirect('/error_at_get?' +
+          `error=${encodeURIComponent(error)}`);
+
+        if (!info) return res.status(401)
+          .json({ error: 'Unauthorized response: invalid token' });
+        
+        return info;
+      });
+  
+      if (res.headersSent) return;
+    }
 
     try {
-      if (to === 'private') {
-        const { auth_token } = req.cookies;
-  
-        if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
-  
-        const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
-          if (error) return res.redirect('/error_at_get?' +
-            `error=${encodeURIComponent(error)}`);
-          
-          return info;
-        });
-    
-        if (res.headersSent) return;
-        
-        if (!found_token) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
-      }
-
       const abs_path = join(ROUTE_SPECS[route].path, to);
       const files    = await getFiles(abs_path);
 
-      if (!files) return res.sendStatus(404);
+      if (!files) return res.status(404)
+        .json({ error: 'Sorry: files not found' });
 
       const endpoints = files.map(file => `${env.SERVER_URL}/api/${route}/${to}/${file}`);
 
-      return res.status(202).json({
-        availableFiles    : files,
-        availableEndpoints: endpoints,
-      });
+      return res.status(202)
+        .json({
+          availableFiles    : files,
+          availableEndpoints: endpoints,
+        });
       
-    } catch (error) { return res.sendStatus(503); }
+    } catch (error) {
+      if (error.code === 'ENOENT') return res.status(404)
+        .json({ error: 'Sorry: resource not found' });
+
+      return res.sendStatus(503);
+    }
   }
 );
 
@@ -148,26 +162,29 @@ routerAPI.get('/api/:route/:to/:file',
   async (req, res) => {
     const { route, to, file } = req.params;
 
-    if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
+    if (!ROUTE_SPECS[route]) return res.status(400)
+      .json({ error: `Unknown route: ${route}` });
+
+    if (to === 'private') {
+      const { auth_token } = req.cookies;
+
+      if (!auth_token) return res.status(401)
+        .json({ error: 'Unauthorized response: token not provided' });
+
+      await service.token.findByToken({ token: auth_token }, (error, info) => {
+        if (error) return res.redirect('/error_at_get?' +
+          `error=${encodeURIComponent(error)}`);
+
+        if (!info) return res.status(401)
+          .json({ error: 'Unauthorized response: invalid token' });
+        
+        return info;
+      });
+  
+      if (res.headersSent) return;
+    }
 
     try {
-      if (to === 'private') {
-        const { auth_token } = req.cookies;
-  
-        if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
-  
-        const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
-          if (error) return res.redirect('/error_at_get?' +
-            `error=${encodeURIComponent(error)}`);
-          
-          return info;
-        });
-    
-        if (res.headersSent) return;
-        
-        if (!found_token) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
-      }
-
       const requested_path = join(ROUTE_SPECS[route]?.path, to, file);
 
       await access(requested_path, constants.F_OK);
@@ -176,7 +193,12 @@ routerAPI.get('/api/:route/:to/:file',
 
       return res.sendFile(requested_path);
       
-    } catch (error) { return res.sendStatus(503); }
+    } catch (error) {
+      if (error.code === 'ENOENT') return res.status(404)
+        .json({ error: 'Sorry: resource not found' });
+
+      return res.sendStatus(503);
+    }
   }
 );
 // >>-------- GET - ABOVE --------<<

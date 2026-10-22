@@ -1,0 +1,9 @@
+/* General*/
+@import "../public/reset.public.css";
+@import "../public/styles.public.css";
+
+/* Components */
+@import "../components/top.component.css";
+@import "../components/bar.component.css";
+
+@import "../components/footer.component.css";

@@ -163,8 +163,8 @@ export default class NewsService {
       });
 
       await this.dbAPI.createRecord({
-        document: {
-          UUID: uuid,
+        record: {
+          uuid: uuid,
 
           title      : title,
           author     : author,

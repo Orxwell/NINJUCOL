@@ -151,7 +151,7 @@ export default class DonationsService {
       });
 
       await this.dbAPI.createDocument({
-        document: {
+        record: {
           uuid: uuid,
 
           date: date,

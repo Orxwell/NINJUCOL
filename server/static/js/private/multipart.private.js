@@ -8,7 +8,7 @@ $npts.forEach($npt => {
   
     const MB = 1024 * 1024; // 1MB
 
-    const allowedTypes = Object.keys(allowedTypesByInput[$npt.name]);
+    const allowedTypes = allowedTypesByInput[$npt.name];
 
     if (!allowedTypes) return;
 

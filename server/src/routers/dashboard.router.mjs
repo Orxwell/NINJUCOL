@@ -35,15 +35,31 @@ routerDASHBOARD.get('/dashboard',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    }
 
     const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -86,6 +102,12 @@ routerDASHBOARD.get('/dashboard',
 
     if (res.headersSent) return;
 
+    console.log({
+      news      : found_news,
+      campaigns : found_campaigns,
+      repository: found_repository,
+    });
+
     return res.render(privateDashboardEJS, {
       title: `Dashboard | NINJUCOL`,
 
@@ -112,15 +134,31 @@ routerDASHBOARD.get('/dashboard/add/new',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    }
 
     await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -145,15 +183,31 @@ routerDASHBOARD.get('/dashboard/upd/new',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    }
 
     await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -191,15 +245,31 @@ routerDASHBOARD.get('/dashboard/add/campaign',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -224,15 +294,31 @@ routerDASHBOARD.get('/dashboard/upd/campaign',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -270,15 +356,31 @@ routerDASHBOARD.get('/dashboard/add/repository',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -303,20 +405,36 @@ routerDASHBOARD.get('/dashboard/upd/repository',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
-    const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+    }
+
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
+      
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
 
     if (res.headersSent) return;
-
-    if (!found_token) return res.redirect('/sign_in?' +
-      `error=${encodeURIComponent('Sesión expirada.')}`);
 
     const { uuid } = req.query;
     
@@ -366,15 +484,31 @@ routerDASHBOARD.post('/dashboard/add/new',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -410,15 +544,31 @@ routerDASHBOARD.post('/dashboard/del/new',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -461,15 +611,31 @@ routerDASHBOARD.post('/dashboard/upd/new',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -521,15 +687,31 @@ routerDASHBOARD.post('/dashboard/add/campaign',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -562,15 +744,31 @@ routerDASHBOARD.post('/dashboard/del/campaign',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -610,15 +808,31 @@ routerDASHBOARD.post('/dashboard/upd/campaign',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -675,15 +889,31 @@ routerDASHBOARD.post('/dashboard/add/repository',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -716,15 +946,31 @@ routerDASHBOARD.post('/dashboard/del/repository',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
@@ -772,15 +1018,31 @@ routerDASHBOARD.post('/dashboard/upd/repository',
   async (req, res) => {
     const { auth_token } = req.cookies;
 
-    if (!auth_token) return res.redirect('/sign_in?' +
+    if (!auth_token) {
+      res.clearCookie('auth_token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      });
+
+      return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    
+    }
+
     await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_get?' +
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (!info) {
+        res.clearCookie('auth_token', {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+        });
+
+        return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
+      }
       
       return info;
     });
