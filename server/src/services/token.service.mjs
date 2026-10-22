@@ -149,7 +149,11 @@ export default class TokenService {
    */
   async generate ({ email }={}, callback=()=>{}) {
     try {
-      const account = await service.account.findByEmail({ email: email }, (error) => { throw error; });
+      const account = await service.account.findByEmail({ email: email }, (error, info) => {
+        if (error) throw error;
+
+        return info;
+      });
 
       if (!account) {
         const error = new Error(this.errors['ERR-5']);
@@ -322,7 +326,11 @@ export default class TokenService {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error, info) => { throw error; });
+      await this.#validateFirm(firm, (error, info) => {
+        if (error) throw error;
+
+        return info;
+      });
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 

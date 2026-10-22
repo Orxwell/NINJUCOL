@@ -54,6 +54,6 @@ app.use((error, req, res, next) => {
 });
 
 // Erasing all tokens
-await service.token.deleteAll({ firm: 1 });
+await service.token.deleteAll({ firm: '' });
 
 export default app;
