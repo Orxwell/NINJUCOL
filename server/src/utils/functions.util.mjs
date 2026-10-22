@@ -59,6 +59,21 @@ export function isValidMimeType(buffer, mime_type) {
     );
   }
 
+  if (mime_type === 'image/webp') {
+    return (
+      buffer.length >= 12 &&
+      buffer.toString('ascii', 0, 4) === 'RIFF' &&
+      buffer.toString('ascii', 8, 12) === 'WEBP'
+    );
+  }
+  
+  if (mime_type === 'application/pdf') {
+    return (
+      buffer.length >= 5 &&
+      buffer.toString('ascii', 0, 5) === '%PDF-'
+    );
+  }
+
   return false;
 }
 

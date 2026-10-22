@@ -1,36 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title><%= title %></title>
-  <link rel="stylesheet" href="<%= server_url %>/css/public/reset.public.css">
-  <link rel="stylesheet" href="<%= server_url %>/css/private/dashboard.private.css">
-  <link rel="stylesheet" href="<%= server_url %>/css/private/add_repository.private.css">
-</head>
-<body>
-  <main class="dashboard-section">
-    <div class="add-repository-container">
-      <h2>Crear Nuevo Recurso</h2>
-      <form action="/dashboard/add/repository" method="POST" class="add-repository-form">
-        <div class="add-repository-group">
-          <label>Título:</label>
-          <input type="text" name="repository[title]" required>
-        </div>
-        <div class="add-repository-group">
-          <label>Descripción:</label>
-          <textarea name="repository[description]" rows="5" required></textarea>
-        </div>
-        <div class="add-repository-group">
-          <label>URL de la Imagen:</label>
-          <input type="url" name="repository[image_url]" required>
-        </div>
-        <div class="add-repository-group">
-          <label>URL del Recurso (Archivo / Descarga):</label>
-          <input type="url" name="repository[resource_url]" required>
-        </div>
-        <button type="submit" class="add-repository-btn-submit">Guardar Recurso</button>
-      </form>
-    </div>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'private', name: 'add_repository' }] }) %>
+
+    <%- include('../components/scripts.component.ejs', { resources: [{ route: 'private', name: 'multipart' }] }) %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('../components/top.component.ejs', { page: 'add_repository', }) %>
+    
+    <%- include('../components/bar.component.ejs', { page: 'add_repository', }) %>
+
+    <script>
+      const allowedTypesByInput = {
+        resource: [
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+
+          'application/pdf',
+        ],
+      };
+    </script>
+
+    <main class="dashboard-section">
+      <div class="add-repository-container">
+        <h2>Crear nuevo recurso</h2>
+
+        <form
+          action="/dashboard/add/repository"
+          method="POST"
+          class="add-repository-form"
+          enctype="multipart/form-data"
+        >
+          <div class="add-repository-group">
+            <label>Título:</label>
+
+            <input
+              type="text"
+              name="title"
+              required
+            />
+          </div>
+
+          <div class="add-repository-group">
+            <label>Descripción:</label>
+
+            <textarea
+              name="description"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+
+          <div class="add-repository-group">
+            <label>Archivo:</label>
+
+            <input
+              type="file"
+              id="resource"
+              name="resource"
+              accept=".jpg,.jpeg,.png,.webp,.pdf"
+            />
+          </div>
+
+          <button type="submit" class="add-repository-btn-submit">Guardar Recurso</button>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

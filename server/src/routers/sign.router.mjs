@@ -31,21 +31,24 @@ routerSIGN.get('/sign_in',
     optional: { error: null,     },
   }),
   async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (auth_token) return res.redirect('/dashboard');
+
     const { error } = req.query;
 
-    try {
-      return res.render(publicSignInEJS, {
-        title: `SingIn | NINJUCOL`,
+    return res.render(publicSignInEJS, {
+      title: `SingIn | NINJUCOL`,
 
-        error: error,
+      error: error,
 
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
-    }
+
+      return res.send(html);
+    });
   }
 );
 
@@ -67,35 +70,36 @@ routerSIGN.post('/sign_up',
     },
   }),
   async (req, res) => {
-    const { firstname, lastname, birthdate, phone, email, password } = req.body;
+    const data = req.body;
 
-    try {
-      const formatted_firstname = firstname
-        .charAt(0)
-        .toUpperCase() + firstname.slice(1);
+    const formatted_firstname = data.firstname
+      .charAt(0)
+      .toUpperCase() + firstname.slice(1);
 
-      const formatted_lastname = lastname
-        .charAt(0)
-        .toUpperCase() + lastname.slice(1);
+    const formatted_lastname = data.lastname
+      .charAt(0)
+      .toUpperCase() + lastname.slice(1);
         
-      await service.account.create({
-        firstname: formatted_firstname,
-        lastname : formatted_lastname,
-        birthdate: birthdate,
-        phone    : phone,
-        email    : email,
-        password : password,
+    await service.account.create({
+      firstname: formatted_firstname,
+      lastname : formatted_lastname,
+      birthdate: data.birthdate,
+      phone    : data.phone,
+      email    : data.email,
+      password : data.password,
 
-        roles: { isAdmin: false, },
-        status: 'PENDING',
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+      roles: { isAdmin: false, },
+      status: 'PENDING',
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+        
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.sendStatus(200);
   }
 );
 
@@ -108,57 +112,83 @@ routerSIGN.post('/sign_in',
     },
   }),
   async (req, res) => {
-    const { email, password } = req.body;
+    const data = req.body;
 
-    try {
-      const { message, status } = await service.account.auth({
-        email   : email,
-        password: password,
-      }, (error) => { throw error; });
+    await service.account.auth({
+      email   : data.email,
+      password: data.password,
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (info.status === 'DENIED') return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent(info.message)}`);
+        
+      return info;
+    });
 
-      if (status === 'DENIED') {
-        return res.redirect('/sign_in?' +
-          `error=${encodeURIComponent(message)}`);
-      }
+    if (res.headersSent) return;
 
-      let token_body = await service.token.findByEmail({ email: email, }, (error) => { throw error; });
-
-      if (!token_body) {
-        token_body = await service.token.generate({ email: email, }, (error) => { throw error; });
+    const found_token = await service.token.findByEmail({ email: data.email, }, async (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return await service.token.generate({ email: data.email, }, async (error, info) => {
+        if (error) return res.redirect('/error_at_post?' +
+          `error=${encodeURIComponent(error)}`);
 
         await service.token.save({
-          token     : token_body.token,
-          email     : token_body.email,
-          expiration: token_body.expiration,
-        }, (error) => { throw error; });
-
-        const { firstname, lastname } = await service.account.findByEmail({ email: email }, (error) => { throw error; });
-
-        await service.mailer.send({
-          to: email,
-          subject: 'Has accedido correctamente. | NINJUCOL',
-          text: 'Correo automatizado.',
-          ejs_path: mailSignInEJS,
-          ejs_args: {
-            firstname: firstname,
-            lastname : lastname,
-          }
-        }, (error) => { throw error; });
-      }
-
-      res.cookie('auth_token', token_body.token, {
-        httpOnly: true,
-        secure  : true,
-        sameSite: 'strict',
-        expires : token_body.expiration,
+          token     : info.token,
+          email     : info.email,
+          expiration: info.expiration,
+        }, (error, info) => {
+          if (error) return res.redirect('/error_at_post?' +
+            `error=${encodeURIComponent(error)}`);
+                
+          return info;
+        });
+          
+        return info;
       });
+        
+      return info;
+    });
 
-      return res.redirect('/dashboard');
+    if (res.headersSent) return;
 
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+    const { firstname, lastname } = await service.account.findByEmail({ email: data.email }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+        
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    await service.mailer.send({
+      to: email,
+      subject: 'Has accedido correctamente. | NINJUCOL',
+      text: 'Correo automatizado.',
+      ejs_path: mailSignInEJS,
+      ejs_args: {
+        firstname: firstname,
+        lastname : lastname,
+      }
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error)}`);
+        
+      return info;
+    });
+
+    res.cookie('auth_token', found_token.token, {
+      httpOnly: true,
+      secure  : true,
+      sameSite: 'strict',
+      expires : found_token.expiration,
+    });
+
+    return res.redirect('/dashboard');
   }
 );
 
@@ -169,21 +199,20 @@ routerSIGN.post('/sign_out',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Usted a sido redireccionado porque no cuenta con un token válido.')}`);
-
-    try {
-      const token_body = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!token_body) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.token.deleteByToken({ token: token_body.token }, (error) => { throw error; });
-
-      return res.redirect('/sign_in');
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/sign_in');
   }
 );
 // >>-------- POST - ABOVE --------<<

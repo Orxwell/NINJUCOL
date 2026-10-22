@@ -7,47 +7,29 @@
       content="width=device-width, initial-scale=1.0"
     />
 
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="<%= server_url %>/api/ico/logo/favicon.ico<%= `?v=${Date.now()}` %>"
-    />
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'errors', name: 'at_post' }], }) %>
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="<%= server_url %>/api/css/errors/at_post.error.css<%= `?v=${Date.now()}` %>"
-    />
-
+    <%- include('../components/scripts.component.ejs') %>
+    
     <title><%= title %></title>
   </head>
 
   <body>
-    <header>
-      <nav>
-        <a href="/">Inicio</a>
-        <a href="/register"
-          id="register"
-          class="special"
-        >Registarse</a>
-        <a href="/login"
-          id="login"
-          class="special"
-        >Iniciar Sesión</a>
-      </nav>
-    </header>
+    <%- include('../components/top.component.ejs', { page: 'at_post', }) %>
 
-    <hr />
+    <%- include('../components/bar.component.ejs', { page: 'at_post', }) %>
 
     <main>
       <section>
         <h2>La ruta <% route %> no existe...</h2>
-        <p>Uh... el servidor dio un error-401</p>
+        <p>Uh... el servidor dio un error-404</p>
 
         <hr />
 
         <span><%= error %></span>
       </section>
     </main>
+
+    <%- include('../components/footer.component.ejs') %>
   </body>
 </html>

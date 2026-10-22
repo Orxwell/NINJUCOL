@@ -1,5 +1,16 @@
+<%
+  const bar_exception_pages = [
+    'sign_in',
+    'dashboard',
+    'add_new', 'upd_new',
+    'add_campaign', 'upd_campaign',
+    'add_repository', 'upd_repository',
+    'at_get', 'at_post',
+  ];
+%>
+
 <header id="bar">
-  <!-- Seccion Izquierda: Logo y Titulo -->
+  <!-- Titular -->
   <section class="brand-section">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
       <image
@@ -18,7 +29,7 @@
     </div>
   </section>
 
-  <!-- Seccion Centro: Menu de Navegacion -->
+  <!-- Navegación -->
   <nav id="alt">
     <a href="/" <%= page === 'home' ? 'active' : '' %>>Inicio</a>
 
@@ -33,13 +44,15 @@
     <a href="/join_us" <%= page === 'join_us' ? 'active' : '' %>>Únete</a>
   </nav>
 
-  <!-- Seccion Derecha: Boton Donar y Menu Hamburguesa -->
-  <div class="actions-section">
-    <button type="button" class="donate-btn" >DONAR</button>
-    <button id="alt-nav" type="button" aria-label="Menú">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-        <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
-      </svg>        
-    </button>
-  </div>
+  <!-- Donar -->
+  <% if (!bar_exception_pages.includes(page)) { %>
+    <div class="actions-section">
+      <button type="button" class="donate-btn">DONAR</button>
+      <button id="alt-nav" type="button" aria-label="Menú">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+          <path fill-rule="evenodd" d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm0 5.25a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+        </svg>        
+      </button>
+    </div>
+  <% } %>
 </header>

@@ -2,7 +2,15 @@
 import { Router } from 'express';
 
 // Templates for the Front-End
-import { privateDashboardEJS } from '#utils/templates.util.mjs';
+import {
+  privateDashboardEJS,
+  privateAddNewEJS,
+  privateUpdNewEJS,
+  privateAddCampaignEJS,
+  privateUpdCampaignEJS,
+  privateAddRepositoryEJS,
+  privateUpdRepositoryEJS,
+} from '#utils/templates.util.mjs';
 
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
@@ -20,6 +28,86 @@ const routerDASHBOARD = Router();
 // ~~~~~~~~~~~ROUTER-DASHBOARD~~~~~~~~~~~
 // >>-------- GET - BELOW --------<<
 routerDASHBOARD.get('/dashboard',
+  middleware.query({
+    scheme  : { info: 'string', },
+    optional: { info: null, },
+  }),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+
+    const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const found_account = await service.account.findByEmail({ email: found_token.email, }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const found_news = await service.new.findAll((error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+    
+    const found_campaigns = await service.campaign.findAll((error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+    
+    const found_repository = await service.repository.findAll((error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateDashboardEJS, {
+      title: `Dashboard | NINJUCOL`,
+
+      account: found_account,
+
+      data: {
+        news      : found_news,
+        campaigns : found_campaigns,
+        repository: found_repository,
+      },
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./dashboard')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/add/new',
   middleware.query({}),
   async (req, res) => {
     const { auth_token } = req.cookies;
@@ -27,42 +115,232 @@ routerDASHBOARD.get('/dashboard',
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      const found_account = await service.account.findByEmail({ email: found_token.email, }, (error) => { throw error; });
-
-      const found_news       = await service.new.findAll((error) => { throw error; });
-      const found_campaigns  = await service.campaign.findAll((error) => { throw error; });
-      const found_repository = await service.repository.findAll((error) => { throw error; });
-
-      console.log({
-        news      : found_news,
-        campaigns : found_campaigns,
-        repository: found_repository,
-      });
-
-      return res.render(privateDashboardEJS, {
-        title: `Dashboard | NINJUCOL`,
-
-        account: found_account,
-
-        data: {
-          news      : found_news,
-          campaigns : found_campaigns,
-          repository: found_repository,
-        },
-
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateAddNewEJS, {
+      title: `AddNew | NINJUCOL`,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./dashboard/add/new')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/upd/new',
+  middleware.query({ scheme: { uuid: 'string', }, }),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const { uuid } = req.query;
+
+    const found_new = await service.new.findByUUID({ uuid: uuid, }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateUpdNewEJS, {
+      title: `UpdateNew | NINJUCOL`,
+
+      data: found_new,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./dashboard/upd/new')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/add/campaign',
+  middleware.query({}),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateAddCampaignEJS, {
+      title: `AddCampaign | NINJUCOL`,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./dashboard/add/campaign')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/upd/campaign',
+  middleware.query({ scheme: { uuid: 'string', }, }),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const { uuid } = req.query;
+    
+    const found_campaign = await service.campaign.findByUUID({ uuid: uuid, }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateUpdCampaignEJS, {
+      title: `UpdateCampaign | NINJUCOL`,
+
+      data: found_campaign,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/add/repository',
+  middleware.query({}),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateAddRepositoryEJS, {
+      title: `AddRepository | NINJUCOL`,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
+        
+      return res.send(html);
+    });
+  }
+);
+
+routerDASHBOARD.get('/dashboard/upd/repository',
+  middleware.query({ scheme: { uuid: 'string', }, }),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    if (!found_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Sesión expirada.')}`);
+
+    const { uuid } = req.query;
+    
+    const found_repository = await service.repository.findByUUID({ uuid: uuid, }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(privateUpdRepositoryEJS, {
+      title: `UpdateRepository | NINJUCOL`,
+
+      data: found_repository,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
+        
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<
@@ -71,8 +349,8 @@ routerDASHBOARD.get('/dashboard',
 // >>-------- POST - BELOW --------<<
 routerDASHBOARD.post('/dashboard/add/new',
   middleware.multipart({
-    scheme: { image: ['image/png'], },
-    max_file_size_mb: { image: 5, }
+    scheme: { resource: ['image/jpeg', 'image/png', 'image/webp'], },
+    max_file_size_mb: { resource: 10, }
   }),
   middleware.body({
     scheme: {
@@ -82,7 +360,7 @@ routerDASHBOARD.post('/dashboard/add/new',
       description: 'string',
       video_url: 'string',
 
-      image_uri: 'string',
+      resource_uri: 'string',
     }
   }),
   async (req, res) => {
@@ -90,66 +368,84 @@ routerDASHBOARD.post('/dashboard/add/new',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const data = req.body;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
+    await service.new.create({
+      title      : data.title,
+      author     : data.author,
+      resume     : data.resume,
+      description: data.description,
+      video_url  : data.video_url,
 
-      await service.new.create({
-        title      : data.title,
-        author     : data.author,
-        resume     : data.resume,
-        description: data.description,
-        video_url  : data.video_url,
-
-        image_uri: data.image_uri,
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+      resource_uri: data.resource_uri,
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('¡Noticia creada!')}`);
   },
 );
 
 routerDASHBOARD.post('/dashboard/del/new',
-  middleware.query({ scheme: { uuid: 'string' } }),
+  middleware.query({ scheme: { uuid: 'string', }, }),
   async (req, res) => {
     const { auth_token } = req.cookies;
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const { uuid } = req.query;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.new.deleteByUUID({ uuid: uuid }, (error) => { throw error; })
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+    await service.new.deleteByUUID({ uuid: uuid }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Noticia borrada.')}`);
   },
 );
 
 routerDASHBOARD.post('/dashboard/upd/new',
   middleware.query({ scheme: { uuid: 'string' } }),
   middleware.multipart({
-    scheme: { image: ['image/png'], },
-    max_file_size_mb: { image: 5, }
+    scheme: { resource: ['image/jpeg', 'image/png', 'image/webp'], },
+    max_file_size_mb: { resource: 10, }
   }),
   middleware.body({
     scheme: {
@@ -159,7 +455,7 @@ routerDASHBOARD.post('/dashboard/upd/new',
       description: 'string',
       video_url: 'string',
 
-      image_uri: 'string',
+      resource_uri: 'string',
     }
   }),
   async (req, res) => {
@@ -167,50 +463,59 @@ routerDASHBOARD.post('/dashboard/upd/new',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const { uuid } = req.query;
 
     const data = req.body;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
+    await service.new.updateByUUID({
+      uuid: uuid,
+      setter: {
+        title      : data.title,
+        author     : data.author,
+        resume     : data.resume,
+        description: data.description,
+        video_url  : data.video_url,
 
-      await service.new.updateByUUID({
-        uuid: uuid,
-        setter: {
-          title      : data.title,
-          author     : data.author,
-          resume     : data.resume,
-          description: data.description,
-          video_url  : data.video_url,
-
-          image_uri: data.image_uri,
-        }
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+        resource_uri: data.resource_uri,
+      }
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Noticia actualizada.')}`);
   },
 );
 
 routerDASHBOARD.post('/dashboard/add/campaign',
   middleware.multipart({
-    scheme: { image: ['image/png'], },
-    max_file_size_mb: { image: 5, }
+    scheme: { resource: ['image/jpeg', 'image/png', 'image/webp'], },
+    max_file_size_mb: { resource: 10, }
   }),
   middleware.body({
     scheme: {
       title      : 'string',
       description: 'string',
 
-      image_uri: 'string',
+      resource_uri: 'string',
     }
   }),
   async (req, res) => {
@@ -218,28 +523,37 @@ routerDASHBOARD.post('/dashboard/add/campaign',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const data = req.body;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
+    await service.campaign.create({
+      title      : data.title,
+      description: data.description,
 
-      await service.campaign.create({
-        title      : data.title,
-        description: data.description,
-
-        image_uri: data.image_uri,
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+      resource_uri: data.resource_uri,
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('¡Campaña creada!')}`);
   },
 );
 
@@ -250,93 +564,46 @@ routerDASHBOARD.post('/dashboard/del/campaign',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const { uuid } = req.query;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.campaign.deleteByUUID({ uuid: uuid }, (error) => { throw error; })
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+    await service.campaign.deleteByUUID({ uuid: uuid }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Campaña borrada.')}`);
   },
 );
 
 routerDASHBOARD.post('/dashboard/upd/campaign',
   middleware.query({ scheme: { uuid: 'string' } }),
   middleware.multipart({
-    scheme: { image: ['image/png'], },
-    max_file_size_mb: { image: 5, }
+    scheme: { resource: ['image/jpeg', 'image/png', 'image/webp'], },
+    max_file_size_mb: { resource: 10, }
   }),
   middleware.body({
     scheme: {
       title      : 'string',
       description: 'string',
         
-      image_uri: 'string',
-    }
-  }),
-  async (req, res) => {
-    const { auth_token } = req.cookies;
-
-    if (!auth_token) return res.redirect('/sign_in?' +
-      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-
-    const { uuid } = req.query;
-
-    const data = req.body;
-
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.campaign.updateByUUID({
-        uuid: uuid,
-        setter: {
-          title      : data.title,
-          description: data.description,
-
-          image_uri: data.image_uri,
-        }
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error.message)}`
-      );
-    }
-  },
-);
-
-routerDASHBOARD.post('/dashboard/add/repository',
-  middleware.multipart({
-    scheme: {
-      image   : ['image/png'],
-      resource: ['image/jpeg'],
-    },
-    max_file_size_mb: {
-      image   : 5,
-      resource: 6,
-    }
-  }),
-  middleware.body({
-    scheme: {
-      title      : 'string',
-      description: 'string',
-
-      image_uri   : 'string',
       resource_uri: 'string',
     }
   }),
@@ -345,29 +612,102 @@ routerDASHBOARD.post('/dashboard/add/repository',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const { uuid } = req.query;
 
     const data = req.body;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.repository.create({
+    await service.campaign.updateByUUID({
+      uuid: uuid,
+      setter: {
         title      : data.title,
         description: data.description,
 
-        image_uri   : data.image_uri,
         resource_uri: data.resource_uri,
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+      }
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Noticia borrada.')}`);
+  },
+);
+
+routerDASHBOARD.post('/dashboard/add/repository',
+  middleware.multipart({
+    scheme: {
+      resource: [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+
+        'application/pdf',
+      ],
+    },
+    max_file_size_mb: { resource: 10, },
+  }),
+  middleware.body({
+    scheme: {
+      title      : 'string',
+      description: 'string',
+
+      resource_uri: 'string',
     }
+  }),
+  async (req, res) => {
+    const { auth_token } = req.cookies;
+
+    if (!auth_token) return res.redirect('/sign_in?' +
+      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    const data = req.body;
+
+    await service.repository.create({
+      title      : data.title,
+      description: data.description,
+
+      resource_uri: data.resource_uri,
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('¡Recurso creado!')}`);
   },
 );
 
@@ -378,23 +718,32 @@ routerDASHBOARD.post('/dashboard/del/repository',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const { uuid } = req.query;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-
-      await service.repository.deleteByUUID({ uuid: uuid }, (error) => { throw error; })
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+    await service.repository.deleteByUUID({ uuid: uuid }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Recurso borrado.')}`);
   },
 );
 
@@ -402,20 +751,21 @@ routerDASHBOARD.post('/dashboard/upd/repository',
   middleware.query({ scheme: { uuid: 'string' } }),
   middleware.multipart({
     scheme: {
-      image   : ['image/png'],
-      resource: ['image/jpeg'],
+      resource: [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+
+        'application/pdf',
+      ],
     },
-    max_file_size_mb: {
-      image   : 5,
-      resource: 6,
-    }
+    max_file_size_mb: { resource: 10, },
   }),
   middleware.body({
     scheme: {
       title      : 'string',
       description: 'string',
 
-      image_uri   : 'string',
       resource_uri: 'string',
     }
   }),
@@ -424,34 +774,42 @@ routerDASHBOARD.post('/dashboard/upd/repository',
 
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
+    
+    await service.token.findByToken({ token: auth_token }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent(error)}`);
+      
+      if (!info) return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent('Sesión expirada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
 
     const { uuid } = req.query;
 
     const data = req.body;
 
-    try {
-      const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
-      
-      if (!found_token) return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
+    await service.repository.updateByUUID({
+      uuid: uuid,
+      setter: {
+        title      : data.title,
+        description: data.description,
 
-      await service.repository.updateByUUID({
-        uuid: uuid,
-        setter: {
-          title      : data.title,
-          description: data.description,
-
-          image_uri   : data.image_uri,
-          resource_uri: data.resource_uri,
-        }
-      }, (error) => { throw error; });
-
-      return res.sendStatus(200);
-
-    } catch (error) {
-      return res.redirect('/error_at_post?' +
+        resource_uri: data.resource_uri,
+      }
+    }, (error, info) => {
+      if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.redirect('/dashboard?' +
+      `info=${encodeURIComponent('Noticia actualizada.')}`);
   },
 );
 // >>-------- POST - ABOVE --------<<

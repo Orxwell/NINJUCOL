@@ -7,37 +7,17 @@
       content="width=device-width, initial-scale=1.0"
     />
 
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="<%= server_url %>/api/ico/logo/favicon.ico<%= `?v=${Date.now()}` %>"
-    />
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'errors', name: 'at_get' }], }) %>
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="<%= server_url %>/api/css/errors/at_get.error.css<%= `?v=${Date.now()}` %>"
-    />
-
+    <%- include('../components/scripts.component.ejs') %>
+    
     <title><%= title %></title>
   </head>
 
   <body>
-    <header>
-      <nav>
-        <a href="/">Inicio</a>
-        <a href="/register"
-          id="register"
-          class="special"
-        >Registarse</a>
-        <a href="/login"
-          id="login"
-          class="special"
-        >Iniciar Sesión</a>
-      </nav>
-    </header>
+    <%- include('../components/top.component.ejs', { page: 'at_get', }) %>
 
-    <hr />
+    <%- include('../components/bar.component.ejs', { page: 'at_get', }) %>
 
     <main>
       <section>
@@ -49,5 +29,7 @@
         <span><%= error %></span>
       </section>
     </main>
+
+    <%- include('../components/footer.component.ejs') %>
   </body>
 </html>

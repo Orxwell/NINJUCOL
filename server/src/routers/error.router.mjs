@@ -27,17 +27,19 @@ routerERROR.get('/error_at_get',
   async (req, res) => {
     const { error } = req.query;
 
-    try {
-      return res.render(errorAtGetEJS, {
-        title: `Info | NINJUCOL`,
+    return res.render(errorAtGetEJS, {
+      title: `Info | NINJUCOL`,
 
-        route: req.path,
+      route: req.path,
 
-        error: error,
+      error: error,
 
-        server_url: env.SERVER_URL,
-      });
-    } catch (_) { return res.sendStatus(503); }
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.sendStatus(503);
+
+      return res.send(html);
+    });
   }
 );
 
@@ -49,17 +51,19 @@ routerERROR.get('/error_at_post',
   async (req, res) => {
     const { error } = req.query;
 
-    try {
-      return res.render(errorAtPostEJS, {
-        title: `Info | NINJUCOL`,
+    return res.render(errorAtPostEJS, {
+      title: `Info | NINJUCOL`,
 
-        route: req.path,
+      route: req.path,
 
-        error: error,
+      error: error,
 
-        server_url: env.SERVER_URL,
-      });
-    } catch (_) { return res.sendStatus(503); }
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.sendStatus(503);
+
+      return res.send(html);
+    });
   }
 );
 

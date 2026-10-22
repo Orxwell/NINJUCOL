@@ -19,17 +19,16 @@ const routerHOME = Router();
 routerHOME.get('/',
   middleware.query({}),
   async (req, res) => {
-    try {
-      return res.render(publicHomeEJS, {
-        title: `Home | NINJUCOL`,
+    return res.render(publicHomeEJS, {
+      title: `Home | NINJUCOL`,
 
-        server_url: env.SERVER_URL,
-      });
-      
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./')}`);
+
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<

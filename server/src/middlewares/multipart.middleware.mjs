@@ -14,18 +14,36 @@ const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
 const ALLOWED_MIME_TYPES = {
-  'image/png': {
-    extension: '.png',
-    folder: 'png',
-  },
   'image/jpeg': {
     extension: '.jpg',
     folder: 'jpeg',
   },
+  'image/png': {
+    extension: '.png',
+    folder: 'png',
+  },
+  'image/webp': {
+    extension: '.webp',
+    folder: 'webp',
+  },
+
+  'application/pdf': {
+    extension: '.pdf',
+    folder: 'pdf',
+  },
 };
 const AMT_keys = Object.keys(ALLOWED_MIME_TYPES);
 
+const allowed_extensions = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/png' : ['.png'],
+  'image/webp': ['.webp'],
+
+  'application/pdf': ['.pdf'],
+};
+
 const MB = 1024 * 1024
+const maxMB = 10 * MB;
 
 
 export default function handlingMultipart({
@@ -99,7 +117,7 @@ export default function handlingMultipart({
       value <= 0
     ) throw new Error(`Internal-Server-Error, from ${filename}: 'max_file_size.${key}' must be a positive integer.`);
   
-    if (value > 10) throw new Error(`Internal-Server-Error, from ${filename}: 'max_file_size.${key}' cannot be greater than 10MB.`);
+    if (value > maxMB) throw new Error(`Internal-Server-Error, from ${filename}: 'max_file_size.${key}' cannot be greater than ${maxMB}MB.`);
   });
 
   if (max_file_size_mb_keys.length !== internal_keys.length) throw new Error(`Internal-Server-Error, from ${filename}: 'scheme' contains undeclared keys in 'max_file_size_mb'.`);
@@ -268,7 +286,7 @@ export default function handlingMultipart({
             body: {
               status : 400,
               id     : 'ERR-6',
-              message: `Invalid image content for '${key}'.`,
+              message: `Invalid file content for '${key}'.`,
             },
           });
 
@@ -296,15 +314,7 @@ export default function handlingMultipart({
 
           const file_extension = extname(file_name).toLowerCase();
 
-          let allowed_extensions;
-          if (file.mimetype === 'image/jpeg') {
-            allowed_extensions = ['.jpg', '.jpeg'];
-          }
-          if (file.mimetype === 'image/png') {
-            allowed_extensions = ['.png'];
-          }
-
-          if (!allowed_extensions.includes(file_extension)) return errorHTTP({
+          if (!allowed_extensions[file.mimetype]?.includes(file_extension)) return errorHTTP({
             header: header,
             body: {
               status : 400,

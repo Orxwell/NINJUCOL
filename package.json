@@ -7,7 +7,7 @@
     "test": "echo \"This is a test.\" && exit 1",
     "build": "npx puppeteer browsers install chrome",
     "start": "node ./server/src/server.mjs",
-    "dev": "node --env-file .env ./server/src/bootstrap.mjs"
+    "dev": "node --trace-uncaught --env-file .env ./server/src/bootstrap.mjs"
   },
   "imports": {
     "#src/*": "./server/src/*",

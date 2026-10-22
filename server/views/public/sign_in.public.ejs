@@ -15,9 +15,9 @@
   </head>
 
   <body>
-    <%- include('../components/top.component.ejs') %>
+    <%- include('../components/top.component.ejs', { page: 'sign_in', }) %>
 
-    <%- include('../components/bar.component.ejs', { page: null, }) %>
+    <%- include('../components/bar.component.ejs', { page: 'sign_in', }) %>
 
     <main>
       <article>

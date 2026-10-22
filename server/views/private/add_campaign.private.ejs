@@ -1,32 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title><%= title %></title>
-  <link rel="stylesheet" href="<%= server_url %>/css/public/reset.public.css">
-  <link rel="stylesheet" href="<%= server_url %>/css/private/dashboard.private.css">
-  <link rel="stylesheet" href="<%= server_url %>/css/private/add_campaign.private.css">
-</head>
-<body>
-  <main class="dashboard-section">
-    <div class="add-campaign-container">
-      <h2>Crear Nueva Campaña</h2>
-      <form action="/dashboard/add/campaign" method="POST" class="add-campaign-form">
-        <div class="add-campaign-group">
-          <label>Título:</label>
-          <input type="text" name="campaign[title]" required>
-        </div>
-        <div class="add-campaign-group">
-          <label>Descripción:</label>
-          <textarea name="campaign[description]" rows="5" required></textarea>
-        </div>
-        <div class="add-campaign-group">
-          <label>URL de la Imagen:</label>
-          <input type="url" name="campaign[image_url]" required>
-        </div>
-        <button type="submit" class="add-campaign-btn-submit">Guardar Campaña</button>
-      </form>
-    </div>
-  </main>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <%- include('../components/links.component.ejs', { pages: [{ route: 'private', name: 'add_campaign' }] }) %>
+
+    <%- include('../components/scripts.component.ejs', { resources: [{ route: 'private', name: 'multipart' }] }) %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <%- include('../components/top.component.ejs', { page: 'add_campaign', }) %>
+    
+    <%- include('../components/bar.component.ejs', { page: 'add_campaign', }) %>
+
+    <script>
+      const allowedTypesByInput = {
+        resource: [
+          'image/jpeg',
+          'image/png',
+          'image/webp',
+        ],
+      };
+    </script>
+
+    <main class="dashboard-section">
+      <div class="add-campaign-container">
+        <h2>Crear nueva campaña</h2>
+
+        <form
+          action="/dashboard/add/campaign"
+          method="POST"
+          class="add-campaign-form"
+          enctype="multipart/form-data"
+        >
+          <div class="add-campaign-group">
+            <label>Título:</label>
+
+            <input
+              type="text"
+              name="title"
+              required
+            />
+          </div>
+
+          <div class="add-campaign-group">
+            <label>Descripción:</label>
+
+            <textarea
+              name="description"
+              rows="5"
+              required
+            ></textarea>
+          </div>
+
+          <div class="add-campaign-group">
+            <label>Portada:</label>
+
+            <input
+              type="file"
+              id="resource"
+              name="resource"
+              accept=".jpg,.jpeg,.png,.webp"
+            />
+          </div>
+
+          <button type="submit" class="add-campaign-btn-submit">Guardar</button>
+        </form>
+      </div>
+    </main>
+  </body>
 </html>

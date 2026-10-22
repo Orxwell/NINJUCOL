@@ -1,4 +1,16 @@
 <!-- SCRIPTS -->
+<% if (typeof resources !== 'undefined') { %>
+  <% resources.forEach(resource => { %>
+    <%
+      const sub_route = resource.route === 'errors'
+        ? 'error'
+        : resource.route
+    %>
+
+    <script src="<%= server_url %>/api/js/<%= resource.route %>/<%= resource.name %>.<%= sub_route %>.js<%= `?v=${Date.now()}` %>" defer></script>
+  <% }); %>
+<% } %>
+
 <script src="<%= server_url %>/api/js/public/scroll.public.js<%= `?v=${Date.now()}` %>" defer></script>
 
 <script src="<%= server_url %>/api/js/public/theme_toggle.public.js<%= `?v=${Date.now()}` %>" defer></script>

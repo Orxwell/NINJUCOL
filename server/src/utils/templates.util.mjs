@@ -11,7 +11,13 @@ const temp = {
   mail_signInEJS: join(global.mailsPath, '/sign_in.mail.ejs'),
 
   // Private templates - Staff authentication
-  private_dashboardEJS: join(global.privatePath, '/dashboard.private.ejs'),
+  private_dashboardEJS    : join(global.privatePath, '/dashboard.private.ejs'),
+  private_addNewEJS       : join(global.privatePath, '/add_new.private.ejs'),
+  private_updNewEJS       : join(global.privatePath, '/upd_new.private.ejs'),
+  private_addCampaignEJS  : join(global.privatePath, '/add_campaign.private.ejs'),
+  private_updCampaignEJS  : join(global.privatePath, '/upd_campaign.private.ejs'),
+  private_addRepositoryEJS: join(global.privatePath, '/add_repository.private.ejs'),
+  private_updRepositoryEJS: join(global.privatePath, '/upd_repository.private.ejs'),
 
   // Public templates - No authentication
   public_homeEJS      : join(global.publicPath, '/home.public.ejs'),
@@ -21,7 +27,7 @@ const temp = {
   public_repositoryEJS: join(global.publicPath, '/repository.public.ejs'),
   public_campaignsEJS : join(global.publicPath, '/campaigns.public.ejs'),
   public_joinUsEJS    : join(global.publicPath, '/join_us.public.ejs'),
-  public_signInEJS     : join(global.publicPath, '/sign_in.public.ejs'),
+  public_signInEJS    : join(global.publicPath, '/sign_in.public.ejs'),
 };
 
 
@@ -30,7 +36,13 @@ export const errorAtPostEJS = temp.error_atPostEJS;
 
 export const mailSignInEJS = temp.mail_signInEJS;
 
-export const privateDashboardEJS = temp.private_dashboardEJS;
+export const privateDashboardEJS     = temp.private_dashboardEJS;
+export const privateAddNewEJS        = temp.private_addNewEJS;
+export const privateUpdNewEJS        = temp.private_updNewEJS;
+export const privateAddCampaignEJS   = temp.private_addCampaignEJS;
+export const privateUpdCampaignEJS   = temp.private_updCampaignEJS;
+export const privateAddRepositoryEJS = temp.private_addRepositoryEJS;
+export const privateUpdRepositoryEJS = temp.private_updRepositoryEJS;
 
 export const publicHomeEJS       = temp.public_homeEJS;
 export const publicAboutUsEJS    = temp.public_aboutUsEJS;

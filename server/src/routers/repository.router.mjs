@@ -22,21 +22,27 @@ const routerREPOSITORY = Router();
 routerREPOSITORY.get('/repository',
   middleware.query({}),
   async (req, res) => {
-    try {
-      const found_repository = await service.repository.findAll((error) => { throw error; });
-
-      return res.render(publicRepositoryEJS, {
-        title: `Repository | NINJUCOL`,
-
-        repository: found_repository,
-
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
+    const found_repository = await service.repository.findAll((error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(publicRepositoryEJS, {
+      title: `Repository | NINJUCOL`,
+
+      repository: found_repository,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
+        
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<

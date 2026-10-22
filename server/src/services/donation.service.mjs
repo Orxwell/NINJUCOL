@@ -25,7 +25,10 @@ export default class DonationsService {
     this.dbAPI = null;
   }
 
-  async init (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async init (callback=()=>{}) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
@@ -36,15 +39,14 @@ export default class DonationsService {
 
       this.is_initialized = true;
       
-      await this.#createIndexes((error) => { throw error; });
+      await this.#createIndexes();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
       
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
@@ -85,7 +87,10 @@ export default class DonationsService {
     }
   }
 
-  async #createIndexes (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #createIndexes (callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -99,35 +104,41 @@ export default class DonationsService {
         ],
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async #validateFirm (firm=null, onError=null) {
+  /**
+   * @param {string} firm
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #validateFirm (firm='', callback=()=>{}) {
     try {
       this.#ensureInit();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async create ({}={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async create ({}={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -147,19 +158,23 @@ export default class DonationsService {
         },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async findByUUID ({ uuid }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.uuid - UUID's record.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findByUUID ({ uuid }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -170,19 +185,21 @@ export default class DonationsService {
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, record);
+
       return record;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async findAll (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findAll (callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -190,19 +207,23 @@ export default class DonationsService {
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, records);
+
       return records;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async deleteAll ({ firm }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} [info.firm=''] - Firm from OAuth.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async deleteAll ({ firm='' }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -210,13 +231,12 @@ export default class DonationsService {
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }

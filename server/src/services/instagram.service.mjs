@@ -26,19 +26,21 @@ export default class InstagramService {
     this.cache_ttl_ms = env.INSTAGRAM_TTL_HOURS * 60 * 60 * 1000;
   }
 
-  async init (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async init (callback=()=>{}) {
     try {
       this.url = `${env.INSTAGRAM_API_URI}`;
 
       this.is_initialized = true;
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
@@ -63,7 +65,12 @@ export default class InstagramService {
     }
   }
 
-  async findByLatest ({ latest=4 }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.latest
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findByLatest ({ latest=4 }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
     
@@ -128,13 +135,12 @@ export default class InstagramService {
 
       this.pending[latest] = request;
 
+      if (typeof callback === 'function') return callback(null, request);
+
       return await request;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }

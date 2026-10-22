@@ -23,7 +23,10 @@ export default class MailerService {
     this.mailerAPI = null;
   }
 
-  async init (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async init (callback=()=>{}) {
     try {
       // Setting controllers
       this.mailerAPI = new controller.mailerAPI();
@@ -31,13 +34,12 @@ export default class MailerService {
 
       this.is_initialized = true;
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
       
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
@@ -70,7 +72,16 @@ export default class MailerService {
     }
   }
 
-  async send ({ to, subject, text, ejs_path, ejs_args }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.to
+   * @param {string} info.subject
+   * @param {string} info.text
+   * @param {string} info.ejs_path
+   * @param {Object} info.ejs_args
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async send ({ to, subject, text, ejs_path, ejs_args }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -88,13 +99,12 @@ export default class MailerService {
         ejs_args: ejs_args,
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }

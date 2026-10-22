@@ -25,7 +25,10 @@ export default class NewsService {
     this.dbAPI = null;
   }
 
-  async init (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async init (callback=()=>{}) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
@@ -34,15 +37,14 @@ export default class NewsService {
 
       this.is_initialized = true;
       
-      await this.#createIndexes((error) => { throw error; });
+      await this.#createIndexes();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
       
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
@@ -83,7 +85,10 @@ export default class NewsService {
     }
   }
 
-  async #createIndexes (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #createIndexes (callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -97,35 +102,47 @@ export default class NewsService {
         ],
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async #validateFirm (firm=null, onError=null) {
+  /**
+   * @param {string} firm
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #validateFirm (firm='', callback=()=>{}) {
     try {
       this.#ensureInit();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async create ({ title, author, resume, description, video_url, image_uri }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.title - Title's new.
+   * @param {string} info.author - Author's new.
+   * @param {string} info.resume - Resume's new.
+   * @param {string} info.description - Description's new.
+   * @param {string} info.video_url - URL's video.
+   * @param {string} info.resource_uri - URI's resource.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async create ({ title, author, resume, description, video_url, resource_uri }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -135,7 +152,7 @@ export default class NewsService {
       this.#ensureString(description, 'description');
       this.#ensureString(video_url  , 'video_url');
       
-      this.#ensureString(image_uri, 'image_uri');
+      this.#ensureString(resource_uri, 'resource_uri');
 
       const uuid = randomUUID();
 
@@ -155,23 +172,29 @@ export default class NewsService {
           description: description,
           video_url  : video_url,
 
-          image_uri: image_uri,
+          resource_uri: resource_uri,
 
           date: date,
         },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
+      return 'DONE';
+
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error; 
     }
   }
 
-  async findByUUID ({ uuid }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.uuid - UUID's record.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findByUUID ({ uuid }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -179,60 +202,55 @@ export default class NewsService {
 
       const record = await this.dbAPI.findRecord({
         filter    : { 'uuid': uuid, },
-        projection: { _id: 0,
-          title      : 1,
-          author     : 1,
-          description: 1,
-          video_url  : 1,
-
-          image_uri: 1,
-
-          date: 1,
-        },
+        projection: { _id: 0, },
       }, (error) => { throw error; });
+
+      if (typeof callback === 'function') return callback(null, record);
 
       return record;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async findAll (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findAll (callback=()=>{}) {
     try {
       this.#ensureInit();
 
       const records = await this.dbAPI.findRecords({
-        projection: { _id: 0,
-          uuid: 1,
-
-          title : 1,
-          resume: 1,
-
-          image_uri: 1,
-
-          date: 1,
-        },
+        projection: { _id: 0, },
       }, (error) => { throw error; });
+
+      if (typeof callback === 'function') return callback(null, records);
 
       return records;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async updateByUUID ({ uuid, setter }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.uuid - UUID's record.
+   * @param {Object} info.setter - Setter's record.
+   * @param {string} info.setter.title - Set title.
+   * @param {string} info.setter.author - Set author.
+   * @param {string} info.setter.resume - Set resume.
+   * @param {string} info.setter.description - Set description.
+   * @param {string} info.setter.video_url - Set URL's video.
+   * @param {string} info.setter.resource_uri - Set URI's resource.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async updateByUUID ({ uuid, setter }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -253,24 +271,28 @@ export default class NewsService {
             description: setter.description,
             video_url  : setter.video_url,
 
-            image_uri: setter.image_uri,
+            resource_uri: setter.resource_uri,
           },
         },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async deleteByUUID ({ uuid }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.uuid - UUID's record.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async deleteByUUID ({ uuid }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -278,19 +300,23 @@ export default class NewsService {
 
       await this.dbAPI.deleteRecord({ filter: { 'uuid': uuid }, }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async deleteAll ({ firm }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} [info.firm=''] - Firm from OAuth.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async deleteAll ({ firm='' }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -298,13 +324,12 @@ export default class NewsService {
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }

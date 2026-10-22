@@ -105,7 +105,14 @@ routerAPI.get('/api/:route/:to',
   
         if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
   
-        const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
+        const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent(error)}`);
+          
+          return info;
+        });
+    
+        if (res.headersSent) return;
         
         if (!found_token) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
       }
@@ -149,7 +156,14 @@ routerAPI.get('/api/:route/:to/:file',
   
         if (!auth_token) return res.status(401).json({ error: 'Unauthorized response: token not provided' });
   
-        const found_token = await service.token.findByToken({ token: auth_token }, (error) => { throw error; });
+        const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent(error)}`);
+          
+          return info;
+        });
+    
+        if (res.headersSent) return;
         
         if (!found_token) return res.status(401).json({ error: 'Unauthorized response: invalid token' });
       }

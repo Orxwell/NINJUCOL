@@ -28,7 +28,10 @@ export default class AccountService {
     this.dbAPI = null;
   }
 
-  async init (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async init (callback=()=>{}) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
@@ -37,15 +40,14 @@ export default class AccountService {
 
       this.is_initialized = true;
       
-      await this.#createIndexes((error) => { throw error; });
+      await this.#createIndexes();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
@@ -86,7 +88,10 @@ export default class AccountService {
     }
   }
 
-  async #createIndexes (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #createIndexes (callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -100,35 +105,49 @@ export default class AccountService {
         ],
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async #validateFirm (firm=null, onError=null) {
+  /**
+   * @param {string} firm
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async #validateFirm (firm='', callback=()=>{}) {
     try {
       this.#ensureInit();
+
+      if (typeof callback === 'function') return callback(null, 'DONE');
 
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
   }
 
-  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.firstname - Firstname's account.
+   * @param {string} info.lastname - Lastname's account.
+   * @param {string} info.birthdate - Birthdate's account.
+   * @param {string} info.phone - Phone's account.
+   * @param {string} info.email - Email's account.
+   * @param {string} info.password - Password's account.
+   * @param {Object} info.roles - Roles's account.
+   * @param {string} info.status - Status's account.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -181,19 +200,24 @@ export default class AccountService {
         },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async auth ({ email, password }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.email - Email's account.
+   * @param {string} info.password - Password's account.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async auth ({ email, password }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -205,34 +229,52 @@ export default class AccountService {
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
-      if (!account) return {
+      const case_1 = {
         message: `Account doesn't exist.`,
         status: 'DENIED',
       };
 
+      if (!account) {
+        if (typeof callback === 'function') return callback(null, case_1);
+
+        return case_1;
+      }
+
       const status = await bcryptjs.compare(password, account.hashed_password);
 
-      if (!status) return {
+      const case_2 = {
         message: `Invalid password.`,
         status: 'DENIED',
       };
-        
-      return {
+
+      if (!status) {
+        if (typeof callback === 'function') return callback(null, case_2);
+
+        return case_2;
+      }
+
+      const case_3 = {
         message: 'Account verified.',
         status: 'GRANTED'
       };
 
+      if (typeof callback === 'function') return callback(null, case_3);
+        
+      return case_3;
+
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async findByEmail ({ email }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.email - Email's record.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findByEmail ({ email }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -243,19 +285,21 @@ export default class AccountService {
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, record);
+
       return record;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async findAll (onError=null) {
+  /**
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async findAll (callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -263,19 +307,18 @@ export default class AccountService {
         projection: { _id: 0, },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, records);
+
       return records;
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async updateByEmail ({ email, setter }={}, onError=null) {
+  async updateByEmail ({ email, setter }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -291,19 +334,23 @@ export default class AccountService {
         update: { $set: setter, },
       }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async deleteByEmail ({ email }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} info.email - Email's record.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async deleteByEmail ({ email }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -311,19 +358,23 @@ export default class AccountService {
 
       await this.dbAPI.deleteRecord({ filter: { email: email } }, (error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
   }
 
-  async deleteAll ({ firm }={}, onError=null) {
+  /**
+   * @param {Object} info
+   * @param {string} [info.firm=''] - Firm from OAuth.
+   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   */
+  async deleteAll ({ firm='' }={}, callback=()=>{}) {
     try {
       this.#ensureInit();
 
@@ -331,13 +382,12 @@ export default class AccountService {
 
       await this.dbAPI.clearCollection((error) => { throw error; });
 
+      if (typeof callback === 'function') return callback(null, 'DONE');
+
       return 'DONE';
 
     } catch (error) {
-      if (typeof onError === 'function')  {
-        onError(error);
-        return;
-      }
+      if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }

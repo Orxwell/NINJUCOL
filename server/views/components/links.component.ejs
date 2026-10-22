@@ -7,10 +7,16 @@
 
 <!-- CSS -->
 <% pages.forEach(page => { %>
+  <%
+    const sub_route = page.route === 'errors'
+      ? 'error'
+      : page.route
+  %>
+
   <link
     rel="stylesheet"
     type="text/css"
-    href="<%= server_url %>/api/css/<%= page.route %>/<%= page.name %>.<%= page.route %>.css<%= `?v=${Date.now()}` %>"
+    href="<%= server_url %>/api/css/<%= page.route %>/<%= page.name %>.<%= sub_route %>.css<%= `?v=${Date.now()}` %>"
   />
 <% }); %>
 

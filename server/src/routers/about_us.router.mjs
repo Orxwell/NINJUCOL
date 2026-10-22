@@ -19,17 +19,16 @@ const routerABOUT_US = Router();
 routerABOUT_US.get('/about_us',
   middleware.query({}),
   async (req, res) => {
-    try {
-      return res.render(publicAboutUsEJS, {
-        title: `AboutUs | NINJUCOL`,
+    return res.render(publicAboutUsEJS, {
+      title: `AboutUs | NINJUCOL`,
 
-        server_url: env.SERVER_URL,
-      });
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./about_us')}`);
       
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<

@@ -28,49 +28,59 @@ routerNEWS.get('/news',
     optional: { error: undefined, },
   }),
   async (req, res) => {
-    try {
-      const found_news = await service.new.findAll((error) => { throw error; });
-      
-      return res.render(publicNewsEJS, {
-        title: `News | NINJUCOL`,
-
-        news: found_news,
-
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
+    const found_news = await service.new.findAll((error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(publicNewsEJS, {
+      title: `News | NINJUCOL`,
+
+      news: found_news,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./news')}`);
+      
+      return res.send(html);
+    });
   }
 );
 
 routerNEWS.get('/news/new',
-  middleware.query({
-    scheme: { uuid: 'string', },
-  }),
+  middleware.query({ scheme: { uuid: 'string', }, }),
   async (req, res) => {
     const { uuid } = req.query;
 
-    try {
-      const found_new = await service.new.findByUUID({ uuid: uuid }, (error) => { throw error; });
-
-      if (!found_new) return res.redirect('/news' +
-        `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
-
-      return res.render(publicNewEJS, {
-        title: `New | NINJUCOL`,
-
-        new: found_new,
-
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
+    const found_new = await service.new.findByUUID({ uuid: uuid }, (error, info) => {
+      if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
-    }
+      
+      if (!info) return res.redirect('/news' +
+      `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
+      
+      return info;
+    });
+
+    if (res.headersSent) return;
+
+    return res.render(publicNewEJS, {
+      title: `New | NINJUCOL`,
+
+      new: found_new,
+
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./new')}`);
+      
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<

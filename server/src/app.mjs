@@ -20,9 +20,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser('secret'));
 
+morgan.token('url', (req) => {
+  return req.originalUrl.split('?')[0];
+});
+
 switch (env.MODE) {
   case 'dev':
-    app.use(morgan(env.MODE));
+    app.use(morgan('dev'));
     break;
   
   case 'comb':
@@ -50,6 +54,6 @@ app.use((error, req, res, next) => {
 });
 
 // Erasing all tokens
-await service.token.deleteAll({ firm: 1 }, (error) => { throw error; });
+await service.token.deleteAll({ firm: 1 });
 
 export default app;

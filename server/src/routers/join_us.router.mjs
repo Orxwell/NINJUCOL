@@ -19,17 +19,16 @@ const routerJOIN_US = Router();
 routerJOIN_US.get('/join_us',
   middleware.query({}),
   async (req, res) => {
-    try {
-      return res.render(publicJoinUsEJS, {
-        title: `JoinUs | NINJUCOL`,
+    return res.render(publicJoinUsEJS, {
+      title: `JoinUs | NINJUCOL`,
 
-        server_url: env.SERVER_URL,
-      });
-
-    } catch (error) {
-      return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-    }
+      server_url: env.SERVER_URL,
+    }, (error, html) => {
+      if (error) return res.redirect('/error_at_get?' +
+        `error=${encodeURIComponent('RENDER_ERROR./join_us')}`);
+        
+      return res.send(html);
+    });
   }
 );
 // >>-------- GET - ABOVE --------<<
