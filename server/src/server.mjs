@@ -1,16 +1,16 @@
 // Import the Application
-import app from '#src/app.mjs'
+import app from '#src/app.mjs';
 
 // External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+import importer from '#importers/handler.importer.mjs';
 
 
 // Turning on the server, at PORT
-app.listen(env.PORT, () => {
-  if (env.MODE === 'dev') {
+app.listen(importer.env.PORT, () => {
+  if (importer.env.MODE === 'dev') {
     console.log(
-      `  ~Server listen at port: ${env.PORT}~\n` +
-      `  ~[ ${env.SERVER_URL} ]~\n`
+      `  ~Server listen at port: ${importer.env.PORT}~\n` +
+      `  ~[ ${importer.env.SERVER_URL} ]~\n`
     );
   }
 });

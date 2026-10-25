@@ -1,5 +1,5 @@
-import express      from 'express'      ;
-import morgan       from 'morgan'       ;
+import express      from 'express';
+import morgan       from 'morgan';
 import cookieParser from 'cookie-parser';
 
 // Router for the server
@@ -9,7 +9,7 @@ import router from '#routers/handler.router.mjs';
 import service from '#services/handler.service.mjs';
 
 // External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+import importer from '#importers/handler.importer.mjs';
 
 
 const app = express();
@@ -18,13 +18,13 @@ app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser('secret'));
+app.use(cookieParser(importer.env.COOKIE_SECRET));
 
 morgan.token('url', (req) => {
   return req.originalUrl.split('?')[0];
 });
 
-switch (env.MODE) {
+switch (importer.env.SERVER_MODE) {
   case 'dev':
     app.use(morgan('dev'));
     break;

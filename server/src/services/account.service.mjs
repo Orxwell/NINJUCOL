@@ -31,26 +31,27 @@ export default class AccountService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
-      await this.dbAPI.init((error) => { throw error; });
-      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+      await this.dbAPI.init();
+
+      this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
       
       await this.#createIndexes();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   #ensureInit () {
@@ -91,7 +92,7 @@ export default class AccountService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #createIndexes (callback=()=>{}) {
+  async #createIndexes (callback) {
     try {
       this.#ensureInit();
 
@@ -103,36 +104,36 @@ export default class AccountService {
             unique: true,
           },
         ],
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
    * @param {string} firm
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #validateFirm (firm='', callback=()=>{}) {
+  async #validateFirm (firm='', callback) {
     try {
       this.#ensureInit();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -147,7 +148,7 @@ export default class AccountService {
    * @param {string} info.status - Status's account.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, callback=()=>{}) {
+  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -160,7 +161,7 @@ export default class AccountService {
       this.#ensureObject(roles    , 'roles');
       this.#ensureString(status   , 'status');
 
-      const account = await this.findByEmail({ email: email }, (error) => { throw error; });
+      const account = await this.findByEmail({ email: email });
 
       if (account) {
         const error = new Error(this.errors['ERR-2']);
@@ -198,17 +199,17 @@ export default class AccountService {
 
           date: date,
         },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -217,7 +218,7 @@ export default class AccountService {
    * @param {string} info.password - Password's account.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async auth ({ email, password }={}, callback=()=>{}) {
+  async auth ({ email, password }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -227,7 +228,7 @@ export default class AccountService {
       const account = await this.dbAPI.findRecord({
         filter    : { email: email, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       const case_1 = {
         message: `Account doesn't exist.`,
@@ -274,7 +275,7 @@ export default class AccountService {
    * @param {string} info.email - Email's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async findByEmail ({ email }={}, callback=()=>{}) {
+  async findByEmail ({ email }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -283,7 +284,7 @@ export default class AccountService {
       const record = await this.dbAPI.findRecord({
         filter    : { email: email, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, record);
 
@@ -299,13 +300,13 @@ export default class AccountService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async findAll (callback=()=>{}) {
+  async findAll (callback) {
     try {
       this.#ensureInit();
 
       const records = await this.dbAPI.findRecords({
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, records);
 
@@ -318,7 +319,7 @@ export default class AccountService {
     }
   }
 
-  async updateByEmail ({ email, setter }={}, callback=()=>{}) {
+  async updateByEmail ({ email, setter }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -332,17 +333,17 @@ export default class AccountService {
       await this.dbAPI.updateRecord({
         filter: { email: email, },
         update: { $set: setter, },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -350,23 +351,23 @@ export default class AccountService {
    * @param {string} info.email - Email's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async deleteByEmail ({ email }={}, callback=()=>{}) {
+  async deleteByEmail ({ email }={}, callback) {
     try {
       this.#ensureInit();
 
       this.#ensureString(email, 'email');
 
-      await this.dbAPI.deleteRecord({ filter: { email: email } }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteRecord({ filter: { email: email } });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -374,22 +375,22 @@ export default class AccountService {
    * @param {string} [info.firm=''] - Firm from OAuth.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async deleteAll ({ firm='' }={}, callback=()=>{}) {
+  async deleteAll ({ firm='' }={}, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(null, (error) => { throw error; });
+      await this.#validateFirm(null);
 
-      await this.dbAPI.clearCollection((error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteAllRecords();
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 };

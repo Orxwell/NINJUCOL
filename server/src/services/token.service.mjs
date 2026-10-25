@@ -4,16 +4,19 @@ import controller from '#controllers/handler.controller.mjs';
 // Services for the service
 import service from '#services/handler.service.mjs';
 
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
+
 // External & Internal Libraries
 import { basename }      from 'path';
 import { randomBytes }   from 'crypto';
 import { fileURLToPath } from 'url';
 
-import { env } from '#importers/env.importer.mjs';
-
 
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
+
+const hours_to_ms = 60 * 60 * 1000;
 
 
 export default class TokenService {
@@ -29,37 +32,49 @@ export default class TokenService {
       'ERR-5': `Internal-Server-Error, from ${filename}: E-mail doesn't exist in tokens-collection.`,
     };
 
-    this.token_life_ms = env.TOKEN_LIFE_SECONDS * 1000;
+    this.token_ttl_ms = importer.env.TOKEN_TTL_HOURS * hours_to_ms;
 
     this.is_initialized = false;
     this.dbAPI = null;
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * Initialize the service, for this instance.
+   * @param {(error: Error|null, info: string|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
-      await this.dbAPI.init((error) => { throw error; });
-      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+      await this.dbAPI.init();
+
+      this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
 
       await this.#createIndexes();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -68,6 +83,15 @@ export default class TokenService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureString (value, name) {
     if (
       typeof value !== 'string' ||
@@ -79,6 +103,15 @@ export default class TokenService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureDate (value, name) {
     if (
       !(value instanceof Date) ||
@@ -93,7 +126,7 @@ export default class TokenService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #createIndexes (callback=()=>{}) {
+  async #createIndexes (callback) {
     try {
       this.#ensureInit();
 
@@ -110,60 +143,60 @@ export default class TokenService {
             expireAfterSeconds: 0,
           },
         ],
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
    * @param {string} firm
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #validateFirm (firm='', callback=()=>{}) {
+  async #validateFirm (firm='', callback) {
     try {
       this.#ensureInit();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Owner's token.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.email
+   * @param {(error: Error|null, info: Object|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async generate ({ email }={}, callback=()=>{}) {
+  async generate ({ email }={}, callback) {
     try {
-      const account = await service.account.findByEmail({ email: email }, (error, info) => {
+      await service.account.findByEmail({ email: email }, (error, record) => {
         if (error) throw error;
 
-        return info;
+        if (!record) {
+          const error = new Error(this.errors['ERR-5']);
+          error.code = 'ERR-5';
+          throw error;
+        }
       });
-
-      if (!account) {
-        const error = new Error(this.errors['ERR-5']);
-        error.code = 'ERR-5';
-        throw error;
-      }
 
       const token = randomBytes(32).toString('base64url');
       const normalized_email = email.trim().toLowerCase();
-      const expiration = new Date(Date.now() + this.token_life_ms);
+      const expiration = new Date(Date.now() + this.token_ttl_ms);
 
       const token_body = {
         token     : token,
@@ -183,13 +216,15 @@ export default class TokenService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.token - Token's concept.
-   * @param {string} info.email - Owner's token.
-   * @param {string} info.expiration - Expiration's token.
+   * @param {Object} options
+   * @param {string} options.token - Token's concept.
+   * @param {string} options.email - Owner's token.
+   * @param {string} options.expiration - Expiration's token.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async save ({ token, email, expiration }={}, callback=()=>{}) {
+  async save ({ token, email, expiration }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -202,25 +237,27 @@ export default class TokenService {
           email     : email,
           expiration: expiration,
         },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.token - Token's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.token - Token's record.
+   * @param {(error: Error|null, record: Object|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async findByToken ({ token }={}, callback=()=>{}) {
+  async findByToken ({ token }={}, callback) {
     try {
       this.#ensureInit();
     
@@ -229,7 +266,7 @@ export default class TokenService {
       const record = await this.dbAPI.findRecord({
         filter    : { token: token, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, record);
 
@@ -243,11 +280,13 @@ export default class TokenService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Email's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.email - Email's record.
+   * @param {(error: Error|null, record: string|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async findByEmail ({ email }={}, callback=()=>{}) {
+  async findByEmail ({ email }={}, callback) {
     try {
       this.#ensureInit();
     
@@ -256,7 +295,7 @@ export default class TokenService {
       const record = await this.dbAPI.findRecord({
         filter    : { email: email, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, record);
 
@@ -270,78 +309,78 @@ export default class TokenService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.token - Token's record.
+   * @param {Object} options
+   * @param {string} options.token - Token's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async deleteByToken ({ token }={}, callback=()=>{}) {
+  async deleteByToken ({ token }={}, callback) {
     try {
       this.#ensureInit();
       
       this.#ensureString(token, 'token');
 
-      await this.dbAPI.deleteRecord({ filter: { token: token }, }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteRecord({ filter: { token: token }, });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Email's record.
+   * @param {Object} options
+   * @param {string} options.email - Email's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * 
+   * @throws {Error}
    */
-  async deleteByEmail ({ email }={}, callback=()=>{}) {
+  async deleteByEmail ({ email }={}, callback) {
     try {
       this.#ensureInit();
     
       this.#ensureString(email, 'email');
 
-      await this.dbAPI.deleteRecord({ filter: { email: email }, }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteRecord({ filter: { email: email }, });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {string} [info.firm=''] - Firm from OAuth.
+   * @param {Object} options
+   * @param {string} [options.firm=''] - Firm from OAuth.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async deleteAll ({ firm='' }={}, callback=()=>{}) {
+  async deleteAll ({ firm='' }={}, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(firm, (error, info) => {
-        if (error) throw error;
+      await this.#validateFirm(firm);
 
-        return info;
-      });
-
-      await this.dbAPI.clearCollection((error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteAllRecords();
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 };

@@ -1,4 +1,4 @@
-// External & Internal Libraries
+// External & Internal libraries
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
 
@@ -33,13 +33,11 @@ export default function handlingQuery ({
 }={}) {
   // ------------ Middleware's configuration ------------
   // Checking: scheme
-  if (Object.prototype.toString.call(scheme) !== '[object Object]')
-    throw new Error(`Internal-Server-Error, from ${filename}: 'scheme' must be a valid plain object.`);
+  if (Object.prototype.toString.call(scheme) !== '[object Object]') throw new Error(`Internal-Server-Error, from ${filename}: 'scheme' must be a valid plain object.`);
 
   const accepted_types = ['string', 'number', 'boolean'];
   for (const [key, value] of Object.entries(scheme)) {
-    if (typeof value !== 'string' || value.trim() === '')
-      throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be a non-empty string.`);
+    if (typeof value !== 'string' || value.trim() === '') throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be a non-empty string.`);
 
     const given_types = value
       .split('|')
@@ -47,11 +45,10 @@ export default function handlingQuery ({
       .filter(Boolean);
     
     for (const type of given_types) {
-      if (!accepted_types.includes(type))
-        throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be one of [${accepted_types
-          .map(key => `'${key}'`)
-          .join(', ')}].`
-        );
+      if (!accepted_types.includes(type)) throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be one of [${accepted_types
+        .map(key => `'${key}'`)
+        .join(', ')}].`
+      );
     }
   }
 
@@ -59,12 +56,10 @@ export default function handlingQuery ({
   const internal_keys = Object.keys(scheme);
 
   // Checking: optional
-  if (Object.prototype.toString.call(optional) !== '[object Object]')
-    throw new Error(`Internal-Server-Error, from ${filename}: 'optional' must be a valid plain object.`);
+  if (Object.prototype.toString.call(optional) !== '[object Object]') throw new Error(`Internal-Server-Error, from ${filename}: 'optional' must be a valid plain object.`);
 
   for (const [key, value] of Object.entries(optional)) {
-    if (!internal_keys.includes(key))
-      throw new Error(`Internal-Server-Error, from ${filename}: 'optional.${key}' must also be declared in 'scheme'.`);
+    if (!internal_keys.includes(key)) throw new Error(`Internal-Server-Error, from ${filename}: 'optional.${key}' must also be declared in 'scheme'.`);
   }
 
   // Pre-calculating required-keys
@@ -72,11 +67,10 @@ export default function handlingQuery ({
 
   // Checking: mode
   const modes = ['reply', 'attach', 'next']
-  if (!modes.includes(mode))
-    throw new Error(`Internal-Server-Error, from ${filename}: 'mode' must be one of [${modes
-      .map(option => `'${option}'`)
-      .join(', ')}].`,
-    );
+  if (!modes.includes(mode)) throw new Error(`Internal-Server-Error, from ${filename}: 'mode' must be one of [${modes
+    .map(option => `'${option}'`)
+    .join(', ')}].`,
+  );
 
   // ------------ Middleware's callback ------------
   return (req, res, next) => {

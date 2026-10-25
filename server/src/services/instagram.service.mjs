@@ -2,7 +2,7 @@
 import { basename }      from 'path';
 import { fileURLToPath } from 'url';
 
-import { env } from '#importers/env.importer.mjs';
+import importer from '#importers/handler.importer.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ export default class InstagramService {
     this.cache = {};
     this.pending = {};
 
-    this.cache_ttl_ms = env.INSTAGRAM_TTL_HOURS * 60 * 60 * 1000;
+    this.cache_ttl_ms = importer.env.INSTAGRAM_TTL_HOURS * 60 * 60 * 1000;
   }
 
   /**
@@ -31,7 +31,7 @@ export default class InstagramService {
    */
   async init (callback=()=>{}) {
     try {
-      this.url = `${env.INSTAGRAM_API_URI}`;
+      this.url = `${importer.env.INSTAGRAM_API_URI}`;
 
       this.is_initialized = true;
 

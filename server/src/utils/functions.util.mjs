@@ -1,7 +1,9 @@
 // External & Internal Libraries
-import { fileURLToPath } from 'url';
-import { basename }      from 'path';
-import { readdir }       from 'fs/promises';
+import { fileURLToPath }     from 'url';
+import { basename, resolve } from 'path';
+import { readdir, unlink }   from 'fs/promises';
+
+import paths from '#utils/paths.util.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);
@@ -9,36 +11,66 @@ const filename = basename(abspath);
 
 
 // Async-function to get the folders of a folder...
-export async function getFolders(directoryPath) {
-  try {
-    // Find the folder content, including archives types
-    const folder_content = await readdir(directoryPath, { withFileTypes: true });
+export async function getFolders({ folder_path }={}) {
+  // Checking: folder_path
+  if (typeof folder_path !== 'string') return;
+  
+  // Find the folder content, including archives types
+  const folder_content = await readdir(folder_path, { withFileTypes: true });
 
-    // Filter the folder content by directories
-    const filtered_folders = folder_content.filter(dirent => dirent.isDirectory());
-
-    // Return just the names of the directories
-    return filtered_folders.map(dirent => dirent.name);
-  } catch (err) { throw err; }
+  // Return just the names of the directories
+  return folder_content
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
 }
 
 // Async-function to get the files of a folder...
-export async function getFiles(directoryPath) {
-  try {
-    // Find the folder content, including archives types
-    const folder_content = await readdir(directoryPath, { withFileTypes: true });
+export async function getFiles({ folder_path }={}) {
+  // Checking: folder_path
+  if (typeof folder_path !== 'string') return;
 
-    // Filter the folder content by files
-    const filtered_files = folder_content.filter(dirent => dirent.isFile());
-    
-    // Return just the names of the files
-    return filtered_files.map(dirent => dirent.name);
-  } catch (_) { return; }
+  // Find the folder content, including archives types
+  const folder_content = await readdir(folder_path, { withFileTypes: true });
+  
+  // Return just the names of the files
+  return folder_content
+    .filter(dirent => dirent.isFile())
+    .map(dirent => dirent.name);
+}
+
+// Async-function to delete a file of a folder...
+export async function delFile({ folder_path, file_name }={}) {
+  try {
+    const allowed_folders = /(?:public|private)/
+    const allowed_types = /(?:jpeg|png|webp|pdf)/
+
+    // Checking: folder_path
+    if (
+      typeof folder_path !== 'string' ||
+      !new RegExp(`^/${allowed_types.source}/${allowed_folders.source}$`).test(folder_path)
+    ) return false;
+
+    // Checking: file_name
+    if (
+      typeof file_name !== 'string' ||
+      !new RegExp(`^[a-zA-Z]+\\.${allowed_folders.source}\\.${allowed_types.source}$`).test(file_name)
+    ) return false;
+
+    // Create the absolute file's path
+    const file_path = resolve(paths.static, `.${folder_path}`, file_name);
+
+    // Delete the file
+    await unlink(file_path);
+
+    return true;
+
+  } catch (error) { return false; }
 }
 
 export function isValidMimeType(buffer, mime_type) {
   if (!Buffer.isBuffer(buffer)) return false;
 
+  // Check magic numbers of PNGs
   if (mime_type === 'image/png') {
     const signature = Buffer.from([
       137, 80, 78, 71, 13, 10, 26, 10,
@@ -50,6 +82,7 @@ export function isValidMimeType(buffer, mime_type) {
     );
   }
 
+  // Check magic numbers of JPEGs
   if (mime_type === 'image/jpeg') {
     return (
       buffer.length >= 4 &&
@@ -61,6 +94,7 @@ export function isValidMimeType(buffer, mime_type) {
     );
   }
 
+  // Check magic numbers of WEBPs
   if (mime_type === 'image/webp') {
     return (
       buffer.length >= 12 &&
@@ -69,6 +103,7 @@ export function isValidMimeType(buffer, mime_type) {
     );
   }
   
+  // Check magic numbers of PDFs
   if (mime_type === 'application/pdf') {
     return (
       buffer.length >= 5 &&
@@ -115,7 +150,7 @@ export function errorHTTP ({ header={}, body={} }={}) {
     .map(option => `'${option}'`)
     .join(', ')}].`);
   
-  const middlewares = ['query', 'body', 'route', 'mmultipart'];
+  const middlewares = ['query', 'body', 'route', 'mmultipart', 'auth'];
   if (!middlewares.includes(header.middleware)) throwError(`Internal-Server-Error, errorHTTP() from ${filename}: 'header.middleware' must be one of [${middlewares
     .map(option => `'${option}'`)
     .join(', ')}].`);

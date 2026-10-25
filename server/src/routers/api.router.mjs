@@ -9,7 +9,10 @@ import middleware from '#middlewares/handler.middleware.mjs';
 // Services for the API
 import service from '#services/handler.service.mjs';
 
-// External & Internal Libraries
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
+
+// External & Internal libraries
 import { lookup } from 'mime-types';
 import { join }   from 'path'      ;
 import {
@@ -17,8 +20,8 @@ import {
   constants,
 } from 'fs/promises';
 
-import { env } from '#importers/env.importer.mjs';
 import paths from '#utils/paths.util.mjs' ;
+
 import {
   getFolders,
   getFiles  ,
@@ -30,13 +33,13 @@ const routerAPI = Router();
 
 // Important-Internal-Constants: (IIC) ---------------¬
 const ROUTE_SPECS = {
-  css : { path: paths.cssPath  },
-  ico : { path: paths.icoPath  },
-  js  : { path: paths.jsPath   },
-  pdf : { path: paths.pdfPath  },
-  png : { path: paths.pngPath  },
-  wav : { path: paths.wavPath  },
-  webp: { path: paths.webpPath },
+  css : { path: paths.css  },
+  ico : { path: paths.ico  },
+  js  : { path: paths.js   },
+  pdf : { path: paths.pdf  },
+  png : { path: paths.png  },
+  wav : { path: paths.wav  },
+  webp: { path: paths.webp },
 }
 // ___________________________________________________-
 
@@ -46,21 +49,18 @@ const ROUTE_SPECS = {
 routerAPI.get('/api',
   middleware.query({}),
   async (req, res) => {
-    try {
-      const folders = await getFolders(paths.staticPath);
+    const folders = await getFolders({ folder_path: paths.static });
 
-      if (!folders) return res.status(404)
-        .json({ error: 'Sorry: folders not found' });
+    if (folders.length === 0) return res.status(404)
+      .json({ error: 'Sorry: folders not found' });
       
-      const endpoints = folders.map(folder => `${env.SERVER_URL}/api/${folder}`);
+    const endpoints = folders.map(folder => `${importer.env.SERVER_URL}/api/${folder}`);
 
-      return res.status(202)
-        .json({
-          availableFolders  : folders,
-          availableEndpoints: endpoints,
-        });
-      
-    } catch (error) { return res.sendStatus(503); }
+    return res.status(202)
+      .json({
+        availableFolders  : folders,
+        availableEndpoints: endpoints,
+      });
   }
 );
 
@@ -70,23 +70,21 @@ routerAPI.get('/api/:route',
   async (req, res) => {
     const { route } = req.params;
 
-    if (!ROUTE_SPECS[route]) return res.status(400).json({ error: `Unknown route: ${route}` });
+    if (!ROUTE_SPECS[route]) return res.status(400)
+      .json({ error: `Unknown route: ${route}` });
 
-    try {
-      const folders = await getFolders(ROUTE_SPECS[route].path);
+    const folders = await getFolders({ folder_path: ROUTE_SPECS[route].path });
 
-      if (!folders) return res.status(404)
-        .json({ error: 'Sorry: folders not found' });
+    if (folders.length === 0) return res.status(404)
+      .json({ error: 'Sorry: folders not found' });
 
-      const endpoints = folders.map(folder => `${env.SERVER_URL}/api/${route}/${folder}`);
+    const endpoints = folders.map(folder => `${importer.env.SERVER_URL}/api/${route}/${folder}`);
 
-      return res.status(202)
-        .json({
-          availableFolders  : folders,
-          availableEndpoints: endpoints,
-        });
-      
-    } catch (error) { return res.sendStatus(503); }
+    return res.status(202)
+      .json({
+        availableFolders  : folders,
+        availableEndpoints: endpoints,
+      });
   }
 );
 
@@ -123,27 +121,19 @@ routerAPI.get('/api/:route/:to',
       if (res.headersSent) return;
     }
 
-    try {
-      const abs_path = join(ROUTE_SPECS[route].path, to);
-      const files    = await getFiles(abs_path);
+    const abs_path = join(ROUTE_SPECS[route].path, to);
+    const files    = await getFiles({ folder_path: abs_path });
 
-      if (!files) return res.status(404)
-        .json({ error: 'Sorry: files not found' });
+    if (files.length === 0) return res.status(404)
+      .json({ error: 'Sorry: files not found' });
 
-      const endpoints = files.map(file => `${env.SERVER_URL}/api/${route}/${to}/${file}`);
+    const endpoints = files.map(file => `${importer.env.SERVER_URL}/api/${route}/${to}/${file}`);
 
-      return res.status(202)
-        .json({
-          availableFiles    : files,
-          availableEndpoints: endpoints,
-        });
-      
-    } catch (error) {
-      if (error.code === 'ENOENT') return res.status(404)
-        .json({ error: 'Sorry: resource not found' });
-
-      return res.sendStatus(503);
-    }
+    return res.status(202)
+      .json({
+        availableFiles    : files,
+        availableEndpoints: endpoints,
+      });
   }
 );
 
@@ -184,9 +174,9 @@ routerAPI.get('/api/:route/:to/:file',
       if (res.headersSent) return;
     }
 
-    try {
-      const requested_path = join(ROUTE_SPECS[route]?.path, to, file);
+    const requested_path = join(ROUTE_SPECS[route]?.path, to, file);
 
+    try {
       await access(requested_path, constants.F_OK);
 
       res.setHeader('Content-Type', lookup(requested_path));

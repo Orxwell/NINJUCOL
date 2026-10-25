@@ -1,33 +1,35 @@
-import { env } from '#importers/env.importer.mjs';
+/**
+ * MongoDB importer for managing connection.
+ * @see {@link https://www.mongodb.com/docs/drivers/node/current/ | MongoDB Node.js Driver Documentation}
+ */
 
+// External & Internal libraries
 import {
   MongoClient     ,
   ServerApiVersion,
 } from 'mongodb';
 
-// -----------Configuring the MongoDB-client - BELOW-----------
-const URI = env.URI_CLUSTER
-  .replace('<username_cluster>', encodeURIComponent(env.USERNAME_CLUSTER))
-  .replace('<password_cluster>', encodeURIComponent(env.PASSWORD_CLUSTER));
+import { env } from './env.importer.mjs';
 
-const client_config = {
+
+const client = new MongoClient(env.DB_CLUSTER_URI, {
   serverApi: {
     version          : ServerApiVersion.v1,
     strict           : true               ,
     deprecationErrors: true               ,
   }
-};
+});
 
-const client = new MongoClient(URI, client_config);
-// -----------Configuring the MongoDB-client - ABOVE-----------
-
-// -----------Connecting to the Cluster - BELOW-----------
-/**
- * @type {import('mongodb').Db}
- */
 let db       ;
 let dbPromise;
-export async function connectDB() {
+
+
+// -----------MongoDB-client - BELOW-----------
+/**
+ * Connects to the MongoDB database.
+ * @returns {Promise<import('mongodb').Db>}
+ */
+export async function connect () {
   // Already connected...
   if (db) return db;
 
@@ -38,12 +40,12 @@ export async function connectDB() {
   dbPromise = (async () => {
     try {
       await client.connect();
-      console.log('  ~Connected to MongoDB.~');
-      
-      db = client.db(env.DBNAME_CLUSTER);
-      console.log(`  ~Using cluster: ${env.DBNAME_CLUSTER}~`);
 
-      return db;
+      console.log('  ~Connected to MongoDB.~');
+      console.log(`  ~Using cluster: ${env.DB_CLUSTER_NAME}~`);
+
+      return client.db(env.DB_CLUSTER_NAME);
+
     } catch (error) {
       // If it fails, then reset
       dbPromise = null;
@@ -54,4 +56,4 @@ export async function connectDB() {
 
   return dbPromise;
 }
-// -----------Connecting to the Cluster - ABOVE-----------
+// -----------MongoDB-client - ABOVE-----------

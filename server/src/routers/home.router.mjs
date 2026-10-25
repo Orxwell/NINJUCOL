@@ -7,8 +7,8 @@ import { publicHomeEJS } from '#utils/templates.util.mjs';
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
 
 
 const routerHOME = Router();
@@ -22,7 +22,7 @@ routerHOME.get('/',
     return res.render(publicHomeEJS, {
       title: `Home | NINJUCOL`,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./')}`);

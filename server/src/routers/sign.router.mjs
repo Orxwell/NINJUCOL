@@ -14,8 +14,8 @@ import middleware from '#middlewares/handler.middleware.mjs';
 // Services for the route
 import service from '#services/handler.service.mjs';
 
-// External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
 
 
 const routerSIGN = Router();
@@ -34,11 +34,11 @@ routerSIGN.get('/sign_in',
     const { auth_token } = req.cookies;
 
     if (auth_token) {
-      await service.token.findByToken({ token: auth_token }, (error, info) => {
+      return await service.token.findByToken({ token: auth_token }, (error, record) => {
         if (error) return res.redirect('/error_at_get?' +
           `error=${encodeURIComponent(error)}`);
   
-        if (!info) {
+        if (!record) {
           res.clearCookie('auth_token', {
             httpOnly: true,
             secure: true,
@@ -51,8 +51,6 @@ routerSIGN.get('/sign_in',
         
         return res.redirect('/dashboard');
       });
-
-      if (res.headersSent) return;
     }
 
     const { error } = req.query;
@@ -62,7 +60,7 @@ routerSIGN.get('/sign_in',
 
       error: error,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
@@ -213,41 +211,15 @@ routerSIGN.post('/sign_in',
 );
 
 routerSIGN.post('/sign_out',
+  middleware.auth({}),
   middleware.query({}),
   async (req, res) => {
-    const { auth_token } = req.cookies;
-
-    if (!auth_token) {
-      res.clearCookie('auth_token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-      });
-
-      return res.redirect('/sign_in?' +
-      `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
-    }
-
-    await service.token.findByToken({ token: auth_token }, (error, info) => {
-      if (error) return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error)}`);
-      
-      if (!info) {
-        res.clearCookie('auth_token', {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'strict',
-        });
-
-        return res.redirect('/sign_in?' +
-        `error=${encodeURIComponent('Sesión expirada.')}`);
-      }
-      
-      return info;
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
     });
-
-    if (res.headersSent) return;
-
+    
     return res.redirect('/sign_in');
   }
 );

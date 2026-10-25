@@ -13,8 +13,8 @@ import middleware from '#middlewares/handler.middleware.mjs';
 // Services for the route
 import service from '#services/handler.service.mjs';
 
-// External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
 
 
 const routerNEWS = Router();
@@ -28,26 +28,24 @@ routerNEWS.get('/news',
     optional: { error: undefined, },
   }),
   async (req, res) => {
-    const found_news = await service.new.findAll((error, info) => {
+    return await service.new.findAll((error, records) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      return info;
-    });
+      return res.render(publicNewsEJS, {
+        title: `News | NINJUCOL`,
+    
+        news: records,
 
-    if (res.headersSent) return;
-
-    return res.render(publicNewsEJS, {
-      title: `News | NINJUCOL`,
-
-      news: found_news,
-
-      server_url: env.SERVER_URL,
-    }, (error, html) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent('RENDER_ERROR./news')}`);
-      
-      return res.send(html);
+        error: error,
+    
+        server_url: importer.env.SERVER_URL,
+      }, (error, html) => {
+        if (error) return res.redirect('/error_at_get?' +
+          `error=${encodeURIComponent('RENDER_ERROR./news')}`);
+          
+        return res.send(html);
+      });
     });
   }
 );
@@ -57,29 +55,25 @@ routerNEWS.get('/news/new',
   async (req, res) => {
     const { uuid } = req.query;
 
-    const found_new = await service.new.findByUUID({ uuid: uuid }, (error, info) => {
+    return await service.new.findByUUID({ uuid: uuid }, (error, record) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return res.redirect('/news' +
+      if (!record) return res.redirect('/news' +
       `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
       
-      return info;
-    });
-
-    if (res.headersSent) return;
-
-    return res.render(publicNewEJS, {
-      title: `New | NINJUCOL`,
-
-      new: found_new,
-
-      server_url: env.SERVER_URL,
-    }, (error, html) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent('RENDER_ERROR./new')}`);
-      
-      return res.send(html);
+      return res.render(publicNewEJS, {
+        title: `New | NINJUCOL`,
+  
+        new: record,
+  
+        server_url: importer.env.SERVER_URL,
+      }, (error, html) => {
+        if (error) return res.redirect('/error_at_get?' +
+          `error=${encodeURIComponent('RENDER_ERROR./new')}`);
+        
+        return res.send(html);
+      });
     });
   }
 );

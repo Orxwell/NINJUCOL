@@ -1,14 +1,16 @@
-import handlingQuery     from './query.middleware.mjs';
+import handlingAuth      from './auth.middleware.mjs';
 import handlingBody      from './body.middleware.mjs';
-import handlingRoute     from './route.middleware.mjs';
 import handlingMultipart from './multipart.middleware.mjs';
+import handlingQuery     from './query.middleware.mjs';
+import handlingRoute     from './route.middleware.mjs';
 // Import more middlewares if it's needed
 
 const middleware = {
-  'query'    : handlingQuery,
+  'auth'     : handlingAuth,
   'body'     : handlingBody,
-  'route'    : handlingRoute,
   'multipart': handlingMultipart,
+  'query'    : handlingQuery,
+  'route'    : handlingRoute,
   // Remember importing it
 }
 

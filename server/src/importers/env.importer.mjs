@@ -6,8 +6,8 @@ const temp = {}
 
 
 // Server configuration...
-temp.MODE = auditENV({
-  name   : 'MODE',
+temp.SERVER_MODE = auditENV({
+  name   : 'SERVER_MODE',
   type   : 'string',
   preset : 'dev',
   options: [
@@ -19,65 +19,68 @@ temp.MODE = auditENV({
     'PROD',
   ],
 }).toLowerCase();
-temp.DOMAIN = auditENV({
-  name  : 'DOMAIN',
+temp.SERVER_DOMAIN = auditENV({
+  name  : 'SERVER_DOMAIN',
   type  : 'string',
   preset: 'localhost',
 });
-temp.PORT = auditENV({
-  name  : 'PORT',
+temp.SERVER_PORT = auditENV({
+  name  : 'SERVER_PORT',
   type  : 'number',
   preset: 5050,
 });
-temp.SERVER_URL = ['localhost', '127.0.0.1'].includes(temp.DOMAIN)
-  ? `http://localhost:${temp.PORT}`
-  : `https://${temp.DOMAIN}`;
+temp.SERVER_URL = ['localhost', '127.0.0.1'].includes(temp.SERVER_DOMAIN)
+  ? `http://localhost:${temp.SERVER_PORT}`
+  : `https://${temp.SERVER_DOMAIN}`;
 
 
 // Database configuration...
-temp.DBNAME_CLUSTER = auditENV({
-  name    : 'DBNAME_CLUSTER',
+temp.DB_CLUSTER_NAME = auditENV({
+  name    : 'DB_CLUSTER_NAME',
   type    : 'string',
   required: true,
 });
-temp.USERNAME_CLUSTER = auditENV({
-  name    : 'USERNAME_CLUSTER',
+temp.DB_CLUSTER_OWNER = auditENV({
+  name    : 'DB_CLUSTER_OWNER',
   type    : 'string',
   required: true,
 });
-temp.PASSWORD_CLUSTER = auditENV({
-  name    : 'PASSWORD_CLUSTER',
+temp.DB_CLUSTER_PASSWORD = auditENV({
+  name    : 'DB_CLUSTER_PASSWORD',
   type    : 'string',
   required: true,
 });
-temp.URI_CLUSTER = auditENV({
-  name    : 'URI_CLUSTER',
+temp.DB_CLUSTER_URI = auditENV({
+  name    : 'DB_CLUSTER_URI',
   type    : 'string',
   required: true,
 });
+temp.DB_CLUSTER_URI = temp.DB_CLUSTER_URI
+  .replace('<db_cluster_owner>', encodeURIComponent(temp.DB_CLUSTER_OWNER))
+  .replace('<db_cluster_password>', encodeURIComponent(temp.DB_CLUSTER_PASSWORD));
 
 
 // Corporate-Email configuration...
-temp.CORP_EMAIL_DOMAIN = auditENV({
-  name    : 'CORP_EMAIL_DOMAIN',
+temp.EMAIL_DOMAIN = auditENV({
+  name    : 'EMAIL_DOMAIN',
   type    : 'string',
   required: true,
 });
-temp.CORP_EMAIL_KEY = auditENV({
-  name    : 'CORP_EMAIL_KEY',
+temp.EMAIL_KEY = auditENV({
+  name    : 'EMAIL_KEY',
   type    : 'string',
   required: true,
 });
 
 
 // Instagram configuration...
-temp.INSTAGRAM_API_TOKEN = auditENV({
-  name    : 'INSTAGRAM_API_TOKEN',
+temp.INSTAGRAM_TOKEN = auditENV({
+  name    : 'INSTAGRAM_TOKEN',
   type    : 'string',
   required: true,
 });
-temp.INSTAGRAM_API_URI = auditENV({
-  name    : 'INSTAGRAM_API_URI',
+temp.INSTAGRAM_URI = auditENV({
+  name    : 'INSTAGRAM_URI',
   type    : 'string',
   required: true,
 });
@@ -86,15 +89,15 @@ temp.INSTAGRAM_TTL_HOURS = auditENV({
   type  : 'number',
   preset: 1,
 });
-temp.INSTAGRAM_API_URI = temp.INSTAGRAM_API_URI
-  .replace('<token>', encodeURIComponent(temp.INSTAGRAM_API_TOKEN));
+temp.INSTAGRAM_URI = temp.INSTAGRAM_URI
+  .replace('<access_token>', encodeURIComponent(temp.INSTAGRAM_TOKEN));
 
 
 // Token configuration...
-temp.TOKEN_LIFE_SECONDS = auditENV({
-  name  : 'TOKEN_LIFE_SECONDS',
+temp.TOKEN_TTL_HOURS = auditENV({
+  name  : 'TOKEN_TTL_HOURS',
   type  : 'number',
-  preset: 3600,
+  preset: 1,
 });
 
 
@@ -108,28 +111,28 @@ temp.COOKIE_SECRET = auditENV({
 
 export const env = Object.freeze({
   // Server configuration...
-  MODE      : temp.MODE,
-  DOMAIN    : temp.DOMAIN,
-  PORT      : temp.PORT,
-  SERVER_URL: temp.SERVER_URL,
+  SERVER_MODE  : temp.SERVER_MODE,
+  SERVER_DOMAIN: temp.SERVER_DOMAIN,
+  SERVER_PORT  : temp.SERVER_PORT,
+  SERVER_URL   : temp.SERVER_URL,
 
   // Database configuration...
-  DBNAME_CLUSTER  : temp.DBNAME_CLUSTER,
-  USERNAME_CLUSTER: temp.USERNAME_CLUSTER,
-  PASSWORD_CLUSTER: temp.PASSWORD_CLUSTER,
-  URI_CLUSTER     : temp.URI_CLUSTER,
+  DB_CLUSTER_NAME    : temp.DB_CLUSTER_NAME,
+  DB_CLUSTER_OWNER   : temp.DB_CLUSTER_OWNER,
+  DB_CLUSTER_PASSWORD: temp.DB_CLUSTER_PASSWORD,
+  DB_CLUSTER_URI     : temp.DB_CLUSTER_URI,
 
-  // Corporate-Email configuration...
-  CORP_EMAIL_DOMAIN: temp.CORP_EMAIL_DOMAIN,
-  CORP_EMAIL_KEY   : temp.CORP_EMAIL_KEY,
+  // Email configuration...
+  EMAIL_DOMAIN: temp.EMAIL_DOMAIN,
+  EMAIL_KEY   : temp.EMAIL_KEY,
 
   // Instagram configuration...
-  INSTAGRAM_API_TOKEN: temp.INSTAGRAM_API_TOKEN,
-  INSTAGRAM_API_URI  : temp.INSTAGRAM_API_URI,
+  INSTAGRAM_TOKEN    : temp.INSTAGRAM_TOKEN,
+  INSTAGRAM_URI      : temp.INSTAGRAM_URI,
   INSTAGRAM_TTL_HOURS: temp.INSTAGRAM_TTL_HOURS,
 
   // Token configuration...
-  TOKEN_LIFE_SECONDS: temp.TOKEN_LIFE_SECONDS,
+  TOKEN_TTL_HOURS: temp.TOKEN_TTL_HOURS,
 
   // Cookie configuration...
   COOKIE_SECRET: temp.COOKIE_SECRET,

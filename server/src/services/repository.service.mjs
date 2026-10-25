@@ -28,26 +28,27 @@ export default class RepositoryService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       // Setting controllers
       this.dbAPI = new controller.dbAPI();
-      await this.dbAPI.init((error) => { throw error; });
-      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+      await this.dbAPI.init();
+
+      this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
       
       await this.#createIndexes();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
       
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   #ensureInit () {
@@ -88,7 +89,7 @@ export default class RepositoryService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #createIndexes (callback=()=>{}) {
+  async #createIndexes (callback) {
     try {
       this.#ensureInit();
 
@@ -100,36 +101,36 @@ export default class RepositoryService {
             unique: true,
           },
         ],
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
    * @param {string} firm
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async #validateFirm (firm='', callback=()=>{}) {
+  async #validateFirm (firm='', callback) {
     try {
       this.#ensureInit();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -139,7 +140,7 @@ export default class RepositoryService {
    * @param {string} info.resource_uri - URI's resource.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async create ({ title, description, resource_uri }={}, callback=()=>{}) {
+  async create ({ title, description, resource_uri }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -167,17 +168,17 @@ export default class RepositoryService {
 
           date: date,
         },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -185,7 +186,7 @@ export default class RepositoryService {
    * @param {string} info.uuid - UUID's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async findByUUID ({ uuid }={}, callback=()=>{}) {
+  async findByUUID ({ uuid }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -194,7 +195,7 @@ export default class RepositoryService {
       const record = await this.dbAPI.findRecord({
         filter    : { 'uuid': uuid, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, record);
 
@@ -210,13 +211,13 @@ export default class RepositoryService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async findAll (callback=()=>{}) {
+  async findAll (callback) {
     try {
       this.#ensureInit();
 
       const records = await this.dbAPI.findRecords({
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, records);
 
@@ -238,7 +239,7 @@ export default class RepositoryService {
    * @param {string} info.setter.resource_uri - Set URI's resource.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async updateByUUID ({ uuid, setter }={}, callback=()=>{}) {
+  async updateByUUID ({ uuid, setter }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -259,17 +260,17 @@ export default class RepositoryService {
             resource_uri: setter.resource_uri,
           },
         },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -277,23 +278,23 @@ export default class RepositoryService {
    * @param {string} info.uuid - UUID's record.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async deleteByUUID ({ uuid }={}, callback=()=>{}) {
+  async deleteByUUID ({ uuid }={}, callback) {
     try {
       this.#ensureInit();
 
       this.#ensureString(uuid, 'uuid');
 
-      await this.dbAPI.deleteRecord({ filter: { 'uuid': uuid }, }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteRecord({ filter: { 'uuid': uuid }, });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
@@ -301,17 +302,13 @@ export default class RepositoryService {
    * @param {string} [info.firm=''] - Firm from OAuth.
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async deleteAll ({ firm='' }={}, callback=()=>{}) {
+  async deleteAll ({ firm='' }={}, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(null, (error) => { throw error; });
+      await this.#validateFirm(null);
 
-      await this.dbAPI.clearCollection((error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteAllRecords();
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);

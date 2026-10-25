@@ -10,8 +10,8 @@ import middleware from '#middlewares/handler.middleware.mjs';
 // Services for the route
 import service from '#services/handler.service.mjs';
 
-// External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+// Importers for the endpoints
+import importer from '#importers/handler.importer.mjs';
 
 
 const routerCAMPAIGNS = Router();
@@ -22,26 +22,22 @@ const routerCAMPAIGNS = Router();
 routerCAMPAIGNS.get('/campaigns',
   middleware.query({}),
   async (req, res) => {
-    const found_campaigns = await service.campaign.findAll((error, info) => {
+    return await service.campaign.findAll((error, records) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      return info;
-    });
-
-    if (res.headersSent) return;
-
-    return res.render(publicCampaignsEJS, {
-      title: `Campaigns | NINJUCOL`,
-
-      campaigns: found_campaigns,
-
-      server_url: env.SERVER_URL,
-    }, (error, html) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent('RENDER_ERROR./campaigns')}`);
-        
-      return res.send(html);
+      return res.render(publicCampaignsEJS, {
+        title: `Campaigns | NINJUCOL`,
+    
+        campaigns: records,
+    
+        server_url: importer.env.SERVER_URL,
+      }, (error, html) => {
+        if (error) return res.redirect('/error_at_get?' +
+          `error=${encodeURIComponent('RENDER_ERROR./campaigns')}`);
+            
+        return res.send(html);
+      });
     });
   }
 );

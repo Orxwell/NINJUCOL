@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
+
 const __filename  = fileURLToPath(import.meta.url);
 const server_path = join(dirname(__filename), '/../../');
 
@@ -35,28 +36,28 @@ const views_path = join(server_path, '/views');
 
 
 const paths = {
-  srcPath: src_path,
-    controllersPath: controllers_path,
-    importersPath  : importers_path,
-    middlewaresPath: middlewares_path,
-    routesPath     : routes_path,
-    utilsPath      : utils_path,
+  src: src_path,
+    controllers: controllers_path,
+    importers  : importers_path,
+    middlewares: middlewares_path,
+    routes     : routes_path,
+    utils      : utils_path,
 
-  staticPath: static_path,
-    cssPath : css_path,
-    icoPath : ico_path,
-    jpegPath: jpeg_path,
-    jsPath  : js_path,
-    pdfPath : pdf_path,
-    pngPath : png_path,
-    wavPath : wav_path,
-    webpPath: webp_path,
+  static: static_path,
+    css : css_path,
+    ico : ico_path,
+    jpeg: jpeg_path,
+    js  : js_path,
+    pdf : pdf_path,
+    png : png_path,
+    wav : wav_path,
+    webp: webp_path,
 
-  viewsPath: views_path,
-    errorsPath : errors_path,
-    mailsPath  : mails_path,
-    privatePath: private_path,
-    publicPath : public_path,
+  views: views_path,
+    errors : errors_path,
+    mails  : mails_path,
+    private: private_path,
+    public : public_path,
 };
 
 export default paths;
