@@ -219,7 +219,7 @@ export default class NewsService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, records: Object|null) => void} [callback] - (Optional)
    */
   async findAll (callback) {
     try {

@@ -147,11 +147,11 @@ routerSIGN.post('/sign_in',
 
     if (res.headersSent) return;
 
-    const found_token = await service.token.findByEmail({ email: data.email, }, async (error, info) => {
+    const found_token = await service.token.findByEmail({ email: data.email, }, async (error, record) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!info) return await service.token.generate({ email: data.email, }, async (error, info) => {
+      if (!record) return await service.token.generate({ email: data.email, }, async (error, info) => {
         if (error) return res.redirect('/error_at_post?' +
           `error=${encodeURIComponent(error)}`);
 
@@ -166,7 +166,7 @@ routerSIGN.post('/sign_in',
           return info;
         });
           
-        return info;
+        return record;
       });
         
       return info;

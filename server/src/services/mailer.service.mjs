@@ -29,20 +29,20 @@ export default class MailerService {
   async init (callback=()=>{}) {
     try {
       // Setting controllers
-      this.mailerAPI = new controller.mailerAPI();
-      await this.mailerAPI.init((error) => { throw error; });
+      this.mailerAPI = new controller.smtpAPI();
+      await this.mailerAPI.init();
 
       this.is_initialized = true;
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
       
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   #ensureInit () {
