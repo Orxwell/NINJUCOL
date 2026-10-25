@@ -151,14 +151,14 @@ routerSIGN.post('/sign_in',
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!record) return await service.token.generate({ email: data.email, }, async (error, info) => {
+      if (!record) return await service.token.generate({ email: data.email, }, async (error, token_body) => {
         if (error) return res.redirect('/error_at_post?' +
           `error=${encodeURIComponent(error)}`);
 
         await service.token.save({
-          token     : info.token,
-          email     : info.email,
-          expiration: info.expiration,
+          token     : token_body.token,
+          email     : token_body.email,
+          expiration: token_body.expiration,
         }, (error, info) => {
           if (error) return res.redirect('/error_at_post?' +
             `error=${encodeURIComponent(error)}`);
@@ -166,19 +166,19 @@ routerSIGN.post('/sign_in',
           return info;
         });
           
-        return record;
+        return token_body;
       });
         
-      return info;
+      return record;
     });
 
     if (res.headersSent) return;
 
-    const { firstname, lastname } = await service.account.findByEmail({ email: data.email }, (error, info) => {
+    const { firstname, lastname } = await service.account.findByEmail({ email: data.email }, (error, record) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
         
-      return info;
+      return record;
     });
 
     if (res.headersSent) return;

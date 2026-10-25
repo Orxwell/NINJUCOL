@@ -356,7 +356,7 @@ export default class MongoDBController {
 
       const handler = this.#collectionHandler();
 
-      record = await handler.findOne(filter, { projection }) ?? {};
+      record = await handler.findOne(filter, { projection });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);

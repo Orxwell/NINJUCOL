@@ -39,7 +39,7 @@ export async function getFiles({ folder_path }={}) {
 }
 
 // Async-function to delete a file of a folder...
-export async function delFile({ folder_path, file_name }={}) {
+export async function delFile({ folder_path }={}) {
   try {
     const allowed_folders = /(?:public|private)/
     const allowed_types = /(?:jpeg|png|webp|pdf)/
@@ -50,14 +50,8 @@ export async function delFile({ folder_path, file_name }={}) {
       !new RegExp(`^/${allowed_types.source}/${allowed_folders.source}$`).test(folder_path)
     ) return false;
 
-    // Checking: file_name
-    if (
-      typeof file_name !== 'string' ||
-      !new RegExp(`^[a-zA-Z]+\\.${allowed_folders.source}\\.${allowed_types.source}$`).test(file_name)
-    ) return false;
-
     // Create the absolute file's path
-    const file_path = resolve(paths.static, `.${folder_path}`, file_name);
+    const file_path = resolve(paths.static, `.${folder_path}`);
 
     // Delete the file
     await unlink(file_path);
@@ -150,7 +144,7 @@ export function errorHTTP ({ header={}, body={} }={}) {
     .map(option => `'${option}'`)
     .join(', ')}].`);
   
-  const middlewares = ['query', 'body', 'route', 'mmultipart', 'auth'];
+  const middlewares = ['query', 'body', 'route', 'multipart', 'auth'];
   if (!middlewares.includes(header.middleware)) throwError(`Internal-Server-Error, errorHTTP() from ${filename}: 'header.middleware' must be one of [${middlewares
     .map(option => `'${option}'`)
     .join(', ')}].`);

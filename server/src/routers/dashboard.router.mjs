@@ -291,17 +291,13 @@ routerDASHBOARD.post('/dashboard/del/new',
   async (req, res) => {
     const { uuid } = req.query;
 
-    await service.new.deleteByUUID({ uuid: uuid }, (error, info) => {
+    return await service.new.deleteByUUID({ uuid: uuid }, (error, info) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      return info;
+      return res.redirect('/dashboard?' +
+        `info=${encodeURIComponent('Noticia borrado.')}`);
     });
-
-    if (res.headersSent) return;
-
-    return res.redirect('/dashboard?' +
-      `info=${encodeURIComponent('Noticia borrada.')}`);
   },
 );
 
@@ -395,17 +391,13 @@ routerDASHBOARD.post('/dashboard/del/campaign',
   async (req, res) => {
     const { uuid } = req.query;
 
-    await service.campaign.deleteByUUID({ uuid: uuid }, (error, info) => {
+    return await service.campaign.deleteByUUID({ uuid: uuid }, (error, info) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      return info;
+      return res.redirect('/dashboard?' +
+        `info=${encodeURIComponent('Campaña borrado.')}`);
     });
-
-    if (res.headersSent) return;
-
-    return res.redirect('/dashboard?' +
-      `info=${encodeURIComponent('Campaña borrada.')}`);
   },
 );
 
@@ -501,17 +493,13 @@ routerDASHBOARD.post('/dashboard/del/repository',
   async (req, res) => {
     const { uuid } = req.query;
 
-    await service.repository.deleteByUUID({ uuid: uuid }, (error, info) => {
+    return await service.repository.deleteByUUID({ uuid: uuid }, (error, info) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
-      return info;
+      return res.redirect('/dashboard?' +
+        `info=${encodeURIComponent('Recurso borrado.')}`);
     });
-
-    if (res.headersSent) return;
-
-    return res.redirect('/dashboard?' +
-      `info=${encodeURIComponent('Recurso borrado.')}`);
   },
 );
 

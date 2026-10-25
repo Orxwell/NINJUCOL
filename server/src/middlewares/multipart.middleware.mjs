@@ -1,6 +1,7 @@
 // External & Internal ibraries
 import multer from 'multer';
 
+import { randomUUID } from 'node:crypto';
 import {
   mkdir,
   open,
@@ -19,6 +20,7 @@ import {
   errorHTTP,
   isValidMimeType
 } from '#utils/functions.util.mjs';
+
 
 
 const abspath  = fileURLToPath(import.meta.url);
@@ -336,7 +338,7 @@ export default function handlingMultipart({
 
           // Physical storage location
           const destination_path = join(
-            paths.staticPath,
+            paths.static,
             folder,
             'public'
           );
@@ -347,7 +349,7 @@ export default function handlingMultipart({
           );
 
           // Public URI
-          const generated_uri = `/api/${folder}/public/${encodeURIComponent(file_name)}`;
+          const generated_uri = `/api/${folder}/public/${randomUUID()}.public${file_extension}`;
 
           prepared_files.push({
             key,

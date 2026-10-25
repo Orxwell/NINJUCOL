@@ -284,7 +284,18 @@ export default class RepositoryService {
 
       this.#ensureString(uuid, 'uuid');
 
-      await this.dbAPI.deleteRecord({ filter: { 'uuid': uuid }, });
+      await this.dbAPI.findRecord({
+        filter: { uuid: uuid, },
+        projection: { _id: 0, },
+      }, async (error, record) => {
+        if (error) throw error;
+      
+        if (record) {
+          await delFile({ folder_path: record.resource_uri.slice(4) });
+        
+          await this.dbAPI.deleteRecord({ filter: { uuid: record.uuid }, });
+        }
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);

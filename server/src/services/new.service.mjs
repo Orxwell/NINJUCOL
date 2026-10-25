@@ -300,19 +300,18 @@ export default class NewsService {
 
       this.#ensureString(uuid, 'uuid');
 
-      const record = await this.dbAPI.findRecord({
+      await this.dbAPI.findRecord({
         filter: { uuid: uuid, },
-        projection: { _id: 0, resource_uri: 1, }
+        projection: { _id: 0, },
+      }, async (error, record) => {
+        if (error) throw error;
+
+        if (record) {
+          await delFile({ folder_path: record.resource_uri.slice(4) });
+  
+          await this.dbAPI.deleteRecord({ filter: { uuid: record.uuid }, });
+        }
       });
-
-      if (record) {
-        await delFile({
-          folder_path: record.resource_uri.slice(4),
-
-        });
-      }
-
-      await this.dbAPI.deleteRecord({ filter: { uuid: uuid }, });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);

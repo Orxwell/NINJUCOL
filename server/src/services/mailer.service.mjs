@@ -26,7 +26,7 @@ export default class MailerService {
   /**
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       // Setting controllers
       this.mailerAPI = new controller.smtpAPI();
@@ -81,7 +81,7 @@ export default class MailerService {
    * @param {Object} info.ejs_args
    * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
    */
-  async send ({ to, subject, text, ejs_path, ejs_args }={}, callback=()=>{}) {
+  async send ({ to, subject, text, ejs_path, ejs_args }={}, callback) {
     try {
       this.#ensureInit();
 
@@ -97,16 +97,16 @@ export default class MailerService {
         text    : text,
         ejs_path: ejs_path,
         ejs_args: ejs_args,
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 };
