@@ -180,19 +180,26 @@ routerSIGN.post('/sign_in',
     }, async (error, record) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-  
-      await service.mailer.send({
-        to: data.email,
-        subject: 'Has accedido correctamente. | NINJUCOL',
-        text: 'Correo automatizado.',
-        ejs_path: mailSignInEJS,
-        ejs_args: {
-          firstname: record.firstname,
-          lastname : record.lastname,
-        }
-      }, (error, info) => {
+      
+      if (Object.keys(record).length !== 0) await service.token.findByEmail({
+        email: record.email
+      }, async (error, token_obj) => {
         if (error) return res.redirect('/error_at_post?' +
           `error=${encodeURIComponent(error)}`);
+
+        if (typeof token_obj.token === 'string') await service.mailer.send({
+          to: data.email,
+          subject: 'Has accedido correctamente. | NINJUCOL',
+          text: 'Correo automatizado.',
+          ejs_path: mailSignInEJS,
+          ejs_args: {
+            firstname: record.firstname,
+            lastname : record.lastname,
+          }
+        }, (error, info) => {
+          if (error) return res.redirect('/error_at_post?' +
+            `error=${encodeURIComponent(error)}`);
+        });
       });
     });
 
