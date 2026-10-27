@@ -24,13 +24,17 @@ export default class MailerService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async init (callback) {
     try {
       // Setting controllers
       this.mailerAPI = new controller.smtpAPI();
-      await this.mailerAPI.init();
+      await this.mailerAPI.init({});
 
       this.is_initialized = true;
       
@@ -45,6 +49,12 @@ export default class MailerService {
     return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -53,6 +63,15 @@ export default class MailerService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureString (value, name) {
     if (
       typeof value !== 'string' ||
@@ -64,6 +83,15 @@ export default class MailerService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureObject (value, name) {
     if (Object.prototype.toString.call(value) !== '[object Object]') {
       const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain object.`);
@@ -73,15 +101,19 @@ export default class MailerService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.to
-   * @param {string} info.subject
-   * @param {string} info.text
-   * @param {string} info.ejs_path
-   * @param {Object} info.ejs_args
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.to
+   * @param {string} options.subject
+   * @param {string} options.text
+   * @param {string} options.ejs_path
+   * @param {Object} options.ejs_args
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async send ({ to, subject, text, ejs_path, ejs_args }={}, callback) {
+  async send ({ to, subject, text, ejs_path, ejs_args }, callback) {
     try {
       this.#ensureInit();
 

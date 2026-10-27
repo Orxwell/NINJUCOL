@@ -1,8 +1,9 @@
+// Importers for the middleware
+import { errorHTTP } from '#utils/functions.util.mjs';
+
 // External & Internal libraries
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
-
-import { errorHTTP } from '#utils/functions.util.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);

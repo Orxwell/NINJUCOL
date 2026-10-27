@@ -59,7 +59,7 @@ routerNEWS.get('/news/new',
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
       
-      if (!record) return res.redirect('/news' +
+      if (Object.keys(record).length === 0) return res.redirect('/news' +
       `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
       
       return res.render(publicNewEJS, {

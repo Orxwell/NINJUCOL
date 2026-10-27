@@ -1,7 +1,16 @@
+// Importers for the middleware
+import paths from '#utils/paths.util.mjs';
+
+import {
+  errorHTTP,
+  isValidMimeType
+} from '#utils/functions.util.mjs';
+
 // External & Internal ibraries
 import multer from 'multer';
 
-import { randomUUID } from 'node:crypto';
+import { randomUUID }    from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import {
   mkdir,
   open,
@@ -12,15 +21,6 @@ import {
   extname,
   join
 } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-import paths from '#utils/paths.util.mjs';
-
-import {
-  errorHTTP,
-  isValidMimeType
-} from '#utils/functions.util.mjs';
-
 
 
 const abspath  = fileURLToPath(import.meta.url);

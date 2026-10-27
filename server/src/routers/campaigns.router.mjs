@@ -7,7 +7,7 @@ import { publicCampaignsEJS } from '#utils/templates.util.mjs';
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// Services for the route
+// Services for the endpoints
 import service from '#services/handler.service.mjs';
 
 // Importers for the endpoints

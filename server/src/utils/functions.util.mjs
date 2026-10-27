@@ -1,9 +1,10 @@
-// External & Internal Libraries
+// Importers for the utils
+import paths from '#utils/paths.util.mjs';
+
+// External & Internal libraries
 import { fileURLToPath }     from 'url';
 import { basename, resolve } from 'path';
 import { readdir, unlink }   from 'fs/promises';
-
-import paths from '#utils/paths.util.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);

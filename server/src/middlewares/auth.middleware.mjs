@@ -1,11 +1,12 @@
-// Services for the server
+// Services for the middleware
 import service from '#services/handler.service.mjs';
+
+// Importers for the middleware
+import { errorHTTP } from '#utils/functions.util.mjs';
 
 // External & Internal libraries
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
-
-import { errorHTTP } from '#utils/functions.util.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);
@@ -47,7 +48,9 @@ export default function handlingAuth ({
     if (!auth_token) return res.redirect('/sign_in?' +
       `error=${encodeURIComponent('Redireccionamiento debido a token inválido.')}`);
 
-    const found_token = await service.token.findByToken({ token: auth_token }, (error, info) => {
+    return await service.token.findByToken({
+      token: auth_token
+    }, (error, token_obj) => {
       if (error) return errorHTTP({
         header: header,
         body: {
@@ -57,24 +60,20 @@ export default function handlingAuth ({
         },
       });
       
-      if (!info) return res.redirect('/sign_in?' +
+      if (Object.keys(token_obj).length === 0) return res.redirect('/sign_in?' +
         `error=${encodeURIComponent('Sesión expirada.')}`);
       
-      return info;
+      res.cookie('auth_token', token_obj.token, {
+        httpOnly: true,
+        secure  : true,
+        sameSite: 'strict',
+        expires : token_obj.expiration,
+      });
+
+      res.token_obj = token_obj;
+      
+      // If all checks pass, we continue
+      return next();
     });
-
-    if (res.headersSent) return;
-
-    res.cookie('auth_token', found_token.token, {
-      httpOnly: true,
-      secure  : true,
-      sameSite: 'strict',
-      expires : found_token.expiration,
-    });
-
-    res.auth_token = found_token;
-
-    // If all checks pass, we continue
-    return next();
   };
 };

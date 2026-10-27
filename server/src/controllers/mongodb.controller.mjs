@@ -32,7 +32,7 @@ export default class MongoDBController {
    * Initialize the MongoDB connection, for this instance.
    * @see {@link https://www.mongodb.com/docs/drivers/node/current/connect/ | MongoDB Connection Documentation}
    * 
-   * @param {(error: Error|null, info: string|null) => void} [callback]
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
@@ -175,15 +175,15 @@ export default class MongoDBController {
    * Set the MongoDB collection for use, in this instance.
    * @see {@link https://www.mongodb.com/docs/drivers/node/current/databases-collections/ | MongoDB Collections Documentation}
    * 
-   * @param {Object} [options]
-   * @param {string} [options.collection]
+   * @param {Object} options
+   * @param {string} options.collection
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {'DONE'|void}
    * 
    * @throws {Error}
    */
-  setCollection ({ collection='' }={}, callback) {
+  setCollection ({ collection }, callback) {
     try {
       this.#ensureString(collection, 'collection');
 
@@ -204,15 +204,15 @@ export default class MongoDBController {
    * Create a record in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/insert/ | MongoDB insertOne(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').OptionalUnlessRequiredId<import('mongodb').Document>} [options.record]
+   * @param {Object} options
+   * @param {Object} options.record
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async createRecord ({ record={} }={}, callback) {
+  async createRecord ({ record }, callback) {
     try {
       this.#ensureObject(record, 'record');
 
@@ -235,15 +235,15 @@ export default class MongoDBController {
    * Create multiple records in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/insert/ | MongoDB insertMany(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {Array<import('mongodb').OptionalUnlessRequiredId<import('mongodb').Document>>} [options.records]
+   * @param {Object} options
+   * @param {Array<Object>} options.records
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async createRecords ({ records=[] }={}, callback) {
+  async createRecords ({ records }, callback) {
     try {
       this.#ensureArray(records, 'records');
 
@@ -268,15 +268,15 @@ export default class MongoDBController {
    * Create an index in the established collection.
    * @see {@link https://www.mongodb.com/docs/drivers/node/current/indexes/ | MongoDB Indexes Documentation}
    *
-   * @param {Object} [options]
-   * @param {import('mongodb').IndexDescription} [options.index]
+   * @param {Object} options
+   * @param {Object} options.index
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    *
    * @returns {Promise<'DONE'|void>}
    *
    * @throws {Error}
    */
-  async createIndex ({ index={} }={}, callback) {
+  async createIndex ({ index }, callback) {
     try {
       this.#ensureObject(index, 'index');
       this.#ensureObject(index.key, 'index.key');
@@ -301,16 +301,16 @@ export default class MongoDBController {
   /**
    * Create multiple indexes in the established collection.
    * @see {@link https://www.mongodb.com/docs/drivers/node/current/indexes/ | MongoDB Indexes Documentation}
-   * @param {Object} [options]
    * 
-   * @param {Array<import('mongodb').IndexDescription>} [options.indexes]
+   * @param {Object} options
+   * @param {Array<Object>} options.indexes
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async createIndexes ({ indexes=[] }={}, callback) {
+  async createIndexes ({ indexes }, callback) {
     try {
       this.#ensureArray(indexes, 'indexes');
   
@@ -338,57 +338,53 @@ export default class MongoDBController {
    * Find a single record in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/query/retrieve/ | MongoDB findOne(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
-   * @param {import('mongodb').Document} [options.projection]
-   * @param {(error: Error|null, record: import('mongodb').Document|null) => void} [callback]
+   * @param {Object} options
+   * @param {Object} options.filter
+   * @param {Object} options.projection
+   * @param {(error: Error|null, record: Object|null) => void} [callback]
    * 
-   * @returns {Promise<import('mongodb').Document|void>}
+   * @returns {Promise<Object|void>}
    * 
    * @throws {Error}
    */
-  async findRecord ({ filter={}, projection={} }={}, callback) {
-    let record;
-
+  async findRecord ({ filter, projection }, callback) {
     try {
       this.#ensureObject(filter    , 'filter');
       this.#ensureObject(projection, 'projection');
 
       const handler = this.#collectionHandler();
 
-      record = await handler.findOne(filter, { projection });
+      const record = await handler.findOne(filter, { projection }) ?? {};
+
+      if (typeof callback === 'function') return callback(null, record);
+
+      return record;
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
-
-    if (typeof callback === 'function') return callback(null, record);
-
-    return record;
   }
 
   /**
    * Find multiple records in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/query/retrieve/ | MongoDB find(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
-   * @param {import('mongodb').Document} [options.projection]
+   * @param {Object} options
+   * @param {Object} [options.filter]
+   * @param {Object} [options.projection]
    * @param {Object} [options.modifiers]
-   * @param {import('mongodb').Sort} [options.modifiers.sort]
+   * @param {Object} [options.modifiers.sort]
    * @param {number} [options.modifiers.limit]
    * @param {number} [options.modifiers.skip]
-   * @param {(error: Error|null, records: Array<import('mongodb').Document>|null) => void} [callback]
+   * @param {(error: Error|null, records: Array<Object>|null) => void} [callback]
    * 
-   * @returns {Promise<Array<import('mongodb').Document>|void>}
+   * @returns {Promise<Array<Object>|void>}
    * 
    * @throws {Error}
    */
-  async findRecords({ filter={}, projection={}, modifiers={} }={}, callback) {
-    let records;
-
+  async findRecords({ filter={}, projection={}, modifiers={} }, callback) {
     try {
       this.#ensureObject(filter    , 'filter');
       this.#ensureObject(projection, 'projection');
@@ -400,39 +396,39 @@ export default class MongoDBController {
 
       const handler = this.#collectionHandler();
 
-      records = await handler
+      const records = await handler
         .find(filter, { projection })
         .sort( modifiers.sort  ?? {})
         .limit(modifiers.limit ?? 0)
         .skip( modifiers.skip  ?? 0)
         .toArray();
+      
+      if (typeof callback === 'function') return callback(null, records);
+
+      return records;
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
-
-    if (typeof callback === 'function') return callback(null, records);
-
-    return records;
   }
 
   /**
    * Update a single record in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/update/ | MongoDB updateOne(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
-   * @param {import('mongodb').UpdateFilter<import('mongodb').Document>} [options.update]
-   * @param {import('mongodb').UpdateOptions} [options.options]
+   * @param {Object} options
+   * @param {Object} options.filter
+   * @param {Object} options.update
+   * @param {Object} [options.options]
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async updateRecord({ filter={}, update={}, options={} }={}, callback) {
+  async updateRecord({ filter, update, options={} }, callback) {
     try {
       this.#ensureObject(filter , 'filter');
       this.#ensureObject(update , 'update');
@@ -457,16 +453,16 @@ export default class MongoDBController {
    * Update multiple records in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/update/ | MongoDB updateMany(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
-   * @param {import('mongodb').UpdateFilter<import('mongodb').Document>} [options.update]
+   * @param {Object} options
+   * @param {Object} options.filter
+   * @param {Object} options.update
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async updateRecords({ filter={}, update={} }={}, callback) {
+  async updateRecords({ filter, update }, callback) {
     try {
       this.#ensureObject(filter, 'filter');
       this.#ensureObject(update, 'update');
@@ -490,16 +486,16 @@ export default class MongoDBController {
    * Replace a single record in the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/update/replace/ | MongoDB replaceOne(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
-   * @param {import('mongodb').WithoutId<import('mongodb').Document>} [options.replacement]
+   * @param {Object} options
+   * @param {Object} options.filter
+   * @param {Object} options.replacement
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async replaceRecord({ filter={}, replacement={} }={}, callback) {
+  async replaceRecord({ filter, replacement }, callback) {
     try {
       this.#ensureObject(filter     , 'filter');
       this.#ensureObject(replacement, 'replacement');
@@ -523,15 +519,15 @@ export default class MongoDBController {
    * Delete a single record from the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/delete/ | MongoDB deleteOne(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
+   * @param {Object} options
+   * @param {Object} options.filter
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async deleteRecord ({ filter={} }={}, callback) {
+  async deleteRecord ({ filter }, callback) {
     try {
       this.#ensureObject(filter, 'filter');
 
@@ -554,15 +550,15 @@ export default class MongoDBController {
    * Delete multiple records from the established collection.
    * @see {@link https://www.mongodb.com/es/docs/drivers/node/current/crud/delete/ | MongoDB deleteMany(), Node.js Driver Documentation}
    * 
-   * @param {Object} [options]
-   * @param {import('mongodb').Filter<import('mongodb').Document>} [options.filter]
+   * @param {Object} options
+   * @param {Object} options.filter
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async deleteRecords ({ filter={} }={}, callback) {
+  async deleteRecords ({ filter }, callback) {
     try {
       this.#ensureObject(filter, 'filter');
 
@@ -612,15 +608,15 @@ export default class MongoDBController {
    * Delete a specific index from the established collection.
    * @see {@link https://www.mongodb.com/docs/drivers/node/current/indexes/ | MongoDB Indexes Documentation}
    * 
-   * @param {Object} [options]
-   * @param {string} [options.index]
+   * @param {Object} options
+   * @param {string} options.index
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async deleteIndex ({ index }={}, callback) {
+  async deleteIndex ({ index }, callback) {
     try {
       this.#ensureString(index, 'index');
 

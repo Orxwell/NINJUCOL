@@ -19,7 +19,7 @@ import middleware from '#middlewares/handler.middleware.mjs';
 import service from '#services/handler.service.mjs';
 
 // External & Internal Libraries
-import { env } from '#importers/env.importer.mjs';
+import importer from '#importers/handler.importer.mjs';
 
 
 const routerDASHBOARD = Router();
@@ -34,13 +34,16 @@ routerDASHBOARD.get('/dashboard',
     optional: { info: null, },
   }),
   async (req, res) => {
-    const auth_token = res.auth_token;
+    const token_obj = res.token_obj;
 
-    const found_account = await service.account.findByEmail({ email: auth_token.email, }, (error, info) => {
+    const found_account = await service.account.findByEmail({ email: token_obj.email, }, (error, record) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent(error)}`);
+
+      if (record.status === 'DENIED') return res.redirect('/sign_in?' +
+        `error=${encodeURIComponent(error)}`);
       
-      return info;
+      return record;
     });
 
     if (res.headersSent) return;
@@ -72,12 +75,6 @@ routerDASHBOARD.get('/dashboard',
 
     if (res.headersSent) return;
 
-    console.log({
-      news      : found_news,
-      campaigns : found_campaigns,
-      repository: found_repository,
-    });
-
     return res.render(privateDashboardEJS, {
       title: `Dashboard | NINJUCOL`,
 
@@ -89,7 +86,7 @@ routerDASHBOARD.get('/dashboard',
         repository: found_repository,
       },
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./dashboard')}`);
@@ -106,7 +103,7 @@ routerDASHBOARD.get('/dashboard/add/new',
     return res.render(privateAddNewEJS, {
       title: `AddNew | NINJUCOL`,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./dashboard/add/new')}`);
@@ -136,7 +133,7 @@ routerDASHBOARD.get('/dashboard/upd/new',
 
       data: found_new,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./dashboard/upd/new')}`);
@@ -153,7 +150,7 @@ routerDASHBOARD.get('/dashboard/add/campaign',
     return res.render(privateAddCampaignEJS, {
       title: `AddCampaign | NINJUCOL`,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./dashboard/add/campaign')}`);
@@ -183,7 +180,7 @@ routerDASHBOARD.get('/dashboard/upd/campaign',
 
       data: found_campaign,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
@@ -200,7 +197,7 @@ routerDASHBOARD.get('/dashboard/add/repository',
     return res.render(privateAddRepositoryEJS, {
       title: `AddRepository | NINJUCOL`,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./repository')}`);
@@ -230,7 +227,7 @@ routerDASHBOARD.get('/dashboard/upd/repository',
 
       data: found_repository,
 
-      server_url: env.SERVER_URL,
+      server_url: importer.env.SERVER_URL,
     }, (error, html) => {
       if (error) return res.redirect('/error_at_get?' +
         `error=${encodeURIComponent('RENDER_ERROR./repository')}`);

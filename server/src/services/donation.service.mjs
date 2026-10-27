@@ -26,32 +26,41 @@ export default class DonationsService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       // Setting collection
       this.dbAPI = new controller.dbAPI();
-      await this.dbAPI.init((error) => { throw error; });
-      this.dbAPI.setCollection({ collection: this.collection }, (error) => { throw error; });
+      await this.dbAPI.init();
 
       this.dbAPI.setCollection({ collection: this.collection });
 
       this.is_initialized = true;
       
       await this.#createIndexes();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
       
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -60,6 +69,15 @@ export default class DonationsService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureString (value, name) {
     if (
       typeof value !== 'string' ||
@@ -71,26 +89,14 @@ export default class DonationsService {
     }
   }
 
-  #ensureObject (value, name) {
-    if (Object.prototype.toString.call(value) !== '[object Object]') {
-      const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain object.`);
-      error.code = 'ERR-1';
-      throw error;
-    }
-  }
-
-  #ensureArray (value, name) {
-    if (!Array.isArray(value)) {
-      const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain array.`);
-      error.code = 'ERR-1';
-      throw error;
-    }
-  }
-
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async #createIndexes (callback=()=>{}) {
+  async #createIndexes (callback) {
     try {
       this.#ensureInit();
 
@@ -102,43 +108,50 @@ export default class DonationsService {
             unique: true,
           },
         ],
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
    * @param {string} firm
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async #validateFirm (firm='', callback=()=>{}) {
+  async #validateFirm (firm, callback) {
     try {
       this.#ensureInit();
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async create ({}={}, callback=()=>{}) {
+  async create ({}, callback) {
     try {
       this.#ensureInit();
 
@@ -150,31 +163,35 @@ export default class DonationsService {
         year: 'numeric'
       });
 
-      await this.dbAPI.createDocument({
+      await this.dbAPI.createRecord({
         record: {
           uuid: uuid,
 
           date: date,
         },
-      }, (error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      });
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
   
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.uuid - UUID's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.uuid
+   * @param {(error: Error|null, record: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
+   * 
+   * @throws {Error}
    */
-  async findByUUID ({ uuid }={}, callback=()=>{}) {
+  async findByUUID ({ uuid }, callback) {
     try {
       this.#ensureInit();
 
@@ -183,7 +200,7 @@ export default class DonationsService {
       const record = await this.dbAPI.findRecord({
         filter    : { 'uuid': uuid, },
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, record);
 
@@ -197,15 +214,19 @@ export default class DonationsService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async findAll (callback=()=>{}) {
+  async findAll (callback) {
     try {
       this.#ensureInit();
 
       const records = await this.dbAPI.findRecords({
         projection: { _id: 0, },
-      }, (error) => { throw error; });
+      });
 
       if (typeof callback === 'function') return callback(null, records);
 
@@ -219,26 +240,30 @@ export default class DonationsService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} [info.firm=''] - Firm from OAuth.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.firm
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteAll ({ firm='' }={}, callback=()=>{}) {
+  async deleteAll ({ firm }, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(null, (error) => { throw error; });
+      await this.#validateFirm();
 
-      await this.dbAPI.clearCollection((error) => { throw error; });
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
+      await this.dbAPI.deleteAllRecords();
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 };

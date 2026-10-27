@@ -1,7 +1,7 @@
 // Import the Application
 import app from '#src/app.mjs';
 
-// External & Internal Libraries
+// Importers for the server
 import importer from '#importers/handler.importer.mjs';
 
 

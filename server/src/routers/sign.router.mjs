@@ -11,7 +11,7 @@ import {
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// Services for the route
+// Services for the endpoints
 import service from '#services/handler.service.mjs';
 
 // Importers for the endpoints
@@ -34,11 +34,13 @@ routerSIGN.get('/sign_in',
     const { auth_token } = req.cookies;
 
     if (auth_token) {
-      return await service.token.findByToken({ token: auth_token }, (error, record) => {
+      return await service.token.findByToken({
+        token: auth_token
+      }, (error, token_obj) => {
         if (error) return res.redirect('/error_at_get?' +
           `error=${encodeURIComponent(error)}`);
   
-        if (!record) {
+        if (Object.keys(token_obj).length === 0) {
           res.clearCookie('auth_token', {
             httpOnly: true,
             secure: true,
@@ -98,7 +100,7 @@ routerSIGN.post('/sign_up',
       .charAt(0)
       .toUpperCase() + lastname.slice(1);
         
-    await service.account.create({
+    return await service.account.create({
       firstname: formatted_firstname,
       lastname : formatted_lastname,
       birthdate: data.birthdate,
@@ -112,17 +114,16 @@ routerSIGN.post('/sign_up',
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
         
-      return info;
+        return res.sendStatus(200);
     });
-
-    if (res.headersSent) return;
-
-    return res.sendStatus(200);
   }
 );
 
 routerSIGN.post('/sign_in',
-  middleware.query({}),
+  middleware.query({
+    scheme  : { error: 'string', },
+    optional: { error: null,     },
+  }),
   middleware.body({
     scheme: {
       email   : 'string',
@@ -135,75 +136,73 @@ routerSIGN.post('/sign_in',
     await service.account.auth({
       email   : data.email,
       password: data.password,
-    }, (error, info) => {
+    }, async (error, info) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
       
       if (info.status === 'DENIED') return res.redirect('/sign_in?' +
         `error=${encodeURIComponent(info.message)}`);
-        
-      return info;
     });
 
     if (res.headersSent) return;
 
-    const found_token = await service.token.findByEmail({ email: data.email, }, async (error, record) => {
+    const token_obj = await service.token.findByEmail({
+      email: data.email
+    }, async (error, token_obj) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-      
-      if (!record) return await service.token.generate({ email: data.email, }, async (error, token_body) => {
+        
+      if (Object.keys(token_obj).length === 0) return await service.token.generate({
+        email: data.email
+      }, async (error, token_obj) => {
         if (error) return res.redirect('/error_at_post?' +
           `error=${encodeURIComponent(error)}`);
-
+  
         await service.token.save({
-          token     : token_body.token,
-          email     : token_body.email,
-          expiration: token_body.expiration,
+          token     : token_obj.token,
+          email     : token_obj.email,
+          expiration: token_obj.expiration,
         }, (error, info) => {
           if (error) return res.redirect('/error_at_post?' +
             `error=${encodeURIComponent(error)}`);
-                
-          return info;
         });
-          
-        return token_body;
+
+        return token_obj;
       });
-        
-      return record;
+
+      return token_obj;
     });
 
     if (res.headersSent) return;
-
-    const { firstname, lastname } = await service.account.findByEmail({ email: data.email }, (error, record) => {
+  
+    await service.account.findByEmail({
+      email: data.email
+    }, async (error, record) => {
       if (error) return res.redirect('/error_at_post?' +
         `error=${encodeURIComponent(error)}`);
-        
-      return record;
+  
+      await service.mailer.send({
+        to: data.email,
+        subject: 'Has accedido correctamente. | NINJUCOL',
+        text: 'Correo automatizado.',
+        ejs_path: mailSignInEJS,
+        ejs_args: {
+          firstname: record.firstname,
+          lastname : record.lastname,
+        }
+      }, (error, info) => {
+        if (error) return res.redirect('/error_at_post?' +
+          `error=${encodeURIComponent(error)}`);
+      });
     });
 
     if (res.headersSent) return;
-
-    await service.mailer.send({
-      to: data.email,
-      subject: 'Has accedido correctamente. | NINJUCOL',
-      text: 'Correo automatizado.',
-      ejs_path: mailSignInEJS,
-      ejs_args: {
-        firstname: firstname,
-        lastname : lastname,
-      }
-    }, (error, info) => {
-      if (error) return res.redirect('/error_at_post?' +
-        `error=${encodeURIComponent(error)}`);
-        
-      return info;
-    });
-
-    res.cookie('auth_token', found_token.token, {
+  
+    res.cookie('auth_token', token_obj.token, {
       httpOnly: true,
       secure  : true,
       sameSite: 'strict',
-      expires : found_token.expiration,
+      expires : token_obj.expiration,
     });
 
     return res.redirect('/dashboard');

@@ -6,7 +6,7 @@
 // External & Internal libraries
 import nodemailer from 'nodemailer';
 
-import importer from '#importers/handler.importer.mjs';
+import { env } from './env.importer.mjs';
 
 
 let currentTransport;
@@ -18,7 +18,7 @@ let transportPromise;
  * Return a SMTP-Transport.
  * @returns {Promise<import('nodemailer').Transporter>}
  */
-export async function transport ({ host, port, secure }={}) {
+export async function transport ({ host, port, secure }) {
   // Already using a transport...
   if (currentTransport) return currentTransport;
 
@@ -33,9 +33,14 @@ export async function transport ({ host, port, secure }={}) {
         port: port,
         secure: secure,
         auth: {
-          user: importer.env.EMAIL_DOMAIN,
-          pass: importer.env.EMAIL_KEY,
+          user: env.EMAIL_DOMAIN,
+          pass: env.EMAIL_KEY,
         },
+        ...(env.SERVER_MODE.toLowerCase() === 'dev' && {
+          tls: {
+            rejectUnauthorized: false,
+          },
+        }),
       });
 
       await smtp.verify();

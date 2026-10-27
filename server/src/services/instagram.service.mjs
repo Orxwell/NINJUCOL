@@ -8,6 +8,8 @@ import importer from '#importers/handler.importer.mjs';
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
+const hours_to_ms = 60 * 60 * 1000;
+
 
 export default class InstagramService {
   constructor () {
@@ -17,35 +19,46 @@ export default class InstagramService {
       'ERR-2': `External-Service-Error, from ${filename}: Instagram API request failed.`,
     };
 
+    this.cache_ttl_ms = importer.env.INSTAGRAM_TTL_HOURS * hours_to_ms;
+
     this.is_initialized = false;
 
     this.url = null;
     this.cache = {};
     this.pending = {};
-
-    this.cache_ttl_ms = importer.env.INSTAGRAM_TTL_HOURS * 60 * 60 * 1000;
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * Initialize the service, for this instance.
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async init (callback=()=>{}) {
+  async init (callback) {
     try {
       this.url = `${importer.env.INSTAGRAM_API_URI}`;
 
       this.is_initialized = true;
-
-      if (typeof callback === 'function') return callback(null, 'DONE');
-
-      return 'DONE';
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
 
       throw error;
     }
+
+    if (typeof callback === 'function') return callback(null, 'DONE');
+
+    return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -54,6 +67,15 @@ export default class InstagramService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureNumber (value, name) {
     if (
       typeof value !== 'number' ||
@@ -66,11 +88,15 @@ export default class InstagramService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.latest
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {number} [options.latest]
+   * @param {(error: Error|null, info: Array<Object>|null) => void} [callback]
+   * 
+   * @returns {Promise<Array<Object>|void>}
+   * 
+   * @throws {Error}
    */
-  async findByLatest ({ latest=4 }={}, callback=()=>{}) {
+  async findByLatest ({ latest=5 }, callback) {
     try {
       this.#ensureInit();
     

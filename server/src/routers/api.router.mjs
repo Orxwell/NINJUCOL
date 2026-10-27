@@ -1,16 +1,22 @@
 // Framework for the Back-End
 import { Router } from 'express';
 
-// Templates for the API
-
 // Middlewares for the endpoints
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// Services for the API
+// Services for the endpoints
 import service from '#services/handler.service.mjs';
 
 // Importers for the endpoints
 import importer from '#importers/handler.importer.mjs';
+
+// Utils for the endpoints
+import paths from '#utils/paths.util.mjs' ;
+
+import {
+  getFolders,
+  getFiles  ,
+} from '#utils/functions.util.mjs';
 
 // External & Internal libraries
 import { lookup } from 'mime-types';
@@ -19,13 +25,6 @@ import {
   access   ,
   constants,
 } from 'fs/promises';
-
-import paths from '#utils/paths.util.mjs' ;
-
-import {
-  getFolders,
-  getFiles  ,
-} from '#utils/functions.util.mjs';
 
 
 const routerAPI = Router();
@@ -108,16 +107,16 @@ routerAPI.get('/api/:route/:to',
       if (!auth_token) return res.status(401)
         .json({ error: 'Unauthorized response: token not provided' });
 
-      await service.token.findByToken({ token: auth_token }, (error, info) => {
+      await service.token.findByToken({
+        token: auth_token
+      }, (error, token_obj) => {
         if (error) return res.redirect('/error_at_get?' +
           `error=${encodeURIComponent(error)}`);
 
-        if (!info) return res.status(401)
+        if (Object.keys(token_obj) === 0) return res.status(401)
           .json({ error: 'Unauthorized response: invalid token' });
-        
-        return info;
       });
-  
+
       if (res.headersSent) return;
     }
 
@@ -161,14 +160,12 @@ routerAPI.get('/api/:route/:to/:file',
       if (!auth_token) return res.status(401)
         .json({ error: 'Unauthorized response: token not provided' });
 
-      await service.token.findByToken({ token: auth_token }, (error, info) => {
+      await service.token.findByToken({ token: auth_token }, (error, token_obj) => {
         if (error) return res.redirect('/error_at_get?' +
           `error=${encodeURIComponent(error)}`);
 
-        if (!info) return res.status(401)
+        if (Object.keys(token_obj) === 0) return res.status(401)
           .json({ error: 'Unauthorized response: invalid token' });
-        
-        return info;
       });
   
       if (res.headersSent) return;

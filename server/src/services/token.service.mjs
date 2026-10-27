@@ -40,7 +40,7 @@ export default class TokenService {
 
   /**
    * Initialize the service, for this instance.
-   * @param {(error: Error|null, info: string|null) => void} [callback]
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    * 
    * @returns {Promise<'DONE'|void>}
    * 
@@ -124,7 +124,11 @@ export default class TokenService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async #createIndexes (callback) {
     try {
@@ -158,9 +162,13 @@ export default class TokenService {
 
   /**
    * @param {string} firm
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
    */
-  async #validateFirm (firm='', callback) {
+  async #validateFirm (firm, callback) {
     try {
       this.#ensureInit();
 
@@ -178,11 +186,13 @@ export default class TokenService {
   /**
    * @param {Object} options
    * @param {string} options.email
-   * @param {(error: Error|null, info: Object|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, token_obj: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
    * 
    * @throws {Error}
    */
-  async generate ({ email }={}, callback) {
+  async generate ({ email }, callback) {
     try {
       await service.account.findByEmail({ email: email }, (error, record) => {
         if (error) throw error;
@@ -198,15 +208,15 @@ export default class TokenService {
       const normalized_email = email.trim().toLowerCase();
       const expiration = new Date(Date.now() + this.token_ttl_ms);
 
-      const token_body = {
+      const token_obj = {
         token     : token,
         email     : normalized_email,
         expiration: expiration,
       };
 
-      if (typeof callback === 'function') return callback(null, token_body);
+      if (typeof callback === 'function') return callback(null, token_obj);
       
-      return token_body;
+      return token_obj;
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
@@ -217,14 +227,16 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} options.token - Token's concept.
-   * @param {string} options.email - Owner's token.
-   * @param {string} options.expiration - Expiration's token.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} options.token
+   * @param {string} options.email
+   * @param {string} options.expiration
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async save ({ token, email, expiration }={}, callback) {
+  async save ({ token, email, expiration }, callback) {
     try {
       this.#ensureInit();
 
@@ -252,12 +264,14 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} options.token - Token's record.
-   * @param {(error: Error|null, record: Object|null) => void} [callback] - (Optional)
+   * @param {string} options.token
+   * @param {(error: Error|null, token_obj: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
    * 
    * @throws {Error}
    */
-  async findByToken ({ token }={}, callback) {
+  async findByToken ({ token }, callback) {
     try {
       this.#ensureInit();
     
@@ -281,12 +295,14 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} options.email - Email's record.
-   * @param {(error: Error|null, record: string|null) => void} [callback] - (Optional)
+   * @param {string} options.email
+   * @param {(error: Error|null, token_obj: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
    * 
    * @throws {Error}
    */
-  async findByEmail ({ email }={}, callback) {
+  async findByEmail ({ email }, callback) {
     try {
       this.#ensureInit();
     
@@ -310,12 +326,14 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} options.token - Token's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} options.token
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async deleteByToken ({ token }={}, callback) {
+  async deleteByToken ({ token }, callback) {
     try {
       this.#ensureInit();
       
@@ -336,12 +354,14 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} options.email - Email's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} options.email
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
    * 
    * @throws {Error}
    */
-  async deleteByEmail ({ email }={}, callback) {
+  async deleteByEmail ({ email }, callback) {
     try {
       this.#ensureInit();
     
@@ -362,10 +382,14 @@ export default class TokenService {
 
   /**
    * @param {Object} options
-   * @param {string} [options.firm=''] - Firm from OAuth.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} options.firm
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteAll ({ firm='' }={}, callback) {
+  async deleteAll ({ firm='' }, callback) {
     try {
       this.#ensureInit();
 

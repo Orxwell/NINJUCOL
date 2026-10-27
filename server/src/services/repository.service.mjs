@@ -26,7 +26,11 @@ export default class RepositoryService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async init (callback) {
     try {
@@ -51,6 +55,12 @@ export default class RepositoryService {
     return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -59,6 +69,15 @@ export default class RepositoryService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureString (value, name) {
     if (
       typeof value !== 'string' ||
@@ -70,6 +89,15 @@ export default class RepositoryService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureObject (value, name) {
     if (Object.prototype.toString.call(value) !== '[object Object]') {
       const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain object.`);
@@ -78,16 +106,12 @@ export default class RepositoryService {
     }
   }
 
-  #ensureArray (value, name) {
-    if (!Array.isArray(value)) {
-      const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain array.`);
-      error.code = 'ERR-1';
-      throw error;
-    }
-  }
-
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async #createIndexes (callback) {
     try {
@@ -116,9 +140,13 @@ export default class RepositoryService {
 
   /**
    * @param {string} firm
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async #validateFirm (firm='', callback) {
+  async #validateFirm (firm, callback) {
     try {
       this.#ensureInit();
 
@@ -135,12 +163,16 @@ export default class RepositoryService {
 
   /**
    * @param {Object} info
-   * @param {string} info.title - Title's resource.
-   * @param {string} info.description - Description's resource.
-   * @param {string} info.resource_uri - URI's resource.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} info.title
+   * @param {string} info.description
+   * @param {string} info.resource_uri
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async create ({ title, description, resource_uri }={}, callback) {
+  async create ({ title, description, resource_uri }, callback) {
     try {
       this.#ensureInit();
 
@@ -183,10 +215,14 @@ export default class RepositoryService {
 
   /**
    * @param {Object} info
-   * @param {string} info.uuid - UUID's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} info.uuid
+   * @param {(error: Error|null, record: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
+   * 
+   * @throws {Error}
    */
-  async findByUUID ({ uuid }={}, callback) {
+  async findByUUID ({ uuid }, callback) {
     try {
       this.#ensureInit();
 
@@ -209,7 +245,11 @@ export default class RepositoryService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async findAll (callback) {
     try {
@@ -232,14 +272,18 @@ export default class RepositoryService {
 
   /**
    * @param {Object} info
-   * @param {string} info.uuid - UUID's record.
-   * @param {Object} info.setter - Setter's record.
-   * @param {string} info.setter.title - Set title.
-   * @param {string} info.setter.description - Set description.
-   * @param {string} info.setter.resource_uri - Set URI's resource.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} info.uuid
+   * @param {Object} info.setter
+   * @param {string} info.setter.title
+   * @param {string} info.setter.description
+   * @param {string} info.setter.resource_uri
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async updateByUUID ({ uuid, setter }={}, callback) {
+  async updateByUUID ({ uuid, setter }, callback) {
     try {
       this.#ensureInit();
 
@@ -275,10 +319,14 @@ export default class RepositoryService {
 
   /**
    * @param {Object} info
-   * @param {string} info.uuid - UUID's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} info.uuid
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteByUUID ({ uuid }={}, callback) {
+  async deleteByUUID ({ uuid }, callback) {
     try {
       this.#ensureInit();
 
@@ -310,14 +358,18 @@ export default class RepositoryService {
 
   /**
    * @param {Object} info
-   * @param {string} [info.firm=''] - Firm from OAuth.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {string} info.firm
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteAll ({ firm='' }={}, callback) {
+  async deleteAll ({ firm }, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(null);
+      await this.#validateFirm();
 
       await this.dbAPI.deleteAllRecords();
 

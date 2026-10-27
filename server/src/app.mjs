@@ -2,13 +2,13 @@ import express      from 'express';
 import morgan       from 'morgan';
 import cookieParser from 'cookie-parser';
 
-// Router for the server
+// Routers for the app
 import router from '#routers/handler.router.mjs';
 
-// Services for the server
+// Services for the app
 import service from '#services/handler.service.mjs';
 
-// External & Internal Libraries
+// Importers for the app
 import importer from '#importers/handler.importer.mjs';
 
 

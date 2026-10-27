@@ -34,17 +34,17 @@ export default class SMTPController {
    * Uses the configured corporate-email credentials for authentication.
    * @see {@link https://nodemailer.com/smtp/ | Nodemailer SMTP Transport Documentation}
    *
-   * @param {Object} [options]
-   * @param {string} [options.host='smtp.gmail.com']
-   * @param {number} [options.port=465]
-   * @param {boolean} [options.secure=true]
+   * @param {Object} options
+   * @param {string} [options.host]
+   * @param {number} [options.port]
+   * @param {boolean} [options.secure]
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    *
    * @returns {Promise<'DONE'|void>}
    *
    * @throws {Error}
    */
-  async init ({ host='smtp.gmail.com', port=465, secure=true }={}, callback) {
+  async init ({ host='smtp.gmail.com', port=465, secure=true }, callback) {
     try {
       this.smtp = await importer.smtp({
         host  : host,
@@ -86,19 +86,19 @@ export default class SMTPController {
    * @see {@link https://nodemailer.com/message/ | Nodemailer Message Configuration Documentation}
    * @see {@link https://ejs.co/ | EJS Template Documentation}
    *
-   * @param {Object} [options]
-   * @param {string|string[]} [options.to]
-   * @param {string} [options.subject]
-   * @param {string} [options.text]
-   * @param {string} [options.ejs_path]
-   * @param {Object} [options.ejs_args]
+   * @param {Object} options
+   * @param {string|string[]} options.to
+   * @param {string} options.subject
+   * @param {string} options.text
+   * @param {string} options.ejs_path
+   * @param {Object} options.ejs_args
    * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
    *
    * @returns {Promise<'DONE'|void>}
    *
    * @throws {Error}
    */
-  async send ({ to, subject, text, ejs_path, ejs_args }={}, callback) {
+  async send ({ to, subject, text, ejs_path, ejs_args }, callback) {
     try {
       this.#ensureInit();
 

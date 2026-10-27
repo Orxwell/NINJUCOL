@@ -29,7 +29,12 @@ export default class AccountService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * Initialize the service, for this instance.
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async init (callback) {
     try {
@@ -54,6 +59,12 @@ export default class AccountService {
     return 'DONE';
   }
 
+  /**
+   * Ensure service's initialization.
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureInit () {
     if (!this.is_initialized) {
       const error = new Error(this.errors['ERR-0']);
@@ -62,6 +73,15 @@ export default class AccountService {
     }
   }
 
+  /**
+   * Ensure that `value` is a non-empty string.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureString (value, name) {
     if (
       typeof value !== 'string' ||
@@ -73,6 +93,15 @@ export default class AccountService {
     }
   }
 
+  /**
+   * Ensure that `value` is a valid object.
+   * @param {*} value
+   * @param {string} name
+   * 
+   * @returns {void}
+   * 
+   * @throws {Error}
+   */
   #ensureObject (value, name) {
     if (Object.prototype.toString.call(value) !== '[object Object]') {
       const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain object.`);
@@ -81,16 +110,12 @@ export default class AccountService {
     }
   }
 
-  #ensureArray (value, name) {
-    if (!Array.isArray(value)) {
-      const error = new Error(this.errors['ERR-1'] + `'${name}' must be a valid plain array.`);
-      error.code = 'ERR-1';
-      throw error;
-    }
-  }
-
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
   async #createIndexes (callback) {
     try {
@@ -119,9 +144,13 @@ export default class AccountService {
 
   /**
    * @param {string} firm
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async #validateFirm (firm='', callback) {
+  async #validateFirm (firm, callback) {
     try {
       this.#ensureInit();
 
@@ -137,18 +166,22 @@ export default class AccountService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.firstname - Firstname's account.
-   * @param {string} info.lastname - Lastname's account.
-   * @param {string} info.birthdate - Birthdate's account.
-   * @param {string} info.phone - Phone's account.
-   * @param {string} info.email - Email's account.
-   * @param {string} info.password - Password's account.
-   * @param {Object} info.roles - Roles's account.
-   * @param {string} info.status - Status's account.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.firstname
+   * @param {string} options.lastname
+   * @param {string} options.birthdate
+   * @param {string} options.phone
+   * @param {string} options.email
+   * @param {string} options.password
+   * @param {Object} options.roles
+   * @param {string} options.status
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }={}, callback) {
+  async create ({ firstname, lastname, birthdate, phone, email, password, roles, status }, callback) {
     try {
       this.#ensureInit();
 
@@ -213,12 +246,16 @@ export default class AccountService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Email's account.
-   * @param {string} info.password - Password's account.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.email
+   * @param {string} options.password
+   * @param {(error: Error|null, info: Object|null) => void} [callback]
+   * 
+   * @returns {Promise<Object|void>}
+   * 
+   * @throws {Error}
    */
-  async auth ({ email, password }={}, callback) {
+  async auth ({ email, password }, callback) {
     try {
       this.#ensureInit();
 
@@ -255,13 +292,24 @@ export default class AccountService {
       }
 
       const case_3 = {
+        message: `Status' account isn't APPROVED.`,
+        status: 'DENIED',
+      };
+
+      if (['PENDING', 'DENIED'].includes(account.status)) {
+        if (typeof callback === 'function') return callback(null, case_3);
+
+        return case_3;
+      }
+
+      const case_4 = {
         message: 'Account verified.',
         status: 'GRANTED'
       };
 
-      if (typeof callback === 'function') return callback(null, case_3);
+      if (typeof callback === 'function') return callback(null, case_4);
         
-      return case_3;
+      return case_4;
 
     } catch (error) {
       if (typeof callback === 'function') return callback(error, null);
@@ -271,11 +319,15 @@ export default class AccountService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Email's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.email
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async findByEmail ({ email }={}, callback) {
+  async findByEmail ({ email }, callback) {
     try {
       this.#ensureInit();
 
@@ -298,7 +350,11 @@ export default class AccountService {
   }
 
   /**
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {(error: Error|null, records: Array<Object>|null) => void} [callback]
+   * 
+   * @returns {Promise<Array<Object>|void>}
+   * 
+   * @throws {Error}
    */
   async findAll (callback) {
     try {
@@ -319,7 +375,17 @@ export default class AccountService {
     }
   }
 
-  async updateByEmail ({ email, setter }={}, callback) {
+  /**
+   * @param {Object} options
+   * @param {string} options.email
+   * @param {Object} options.setter
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
+   */
+  async updateByEmail ({ email, setter }, callback) {
     try {
       this.#ensureInit();
 
@@ -347,11 +413,15 @@ export default class AccountService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} info.email - Email's record.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.email
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteByEmail ({ email }={}, callback) {
+  async deleteByEmail ({ email }, callback) {
     try {
       this.#ensureInit();
 
@@ -371,15 +441,19 @@ export default class AccountService {
   }
 
   /**
-   * @param {Object} info
-   * @param {string} [info.firm=''] - Firm from OAuth.
-   * @param {(error: Error|null, info: string|null) => void} [callback] - (Optional)
+   * @param {Object} options
+   * @param {string} options.firm
+   * @param {(error: Error|null, info: 'DONE'|null) => void} [callback]
+   * 
+   * @returns {Promise<'DONE'|void>}
+   * 
+   * @throws {Error}
    */
-  async deleteAll ({ firm='' }={}, callback) {
+  async deleteAll ({ firm }, callback) {
     try {
       this.#ensureInit();
 
-      await this.#validateFirm(null);
+      await this.#validateFirm();
 
       await this.dbAPI.deleteAllRecords();
 

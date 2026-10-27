@@ -1,6 +1,9 @@
+// Importers for the utils
+import paths from '#utils/paths.util.mjs';
+
+// External & Internal libraries
 import { join } from 'path';
 
-import paths from '#utils/paths.util.mjs';
 
 const temp = {
   // Templates for handling HTTP errors
