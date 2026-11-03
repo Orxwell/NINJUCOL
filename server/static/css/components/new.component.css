@@ -1,0 +1,170 @@
+/* ==========================================================
+   CONTENEDOR MAESTRO CON FONDO MATCHA TRANSPARENTE
+   ========================================================== */
+
+.news-full-bleed-wrapper {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  position: relative;
+  /* Fondo Matcha con transparencia (Alpha 0.2 para que sea muy sutil y elegante) */
+  background-color:var(--color-butter); 
+  padding-bottom: 5rem;
+  box-sizing: border-box;
+}
+
+/* Sección 1: Imagen de cabecera a todo el ancho */
+.news-hero-banner {
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+}
+
+.news-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Sección 2: Tarjeta central flotante */
+.news-single-container {
+  max-width: 800px;
+  margin: -90px auto 0 auto;
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  padding: 3rem 3.5rem;
+  box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 10;
+}
+
+/* Metadatos superiores */
+.news-single-meta-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.dot-separator {
+  color: var(--color-sea);
+}
+
+/* Título */
+.news-single-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-sea-dark);
+  line-height: 1.2;
+  margin-bottom: 2rem;
+}
+
+/* Contenido de texto y párrafos */
+.news-single-content {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: #334155;
+  line-height: 1.8;
+}
+
+.news-single-content p {
+  margin-bottom: 2rem; /* Espaciado grande entre párrafos */
+}
+
+/* ==========================================================
+   COLORES DIFERENTES PARA CADA PÁRRAFO NUMERADO EN SU TOTALIDAD
+   ========================================================== */
+.news-single-content p.paragraph-highlight-1 {
+  color: var(--color-sea-dark);
+  font-weight: 500;
+}
+
+.news-single-content p.paragraph-highlight-2 {
+  color: var(--color-tangerine);
+  font-weight: 500;
+}
+
+.news-single-content p.paragraph-highlight-3 {
+  color: var(--color-sea);
+  font-weight: 500;
+}
+
+.news-single-content p.paragraph-highlight-4 {
+  color: #854D0E; /* Tono cálido alternativo basado en la paleta */
+  font-weight: 500;
+}
+
+/* Sección 3: Video de YouTube Embebido */
+.news-single-video-wrapper {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #E2E8F0;
+}
+
+.news-video-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: var(--color-sea-dark);
+  margin-bottom: 1rem;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Relación 16:9 */
+  height: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Botón de Regresar */
+.back-link-wrapper {
+  margin-top: 3rem;
+}
+
+.back-to-news {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-sea);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-to-news:hover {
+  color: var(--color-sea-dark);
+  text-decoration: underline;
+}
+
+/* --- Adaptación para dispositivos móviles --- */
+@media (max-width: 768px) {
+  .news-hero-banner {
+    height: 280px;
+  }
+  
+  .news-single-container {
+    margin-top: -40px;
+    padding: 2rem 1.5rem;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .news-single-title {
+    font-size: 1.8rem;
+  }
+}

@@ -1,0 +1,28 @@
+<div class="news-container">
+  <!-- Aquí empieza el bucle que recorre las noticias de la base de datos -->
+  <% if (Array.isArray(records) && records.length > 0) { %>
+    <div class="news-grid">
+      <% records.forEach(record => { %>
+        <article class="news-card">
+          <% if (record.resource_uri) { %>
+            <div class="news-image-container">
+              <img src="<%= server_url %><%= record.resource_uri %>" alt="<%= record.title %>" class="news-thumbnail">
+            </div>
+          <% } %>
+
+          <div class="news-card-body">
+            <h3><%= record.title %></h3>
+            <span class="news-author">Por: <%= record.author %></span>
+            <p class="news-resume"><%= record.resume %></p>
+            
+            <a href="/news/new?uuid=<%= record.uuid %>" class="read-more-btn">Leer más</a>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="no-news-message">
+      <p>No hay noticias publicadas todavía.</p>
+    </div>
+  <% } %>
+</div>

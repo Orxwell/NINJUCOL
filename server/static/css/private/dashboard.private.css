@@ -5,264 +5,260 @@
 /* Components */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
+@import "../components/footer.component.css";
 
 /*
 ==========================================
 DASHBOARD PRIVATE
 ==========================================
 */
-
 .dashboard-section {
-  width: 100vw;
-  position: relative;
-  min-height: calc(100vh - 130px);
-  background-color: #F8FAFC;
-  padding: 80px 20px;
-  box-sizing: border-box;
-  font-family: var(--font-body);
+    width: 100%;
+    position: relative;
+    min-height: calc(100vh - 130px);
+    background-color: #F8FAFC;
+    padding: 80px 20px;
+    box-sizing: border-box;
+    font-family: var(--font-body);
 }
 
 .dashboard-container {
-  max-width: 950px;
-  margin: 0 auto;
-  padding: 0 15px;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 .dashboard-container h2 {
-  font-size: clamp(28px, 3vw, 36px);
-  color: var(--color-sea-dark);
-  margin-bottom: 6px;
-  font-family: var(--font-heading);
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 0.5px;
+    font-size: clamp(28px, 3vw, 36px);
+    color: var(--color-sea-dark);
+    margin-bottom: 6px;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .dashboard-container .dashboard-subtitulo {
-  color: #64748b;
-  margin-bottom: 35px;
-  font-size: 1.05rem;
-  text-align: center;
-  font-family: var(--font-body);
+    color: #64748b;
+    margin-bottom: 35px;
+    font-size: 1.05rem;
+    text-align: center;
+    font-family: var(--font-body);
 }
 
-/* News, Campaigns y Repository */
 .dashboard-accordion-group {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .dashboard-card-section {
-  background: #ffffff;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
 }
 
 .dashboard-card-section:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
-/* Cabecera desplegable */
 .dashboard-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 25px;
-  background-color: #FAFCFF;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-  border-bottom: 1px solid transparent;
-  transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 25px;
+    background-color: #FAFCFF;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.2s;
 }
 
 .dashboard-card-section[open] .dashboard-summary {
-  border-bottom-color: #E2E8F0;
-  background-color: #F1F5F9;
+    border-bottom-color: #E2E8F0;
+    background-color: #F1F5F9;
 }
 
 .dashboard-summary::-webkit-details-marker {
-  display: none;
+    display: none;
 }
 
 .dashboard-summary-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 .dashboard-summary-icon {
-  font-size: 1.8rem;
+    font-size: 1.8rem;
 }
 
 .dashboard-summary-info h3 {
-  font-size: 1.3rem;
-  color: var(--color-sea-dark);
-  font-family: var(--font-heading);
-  margin: 0;
-  letter-spacing: 0.5px;
+    font-size: 1.3rem;
+    color: var(--color-sea-dark);
+    font-family: var(--font-heading);
+    margin: 0;
+    letter-spacing: 0.5px;
 }
 
 .dashboard-summary-badge {
-  background-color: #E2E8F0;
-  color: #475569;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 2px 10px;
-  border-radius: 20px;
+    background-color: #E2E8F0;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
 }
 
 .dashboard-toggle-arrow {
-  font-size: 0.9rem;
-  color: #64748B;
-  transition: transform 0.3s ease;
+    font-size: 0.9rem;
+    color: #64748B;
+    transition: transform 0.3s ease;
 }
 
 .dashboard-card-section[open] .dashboard-toggle-arrow {
-  transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
-/* Listas e Ítems */
+
 .dashboard-content-body {
-  padding: 25px;
-  background-color: #FFFFFF;
+    padding: 25px;
+    background-color: #FFFFFF;
 }
 
 .dashboard-section-actions-top {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }
 
 .dashboard-btn-crear {
-  background-color: var(--color-tangerine);
-  color: #FFFFFF;
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
-  box-shadow: 0 2px 8px rgba(240, 140, 33, 0.2);
+    background-color: var(--color-tangerine);
+    color: #FFFFFF;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    box-shadow: 0 2px 8px rgba(240, 140, 33, 0.2);
 }
 
 .dashboard-btn-crear:hover {
-  background-color: #D97A1B;
+    background-color: #D97A1B;
 }
 
-/* Listado de elementos publicados */
+
 .dashboard-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .dashboard-item-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background-color: #FAFCFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  gap: 20px;
-  transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background-color: #FAFCFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    gap: 20px;
+    transition: border-color 0.2s;
 }
 
 .dashboard-item-row:hover {
-  border-color: var(--color-sea);
+    border-color: var(--color-sea);
 }
 
 .dashboard-item-info {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .dashboard-item-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1E293B;
-  margin: 0 0 4px 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0 0 4px 0;
 }
 
 .dashboard-item-desc {
-  font-size: 0.9rem;
-  color: #64748B;
-  margin: 0;
-  line-height: 1.4;
+    font-size: 0.9rem;
+    color: #64748B;
+    margin: 0;
+    line-height: 1.4;
     
-  display: box;
-  display: -webkit-box;
-  box-orient: vertical;
-  -webkit-box-orient: vertical;
-  line-clamp: 2;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
+    display: box;
+    display: -webkit-box;
+    box-orient: vertical;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
-/* Botones de Editar y Eliminar por ítem */
+
 .dashboard-item-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .dashboard-btn-editar {
-  background-color: var(--color-sea-dark);
-  color: #FFFFFF;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 0.2s;
+    background-color: var(--color-sea-dark);
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
 }
 
 .dashboard-btn-editar:hover {
-  background-color: #2D547D;
+    background-color: #2D547D;
 }
 
 .dashboard-btn-eliminar {
-  background-color: #EF4444;
-  color: #FFFFFF;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.2s;
+    background-color: #EF4444;
+    color: #FFFFFF;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .dashboard-btn-eliminar:hover {
-  background-color: #DC2626;
+    background-color: #DC2626;
 }
 
 .dashboard-no-items {
-  text-align: center;
-  color: #94A3B8;
-  font-style: italic;
-  padding: 20px 0;
-  margin: 0;
+    text-align: center;
+    color: #94A3B8;
+    font-style: italic;
+    padding: 20px 0;
+    margin: 0;
 }
 
-/* --- RESPONSIVO --- */
+
 @media (max-width: 768px) {
-  .dashboard-item-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .dashboard-item-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
-  .dashboard-item-actions {
-    width: 100%;
-    justify-content: flex-end;
-    border-top: 1px solid #E2E8F0;
-    padding-top: 12px;
-  }
+    .dashboard-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+        border-top: 1px solid #E2E8F0;
+        padding-top: 12px;
+    }
 }
-
-@import "../components/footer.component.css";

@@ -23,14 +23,12 @@ section._2 ._2-container {
   align-items: center;
 }
 
-/* Columna de Texto */
 section._2 ._2-text-col {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-/* Puntos decorativos amarillos */
 section._2 ._2-dots {
   display: flex;
   gap: 6px;
@@ -40,7 +38,7 @@ section._2 ._2-dots {
 section._2 ._2-dots span {
   width: 8px;
   height: 8px;
-  background-color: var(--color-butter);
+  background-color: var(--color-matcha);
   border-radius: 50%;
   display: inline-block;
 }
@@ -72,7 +70,6 @@ section._2 ._2-desc {
   line-height: 1.6;
 }
 
-/* Enlace "CONOCER MÁS..." */
 section._2 ._2-link {
   font-family: var(--font-heading);
   font-size: 14px;
@@ -88,7 +85,6 @@ section._2 ._2-link:hover {
   color: var(--color-tangerine);
 }
 
-/* Columna de Imagen (Tarjeta con esquinas redondeadas) */
 section._2 ._2-image-card {
   width: 100%;
   height: 380px;
@@ -114,6 +110,6 @@ section._2 ._2-image-card svg {
 
   section._2 ._2-image-card {
     height: 300px;
-    order: -1; /* Pone la imagen arriba en móviles si lo deseas, o quítalo para que vaya abajo */
+    order: -1; 
   }
 }

@@ -1,0 +1,151 @@
+/* 
+==========================================
+VOLUNTEER FORM COMPONENT
+========================================== 
+*/
+.join-section {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  
+  padding: 80px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: color-mix(in srgb, var(--color-sea) 8%, #ffffff 92%);
+}
+
+.join-container {
+  max-width: 750px;
+  width: 100%;
+  background-color: #ffffff;
+  padding: 50px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.join-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.join-header h2 {
+  font-family: var(--font-heading);
+  color: var(--color-sea-dark);
+  font-size: clamp(26px, 3.5vw, 36px);
+  font-weight: 800;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.join-header p {
+  font-family: var(--font-body);
+  color: #64748b;
+  font-size: 15px;
+  margin: 0;
+}
+
+.join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-sea-dark);
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: #1e293b;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-sea);
+  box-shadow: 0 0 0 3px rgba(102, 152, 204, 0.2);
+}
+
+/* Opciones de Checkbox */
+.form-options {
+  display: flex;
+  gap: 30px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-tangerine);
+  cursor: pointer;
+}
+
+/* Botón Enviar */
+.btn-submit {
+  padding: 14px 28px;
+  background-color: var(--color-tangerine);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-tangerine-hover);
+  transform: translateY(-2px);
+}
+
+/* Responsive móvil */
+@media (max-width: 650px) {
+  .join-container {
+    padding: 30px 20px;
+  }
+  .form-options {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

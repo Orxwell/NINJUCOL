@@ -1,0 +1,77 @@
+<div class="news-full-bleed-wrapper">
+  <!-- Sección 1: Imagen Principal a todo el ancho -->
+  <% if (record.resource_uri) { %>
+    <div class="news-hero-banner">
+      <img src="<%= record.resource_uri %>" alt="<%= record.title %>" class="news-hero-image">
+    </div>
+  <% } %>
+
+  <!-- Sección 2: Contenedor flotante central con la información -->
+  <div class="news-single-container">
+    
+    <div class="news-single-meta-top">
+      <% if (record.date) { %>
+        <span class="news-date"><%= record.date %></span>
+        <span class="dot-separator">•</span>
+      <% } %>
+      <span class="news-author-tag">Escrito por <%= record.author %></span>
+    </div>
+
+    <h1 class="news-single-title"><%= record.title %></h1>
+
+    <div class="news-single-content">
+      <% 
+        let formattedDesc = record.description || '';
+        let highlightCounter = 0;
+        
+        formattedDesc = formattedDesc
+          .split(/\r?\n\r?\n/)
+          .map(parrafo => {
+            let pTrimmed = parrafo.trim();
+            if (!pTrimmed) return '';
+            
+            // Si el párrafo empieza con un número y un punto (ej: "1. "), le asignamos una clase especial
+            if (/^\d+\.\s+/.test(pTrimmed)) {
+              highlightCounter++;
+              // Rotamos entre 4 clases de colores diferentes para cada párrafo numerado
+              let colorClass = `paragraph-highlight-${((highlightCounter - 1) % 4) + 1}`;
+              return `<p class="${colorClass}">${pTrimmed.replace(/\n/g, '<br>')}</p>`;
+            } else {
+              return `<p>${pTrimmed.replace(/\n/g, '<br>')}</p>`;
+            }
+          })
+          .join('');
+      %>
+      <%- formattedDesc %>
+    </div>
+
+    <!-- Sección 3: Reproductor de YouTube embebido y responsivo -->
+    <% if (record.video_url) { %>
+      <% 
+        let embedUrl = record.video_url;
+        if (embedUrl.includes('watch?v=')) {
+          embedUrl = embedUrl.replace('watch?v=', 'embed/').split('&')[0];
+        } else if (embedUrl.includes('youtu.be/')) {
+          let videoId = embedUrl.split('youtu.be/')[1].split('?')[0];
+          embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        }
+      %>
+      <div class="news-single-video-wrapper">
+        <h3 class="news-video-title">Video relacionado</h3>
+        <div class="video-container">
+          <iframe 
+            src="<%= embedUrl %>" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    <% } %>
+
+    <div class="back-link-wrapper">
+      <a href="/news" class="back-to-news">← Regresar a Noticias</a>
+    </div>
+  </div>
+</div>

@@ -21,6 +21,12 @@
 
     <main>
       <article>
+        <%- include('../components/title.component.ejs',{
+          page: 'join_us', 
+          customTitle: 'Únete'
+        }
+        ) %>
+        <%- include('../components/volunteerForm.component.ejs') %>
 
         <%- include('../components/donations.component.ejs') %>
   

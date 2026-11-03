@@ -18,15 +18,16 @@
     <%- include('../components/top.component.ejs', { page: 'news', }) %>
 
     <%- include('../components/bar.component.ejs', { page: 'news', }) %>
+           <%- include('../components/title.component.ejs',{
+          page: 'news', 
+          customTitle: 'Noticias'
+        }
+        ) %>
 
-    <main>
-      <article>
+    <%- include('../components/news.component.ejs') %>
 
-        <%- include('../components/donations.component.ejs') %>
+    <%- include('../components/donations.component.ejs') %>
   
-      </article>
-    </main>
-
     <%- include('../components/footer.component.ejs') %>
   </body>
 </html>

@@ -3,10 +3,11 @@
 (CLASE ._5)
 ==========================================
 */
-
+/* ==========================================
+   SECCIÓN CINCO (CLASE ._5) - HISTORIA
+   ========================================== */
 section._5 {
   position: relative;
-  /* Expansión a 100vw para cubrir la pantalla de lado a lado */
   width: 100vw;
   left: 50%;
   right: 50%;
@@ -30,7 +31,6 @@ section._5 ._5-container {
   box-sizing: border-box;
 }
 
-/* Columna de Texto */
 section._5 ._5-info-texto {
   display: flex;
   flex-direction: column;
@@ -48,7 +48,6 @@ section._5 ._5-info-texto p {
   margin: 0;
 }
 
-/* Frase clave resaltada con acento Amarillo Butter */
 section._5 ._5-info-texto span {
   font-family: var(--font-body);
   color: var(--color-butter, #F2D88F);
@@ -61,7 +60,6 @@ section._5 ._5-info-texto span {
   margin-top: 10px;
 }
 
-/* Columna de Imagen */
 section._5 ._5-info-imagen {
   flex: 1;
   display: flex;
@@ -72,7 +70,7 @@ section._5 ._5-info-imagen {
 section._5 ._5-img-card {
   width: 100%;
   max-width: 480px;
-  height: 380px;
+  height: 680px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
@@ -110,6 +108,6 @@ section._5 ._5-img-card > svg image {
 
   section._5 ._5-img-card {
     max-width: 100%;
-    height: 320px;
+    height: 800px;
   }
 }

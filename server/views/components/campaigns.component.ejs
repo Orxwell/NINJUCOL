@@ -1,0 +1,39 @@
+<main class="campaigns-section">
+  <div class="campaigns-container">
+    <h2 class="campaigns-main-title">Conoce las iniciativas que están transformando vidas.</h2>
+    <p class="campaigns-subtitle">Únete y sé parte del cambio.</p>
+
+    <% if (campaigns && campaigns.length > 0) { %>
+      <div class="campaigns-grid">
+        <% campaigns.forEach((campaign, index) => { %>
+          <article class="campaign-card">
+            
+            <div class="campaign-text-content">
+              <h3 class="campaign-title"><%= campaign.title %></h3>
+              <p class="campaign-description"><%= campaign.description %></p>
+              
+              <div class="campaign-action">
+                <a href="https://wa.me/573000000000?text=Hola,%20estoy%20interesado%20en%20la%20campaña:%20<%= encodeURIComponent(campaign.title) %>" 
+                   target="_blank" 
+                   class="whatsapp-campaign-btn">
+                   Comunícate con nosotros
+                </a>
+              </div>
+            </div>
+
+            <% if (campaign.resource_uri) { %>
+              <div class="campaign-image-wrapper">
+                <img src="<%= campaign.resource_uri %>" alt="<%= campaign.title %>" class="campaign-image">
+              </div>
+            <% } %>
+
+          </article>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="no-campaigns-message">
+        <p>No hay campañas activas en este momento. ¡Vuelve pronto!</p>
+      </div>
+    <% } %>
+  </div>
+</main>

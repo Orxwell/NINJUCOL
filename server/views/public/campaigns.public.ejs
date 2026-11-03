@@ -21,6 +21,12 @@
 
     <main>
       <article>
+        <%- include('../components/title.component.ejs',{
+          page: 'campaigns', 
+          customTitle: 'Campañas e Iniciativas'
+        }
+        ) %>
+        <%- include('../components/campaigns.component.ejs') %>
 
         <%- include('../components/donations.component.ejs') %>
   

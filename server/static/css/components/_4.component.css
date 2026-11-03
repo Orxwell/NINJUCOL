@@ -6,7 +6,6 @@
 
 section._4 {
   position: relative;
-  /* Expansión a 100vw para cubrir la pantalla de lado a lado */
   width: 100vw;
   left: 50%;
   right: 50%;
@@ -20,12 +19,11 @@ section._4 {
 
 section._4 ._4-grid-full {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 50% Texto, 50% Imagen */
+  grid-template-columns: 1fr 1fr; 
   width: 100%;
   min-height: 520px;
 }
 
-/* Columna Izquierda: Textos */
 section._4 ._4-col-texto {
   background-color: #ffffff;
   display: flex;
@@ -40,7 +38,6 @@ section._4 ._4-inner-wrapper {
   width: 100%;
 }
 
-/* Puntos naranjas cuadrados/redondos */
 section._4 ._4-dots {
   display: flex;
   gap: 8px;
@@ -50,12 +47,11 @@ section._4 ._4-dots {
 section._4 ._4-dots span {
   width: 12px;
   height: 12px;
-  background-color: var(--color-tangerine);
+  background-color: var(--color-matcha);
   display: inline-block;
   border-radius: 2px;
 }
 
-/* Título principal de la sección */
 section._4 ._4-titulo {
   font-family: var(--font-heading);
   font-size: clamp(30px, 3.8vw, 44px);
@@ -67,7 +63,6 @@ section._4 ._4-titulo {
   line-height: 1.1;
 }
 
-/* Párrafos descriptivos */
 section._4 ._4-descripcion {
   font-family: var(--font-body);
   color: #475569;
@@ -81,7 +76,6 @@ section._4 ._4-descripcion:last-child {
   margin-bottom: 0;
 }
 
-/* Columna Derecha: Imagen mediante SVG */
 section._4 ._4-col-imagen {
   position: relative;
   width: 100%;
@@ -104,10 +98,10 @@ section._4 ._4-col-imagen > svg image {
   object-fit: cover;
 }
 
-/* --- RESPONSIVE--- */
+/* --- RESPONSIVE --- */
 @media (max-width: 900px) {
   section._4 ._4-grid-full {
-    grid-template-columns: 1fr; /* Cambia a 1 sola columna en dispositivos móviles */
+    grid-template-columns: 1fr; 
   }
 
   section._4 ._4-col-texto {
@@ -117,6 +111,6 @@ section._4 ._4-col-imagen > svg image {
 
   section._4 ._4-col-imagen {
     min-height: 350px;
-    order: -1; /* Pone la imagen arriba en móviles si lo deseas */
+    order: -1; 
   }
 }

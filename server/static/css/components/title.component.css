@@ -1,0 +1,102 @@
+/* 
+==========================================
+PAGE HEADER BANNER COMPONENT
+========================================== 
+*/
+.page-header-banner {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  
+  min-height: 280px;
+  padding: 60px 20px;
+  box-sizing: border-box;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  /* Fondo base con tu azul principal */
+  background-color: var(--color-sea-dark);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  margin-top: 0;
+  margin-bottom: 40px;
+}
+
+/* Capa de degradado elegante para asegurar contraste */
+.page-header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg, 
+    rgba(59, 107, 156, 0.95) 0%, 
+    rgba(15, 23, 42, 0.85) 100%
+  );
+  z-index: 1;
+}
+
+/* Contenido del banner */
+.page-header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* Puntos decorativos (amarillo manteca corporativo) */
+.page-header-dots {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.page-header-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-butter);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Título principal con fuente Oswald */
+.page-header-title {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 4.5vw, 48px);
+  font-weight: 800;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtítulo opcional con fuente Inter */
+.page-header-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive para celulares */
+@media (max-width: 768px) {
+  .page-header-banner {
+    min-height: 220px;
+    padding: 40px 15px;
+  }
+}

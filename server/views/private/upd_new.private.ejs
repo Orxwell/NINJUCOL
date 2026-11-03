@@ -28,10 +28,11 @@
 
     <main class="dashboard-section">
       <div class="add-new-container">
-        <h2>Crear nueva noticia</h2>
+        <h2>Editar Noticia</h2>
 
+        <!-- El action incluye el uuid dinámico para que la ruta lo reciba en req.query -->
         <form
-          action="/dashboard/upd/new"
+          action="/dashboard/upd/new?uuid=<%= data.uuid %>"
           method="POST"
           class="add-new-form"
           enctype="multipart/form-data"
@@ -61,27 +62,33 @@
           <div class="add-new-group">
             <label>Resumen:</label>
 
+            <!-- CORREGIDO: El contenido va dentro del textarea, no en un atributo value -->
             <textarea
               name="resume"
               rows="2"
-              value="<%= data.resume %>"
               required
-            ></textarea>
+            ><%= data.resume %></textarea>
           </div>
 
           <div class="add-new-group">
             <label>Descripción:</label>
 
+            <!-- CORREGIDO: El contenido va dentro del textarea, no en un atributo value -->
             <textarea
               name="description"
               rows="5"
-              value="<%= data.description %>"
               required
-            ></textarea>
+            ><%= data.description %></textarea>
           </div>
 
           <div class="add-new-group">
-            <label>Portada:</label>
+            <label>Portada actual / Cambiar:</label>
+
+            <% if (data.resource_uri) { %>
+              <div style="margin-bottom: 0.5rem;">
+                <img src="<%= data.resource_uri %>" alt="Portada actual" width="100" style="border-radius: 6px;">
+              </div>
+            <% } %>
 
             <input
               type="file"
@@ -89,6 +96,9 @@
               name="resource"
               accept=".jpg,.jpeg,.png,.webp"
             />
+
+            <!-- Campo oculto vital: Mantiene la resource_uri anterior si el usuario no sube una foto nueva -->
+            <input type="hidden" name="resource_uri" value="<%= data.resource_uri %>">
           </div>
 
           <div class="add-new-group">
@@ -98,21 +108,23 @@
               type="url"
               id="video_url"
               name="video_url"
-              value="https://www.youtube.com/watch?v=jNQXAC9IVRw"
+              value="<%= data.video_url %>"
             />
 
             <script>
               const $npt = document.getElementById('video_url');
 
-              $npt.form.addEventListener('submit', () => {
-                if (!$npt.value.trim()) {
-                  $npt.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
-                }
-              });
+              if ($npt && $npt.form) {
+                $npt.form.addEventListener('submit', () => {
+                  if (!$npt.value.trim()) {
+                    $npt.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+                  }
+                });
+              }
             </script>
           </div>
 
-          <button type="submit" class="add-new-btn-submit">Guardar</button>
+          <button type="submit" class="add-new-btn-submit">Guardar Cambios</button>
         </form>
 
         <a href="/dashboard">Regresar</a>

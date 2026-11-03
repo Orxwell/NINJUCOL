@@ -1,9 +1,151 @@
-/* General*/
+/* General */
 @import "../public/reset.public.css";
 @import "../public/styles.public.css";
 
 /* Components */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
-
 @import "../components/footer.component.css";
+
+/* Sección principal del dashboard */
+.dashboard-section {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  background-color: var(--color-topbar-bg, #F8FAFC);
+  min-height: calc(100vh - 130px);
+}
+
+.add-new-container {
+  width: 100%;
+  max-width: 750px;
+  background-color: #ffffff;
+  color: var(--color-topbar-text, #1e293b);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.add-new-container h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--color-sea);
+  color: var(--color-topbar-text, #0f172a);
+}
+
+.add-new-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.add-new-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-new-group label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-topbar-text, #475569);
+  margin-bottom: 8px;
+}
+
+/* Campos de texto y textareas usando las variables de color */
+.add-new-group input[type="text"],
+.add-new-group input[type="url"],
+.add-new-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-topbar-text, #1e293b);
+  background-color: var(--color-topbar-bg, #f8fafc);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 10px;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+}
+
+.add-new-group input[type="text"]:focus,
+.add-new-group input[type="url"]:focus,
+.add-new-group textarea:focus {
+  outline: none;
+  border-color: var(--color-sea);
+  box-shadow: 0 0 0 4px rgba(102, 152, 204, 0.25); /* Basado en --color-sea (#6698CC) */
+  background-color: #ffffff;
+}
+
+.add-new-group textarea {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Selector de archivo adaptado */
+.add-new-group input[type="file"] {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-topbar-text, #475569);
+  padding: 10px;
+  background-color: var(--color-topbar-bg, #f8fafc);
+  border: 1px dashed var(--color-sea-dark);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.add-new-group input[type="file"]:hover {
+  border-color: var(--color-sea);
+}
+
+/* Botón de envío usando el azul principal (--color-sea) */
+.add-new-btn-submit {
+  width: 100%;
+  padding: 14px;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-sea);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 12px rgba(102, 152, 204, 0.3);
+}
+
+.add-new-btn-submit:hover {
+  background-color: var(--color-sea-dark);
+}
+
+.add-new-btn-submit:active {
+  transform: scale(0.99);
+}
+
+/* Enlace de regresar */
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-sea-dark);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--color-sea);
+  text-decoration: underline;
+}

@@ -1,0 +1,214 @@
+
+.signup-section {
+  width: 100%;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.signup-container {
+  width: 100%;
+  max-width: 1000px;
+  background-color: var(--fg-color, #ffffff);
+  color: var(--text-color, #111111);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .signup-container {
+    grid-template-columns: 1fr;
+  }
+  .signup-brand-col {
+    display: none;
+  }
+}
+
+/* Columna Izquierda: Marca / Banner */
+.signup-brand-col {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-sea), var(--color-sea-dark));
+  color: #ffffff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.signup-brand-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.signup-brand-content {
+  position: relative;
+  z-index: 2;
+}
+
+.signup-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.signup-brand-content h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.signup-brand-content p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Columna Derecha: Formulario */
+.signup-form-col {
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--fg-color, #ffffff);
+}
+
+.signup-form-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.signup-header {
+  margin-bottom: 24px;
+}
+
+.signup-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: var(--text-color, #111111);
+}
+
+.signup-header p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-color, #666666);
+}
+
+.signup-error-box {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.signup-form-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-color, #333333);
+}
+
+.signup-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* AQUÍ SE ARREGLAN LOS ICONOS GIGANTES */
+.signup-input-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: #888888;
+  pointer-events: none;
+}
+
+.signup-input-wrapper input {
+  width: 100%;
+  padding: 11px 14px 11px 44px; 
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-color, #111111);
+  background-color: var(--bg-color, #f9fafb);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.signup-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--color-sea);
+  box-shadow: 0 0 0 3px rgba(102, 152, 204, 0.25);
+  background-color: var(--fg-color, #ffffff);
+}
+
+.signup-btn {
+  width: 100%;
+  padding: 13px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-sea);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.signup-btn:hover {
+  background-color: var(--color-sea-dark);
+}
+
+.signup-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-color, #666666);
+}
+
+.signup-signin-link {
+  color: var(--color-sea);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.signup-signin-link:hover {
+  text-decoration: underline;
+}

@@ -1,5 +1,5 @@
-<%
-  const bar_exception_pages = [
+<%  
+const bar_exception_pages = [
     'sign_in',
     'dashboard',
     'add_new', 'upd_new',
@@ -7,19 +7,20 @@
     'add_repository', 'upd_repository',
     'at_get', 'at_post',
   ];
+    const isException = bar_exception_pages.includes(page);
 %>
 
 <header id="bar">
-  <!-- Titular -->
+  <!-- Titular / Logo -->
   <section class="brand-section">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-      <image
-        href="<%= server_url %>/api/webp/public/_6.public.webp<%= `?v=${Date.now()}` %>"
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid meet"
-        style="opacity: 0; transition: opacity .5s ease-in;"
-        onload="this.style.opacity='1'"
+      <image 
+        href="<%= server_url %>/api/webp/public/_6.public.webp<%= `?v=${Date.now()}` %>" 
+        width="100%" 
+        height="100%" 
+        preserveAspectRatio="xMidYMid meet" 
+        style="opacity: 0; transition: opacity .5s ease-in;" 
+        onload="this.style.opacity='1'" 
       />
     </svg>
 
@@ -29,23 +30,18 @@
     </div>
   </section>
 
-  <!-- Navegación -->
+  <!-- Navegación de Enlaces -->
   <nav id="alt">
-    <a href="/" <%= page === 'home' ? 'active' : '' %>>Inicio</a>
-
-    <a href="/about_us" <%= page === 'about_us' ? 'active' : '' %>>Nosotros</a>
-
-    <a href="/news" <%= page === 'news' ? 'active' : '' %>>Noticias</a>
-
-    <a href="/campaigns" <%= page === 'campaigns' ? 'active' : '' %>>Campañas</a>
-
-    <a href="/repository" <%= page === 'repository' ? 'active' : '' %>>Recursos</a>
-
-    <a href="/join_us" <%= page === 'join_us' ? 'active' : '' %>>Únete</a>
+    <a href="/" class="<%= page === 'home' ? 'active' : '' %>">Inicio</a>
+    <a href="/about_us" class="<%= page === 'about_us' ? 'active' : '' %>">Nosotros</a>
+    <a href="/news" class="<%= page === 'news' ? 'active' : '' %>">Noticias</a>
+    <a href="/campaigns" class="<%= page === 'campaigns' ? 'active' : '' %>">Campañas</a>
+    <a href="/repository" class="<%= page === 'repository' ? 'active' : '' %>">Recursos</a>
+    <a href="/join_us" class="<%= page === 'join_us' ? 'active' : '' %>">Únete</a>
   </nav>
 
-  <!-- Donar -->
-  <% if (!bar_exception_pages.includes(page)) { %>
+  <!-- Acciones (Donar y Menú Hamburguesa) -->
+  <% if (!isException) { %>
     <div class="actions-section">
       <button type="button" class="donate-btn">DONAR</button>
       <button id="alt-nav" type="button" aria-label="Menú">

@@ -1,6 +1,6 @@
 /*
 ==========================================
-DONATION COMPONENT
+DONATION COMPONENT (CORREGIDO Y OPTIMIZADO)
 ==========================================
 */
 
@@ -13,18 +13,22 @@ DONATION COMPONENT
   margin-right: -50vw;
   background-color: var(--color-sea-dark, #3B6B9C);
   color: #FFFFFF;
-  overflow: hidden;
+  overflow-x: hidden; /* Evita cualquier scroll lateral indeseado */
   font-family: var(--font-body);
+  /* Aplicamos la altura dinámica basada en la pantalla menos tu barra superior (ej: 70px) */
+  min-height: calc(100dvh - 70px);
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
 }
 
 .donation-grid-full {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  min-height: 580px;
+  flex: 1;
 }
 
-/* --- COLUMNA IZQUIERDA (IMAGEN FULL) --- */
 .donation-col-image {
   position: relative;
   width: 100%;
@@ -53,7 +57,6 @@ DONATION COMPONENT
   border-radius: 4px;
 }
 
-/* --- COLUMNA DERECHA (BLOQUE AZUL CON FORMULARIO) --- */
 .donation-col-content {
   background-color: var(--color-sea-dark, #3B6B9C);
   display: flex;
@@ -98,7 +101,6 @@ DONATION COMPONENT
   margin-bottom: 14px;
 }
 
-/* GRID DE VALORES */
 .values-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr) 1.2fr;
@@ -153,7 +155,6 @@ DONATION COMPONENT
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* CAJA DE RESUMEN PROYECTADO */
 .projection-box {
   background-color: rgba(0, 0, 0, 0.2);
   border-left: 4px solid var(--color-butter, #F2D88F);
@@ -179,7 +180,6 @@ DONATION COMPONENT
   margin: 0;
 }
 
-/* BOTÓN TANGERINE DE IMPACTO */
 .btn-donate-submit {
   width: 100%;
   background-color: var(--color-tangerine, #F08C21);
@@ -200,19 +200,14 @@ DONATION COMPONENT
   transform: translateY(-2px);
 }
 
-/* --- RESPONSIVE--- */
+/* --- RESPONSIVE --- */
 @media (max-width: 1024px) {
-  /* Mantenemos el truco de ancho completo (100vw) pero asegurando que la sección se apile correctamente */
   .donation-section-full {
-    width: 100vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    min-height: auto; /* En móviles se adapta al contenido de forma natural */
   }
 
   .donation-grid-full {
-    grid-template-columns: 1fr; /* Pasa a una sola columna vertical */
+    grid-template-columns: 1fr; 
   }
 
   .donation-col-image {

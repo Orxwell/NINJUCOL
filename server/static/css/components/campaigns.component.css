@@ -1,0 +1,159 @@
+/* ==========================================================
+   ESTILOS DE LA SECCIÓN DE CAMPAÑAS
+   ========================================================== */
+
+.campaigns-section {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%); /* Full-bleed para que abarque todo el ancho */
+  background-color: white;/*var(--color-topbar-bg);*/
+  padding: 4rem 1rem;
+  box-sizing: border-box;
+}
+
+.campaigns-container {
+  max-width: 1100px;
+  margin: 30px 30px;
+}
+
+.campaigns-main-title {
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  color: var(--color-sea-dark);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.campaigns-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--color-topbar-text);
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+/* Contenedor general de tarjetas */
+.campaigns-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Tarjeta individual (Simula el bloque de la imagen de referencia) */
+.campaign-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Alternancia automática: Las campañas pares (2, 4, 6...) invierten el orden (Imagen a la izquierda, texto a la derecha) */
+.campaign-card:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+/* Bloques internos de la tarjeta (Texto e Imagen ocupan 50% cada uno) */
+.campaign-text-content,
+.campaign-image-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Estilos del contenido de texto */
+.campaign-text-content {
+  padding: 3rem;
+  box-sizing: border-box;
+}
+
+.campaign-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  color: var(--color-sea-dark);
+  line-height: 1.2;
+  margin-bottom: 1.2rem;
+}
+
+.campaign-description {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  color: var(--color-topbar-text);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* Botón de WhatsApp empresarial */
+.campaign-action {
+  margin-top: auto;
+}
+
+.whatsapp-campaign-btn {
+  display: inline-block;
+  background-color: var(--color-tangerine);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(240, 140, 33, 0.3);
+}
+
+.whatsapp-campaign-btn:hover {
+  background-color: var(--color-tangerine-hover);
+  transform: translateY(-2px);
+}
+
+/* Estilos de la imagen de la campaña */
+.campaign-image-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #fff
+}
+
+.campaign-image {
+  width: 100%;
+  height: auto;           
+  display: block;
+  object-fit: contain;    
+  transition: transform 0.4s ease;
+}
+
+.campaign-card:hover .campaign-image {
+  transform: scale(1.02); 
+}
+
+/* Mensaje por si no hay campañas */
+.no-campaigns-message {
+  text-align: center;
+  font-family: var(--font-body);
+  color: var(--color-topbar-text);
+  font-size: 1.2rem;
+  padding: 3rem;
+}
+
+/* --- Adaptación Responsiva para Celulares y Tablets --- */
+@media (max-width: 900px) {
+  .campaign-card,
+  .campaign-card:nth-child(even) {
+    flex-direction: column !important; /* En móviles siempre va apilado (texto arriba, imagen abajo o viceversa) */
+  }
+
+  .campaign-image-wrapper {
+    height: 280px;
+  }
+
+  .campaign-text-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .campaign-title {
+    font-size: 1.8rem;
+  }
+}

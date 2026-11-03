@@ -343,14 +343,16 @@ export default function handlingMultipart({
             'public'
           );
 
+          const final_name = `${randomUUID()}.public${file_extension}}`
+
           const final_path = join(
             destination_path,
-            file_name
+            final_name
           );
 
           // Public URI
-          const generated_uri = `/api/${folder}/public/${randomUUID()}.public${file_extension}`;
-
+          const generated_uri = `/api/${folder}/public/${final_name}`;
+        
           prepared_files.push({
             key,
             buffer: file.buffer,
