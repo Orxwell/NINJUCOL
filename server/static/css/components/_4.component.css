@@ -114,3 +114,59 @@ section._4 ._4-col-imagen > svg image {
     order: -1; 
   }
 }
+section._4 .values-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-sea-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 30px 0 12px 0;
+}
+section._4 .foundation-values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 25px;
+}
+
+section._4 .value-card-mini {
+  background-color: var(--color-matcha);
+  color: #ffffff;
+  padding: 16px 10px;
+  text-align: center;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  cursor: default;
+
+}
+section._4 .value-card-mini:nth-child(5) {
+  grid-column: 1 / -1;
+  width: calc(50% - 6px); 
+  justify-self: center;
+}
+
+section._4 .value-card-mini:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 768px) {
+  section._4 .foundation-values-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  /* En móviles el último elemento vuelve a ocupar una columna normal si se prefiere */
+  section._4 .value-card-mini:nth-child(5) {
+    grid-column: auto;
+    width: 96%;
+  }
+}
