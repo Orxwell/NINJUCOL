@@ -1,17 +1,21 @@
-<main class="campaigns-section">
-  <div class="campaigns-container">
-    <h2 class="campaigns-main-title">Conoce las iniciativas que están transformando vidas.</h2>
-    <p class="campaigns-subtitle">Campañas solidarias. Además de nuestros procesos en los colegios, impulsamos campañas que
-cuidan las condiciones para que niñas, niños y jóvenes puedan aprender. Únete y sé parte del cambio.</p>
+<section class="campaigns-section">
+  
+  <!-- Encabezado general de la sección -->
+  <div class="campaigns-header-wrapper">
+    <h2 class="campaigns-main-title">Conoce las iniciativas que están transformando vidas</h2>
+    <p class="campaigns-subtitle">Campañas solidarias. Además de nuestros procesos en los colegios, impulsamos campañas que cuidan las condiciones para que niñas, niños y jóvenes puedan aprender. Únete y sé parte del cambio.</p>
+  </div>
 
-    <% if (campaigns && campaigns.length > 0) { %>
-      <div class="campaigns-grid">
-        <% campaigns.forEach((campaign, index) => { %>
-          <article class="campaign-card">
-            
-            <div class="campaign-text-content">
-              <h3 class="campaign-title"><%= campaign.title %></h3>
-              <p class="campaign-description"><%= campaign.description %></p>
+  <% if (campaigns && campaigns.length > 0) { %>
+    <div class="campaigns-grid-full">
+      <% campaigns.forEach((campaign, index) => { %>
+        <article class="campaign-row-full">
+          
+          <!-- Columna de Texto -->
+          <div class="campaign-col-texto">
+            <div class="campaign-inner-wrapper">
+              <h3 class="campaign-titulo"><%= campaign.title %></h3>
+              <p class="campaign-descripcion"><%= campaign.description %></p>
               
               <div class="campaign-action">
                 <a href="https://wa.me/573000000000?text=Hola,%20estoy%20interesado%20en%20la%20campaña:%20<%= encodeURIComponent(campaign.title) %>" 
@@ -21,20 +25,33 @@ cuidan las condiciones para que niñas, niños y jóvenes puedan aprender. Únet
                 </a>
               </div>
             </div>
+          </div>
 
-            <% if (campaign.resource_uri) { %>
-              <div class="campaign-image-wrapper">
-                <img src="<%= campaign.resource_uri %>" alt="<%= campaign.title %>" class="campaign-image">
-              </div>
-            <% } %>
+          <!-- Columna de Imagen (con tu SVG, opacidad y onload) -->
+          <% if (campaign.resource_uri) { %>
+            <div class="campaign-col-imagen">
+              <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                <image
+                  href="<%= campaign.resource_uri %><%= `?v=${Date.now()}` %>"
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                  style="opacity: 0; transition: opacity .5s ease-in;"
+                  onload="this.style.opacity='1'"
+                />
+              </svg>
+            </div>
+          <% } %>
 
-          </article>
-        <% }); %>
-      </div>
-    <% } else { %>
-      <div class="no-campaigns-message">
-        <p>No hay campañas activas en este momento. ¡Vuelve pronto!</p>
-      </div>
-    <% } %>
-  </div>
-</main>
+        </article>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="no-campaigns-message">
+      <p>No hay campañas activas en este momento. ¡Vuelve pronto!</p>
+    </div>
+  <% } %>
+
+</section>

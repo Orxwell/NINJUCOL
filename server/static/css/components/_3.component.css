@@ -1,8 +1,7 @@
-/*
-==========================================
-(CLASE ._3)
-==========================================
-*/
+/* ==========================================
+   (CLASE ._3 CON FONDO DE IMAGEN ABSOLUTO CORREGIDO)
+   ========================================== */
+
 section._3 {
   position: relative;
   width: 100vw;
@@ -10,14 +9,59 @@ section._3 {
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  
   padding: 80px 20px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  
   background-color: color-mix(in srgb, var(--color-sea) 10%, #ffffff 90%);
+  overflow: hidden;
+}
+
+/* El contenedor del fondo se posiciona de forma fija detrás del contenido */
+section._3 .section-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Asegura que quede completamente atrás */
+  pointer-events: none;
+}
+
+section._3 .section-bg-wrapper svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Overlay de oscurecimiento */
+section._3 .section-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.65); /* Ajusta este valor si deseas más o menos claridad */
+  z-index: 1;
+}
+
+/* El contenido DEBE tener z-index superior para estar al frente */
+section._3 ._3-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ajustes de contraste para el header si tiene imagen */
+section._3.has-bg-img ._3-header h2 {
+  color: #ffffff;
+}
+
+section._3.has-bg-img ._3-header p {
+  color: #e2e8f0;
 }
 
 section._3 ._3-container {
@@ -27,6 +71,8 @@ section._3 ._3-container {
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2; 
 }
 
 section._3 ._3-header {

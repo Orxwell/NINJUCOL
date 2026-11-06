@@ -1,10 +1,26 @@
-<section class="_3">
+<section class="_3 has-bg-img">
+  
+  <!-- CONTENEDOR DE FONDO (SVG + OVERLAY) -->
+  <div class="section-bg-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <image
+        href="<%= server_url %>/api/webp/public/Reunion.webp<%= `?v=${Date.now()}` %>"
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        preserveAspectRatio="xMidYMid slice"
+        style="opacity: 0; transition: opacity .5s ease-in;"
+        onload="this.style.opacity='1'"
+      />
+    </svg>
+    <div class="section-bg-overlay"></div>
+  </div>
+
   <div class="_3-container">
-    <!-- Encabezado con la información de la imagen -->
     <div class="_3-header">
       <h2>ACOMPAÑAMOS A TODA LA COMUNIDAD EDUCATIVA</h2>
-      <p>La convivencia no es responsabilidad exclusiva de niñas, niños y jóvenes: se construye entre
-quienes comparten la vida escolar.</p>
+      <p>La convivencia no es responsabilidad exclusiva de niñas, niños y jóvenes: se construye entre quienes comparten la vida escolar.</p>
     </div>
 
     <!-- Grid de Tarjetas (3 Columnas usando la estructura del componente 3) -->

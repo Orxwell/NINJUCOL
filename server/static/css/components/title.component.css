@@ -5,43 +5,26 @@ PAGE HEADER BANNER COMPONENT
 */
 .page-header-banner {
   position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  
-  min-height: 280px;
-  padding: 60px 20px;
+  width: calc(100%-40px);
+  max-width: 900px;
+  margin: 40px auto;
+
+  padding: 40px 30px;
   box-sizing: border-box;
-  
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   
   /* Fondo base con tu azul principal */
-  background-color: var(--color-sea-dark);
+  background-color:white;
   background-size: cover;
   background-position: center;
   overflow: hidden;
   margin-top: 0;
   margin-bottom: 40px;
-}
-
-/* Capa de degradado elegante para asegurar contraste */
-.page-header-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg, 
-    rgba(59, 107, 156, 0.95) 0%, 
-    rgba(15, 23, 42, 0.85) 100%
-  );
-  z-index: 1;
+  border-bottom: 5px solid var(--color-tangerine);
+  
 }
 
 /* Contenido del banner */
@@ -65,7 +48,7 @@ PAGE HEADER BANNER COMPONENT
 .page-header-dots span {
   width: 8px;
   height: 8px;
-  background-color: var(--color-butter);
+  background-color: var(--color-matcha);
   border-radius: 50%;
   display: inline-block;
 }
@@ -75,7 +58,7 @@ PAGE HEADER BANNER COMPONENT
   font-family: var(--font-heading);
   font-size: clamp(32px, 4.5vw, 48px);
   font-weight: 800;
-  color: #ffffff;
+  color: var(--color-sea-dark);
   text-transform: uppercase;
   letter-spacing: 1px;
   margin: 0 0 8px 0;
@@ -96,7 +79,8 @@ PAGE HEADER BANNER COMPONENT
 /* Responsive para celulares */
 @media (max-width: 768px) {
   .page-header-banner {
-    min-height: 220px;
+    min-height: 120px;
     padding: 40px 15px;
+    
   }
 }

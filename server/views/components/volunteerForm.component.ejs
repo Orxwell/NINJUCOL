@@ -1,38 +1,86 @@
 <section class="join-section" id="unete">
+  <!-- Imagen de fondo con SVG -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="join-bg-svg" width="100%" height="100%">
+    <image
+      href="<%= server_url %>/api/webp/public/formulariofondo.webp<%= `?v=${Date.now()}` %>"
+      x="0"
+      y="0"
+      width="100%"
+      height="100%"
+      preserveAspectRatio="xMidYMid slice"
+      style="opacity: 0; transition: opacity .5s ease-in;"
+      onload="this.style.opacity='1'"
+    />
+  </svg>
+
+  <div class="join-overlay"></div>
+
   <div class="join-container">
     <div class="join-header">
       <h2>ÚNETE A NUESTRA CAUSA</h2>
-      <p>Sé parte del cambio. Conviértete en voluntario o vincula a tu empresa como aliado.</p>
+      <p>Sé parte del cambio. Conviértete en voluntario o vincula a tu institución o empresa.</p>
     </div>
 
-    <!-- Formulario que enviará los datos por POST a tu ruta del servidor -->
     <form class="join-form" action="/api/join" method="POST">
       
       <div class="form-group">
-        <label for="nombre">Nombre completo</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana María Gómez" required>
+        <label for="nombre">Nombre y Apellido</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej. María Gómez" maxlength="100" required>
+      </div>
+
+      <div class="form-group">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" name="correo" placeholder="Ej. correo@ejemplo.com" maxlength="100" required>
       </div>
 
       <div class="form-group">
         <label for="asunto">Razón o Asunto</label>
-        <input type="text" id="asunto" name="asunto" placeholder="Ej. Propuesta de apoyo escolar / Voluntariado fines de semana" required>
+        <select id="asunto" name="asunto" required>
+          <option value="" disabled selected>Selecciona una opción...</option>
+          <option value="Apoyo Escolar">Propuesta conferencia o charla</option>
+          <option value="Voluntariado Fines de Semana">Voluntariado </option>
+          <option value="Alianza Institucional o Empresarial">Alianza institucional o empresarial</option>
+          <option value="Donaciones y Campañas Solidarias">Donaciones y campañas solidarias</option>
+        </select>
       </div>
 
       <div class="form-group">
-        <label for="mensaje">Mensaje explicativo</label>
-        <textarea id="mensaje" name="mensaje" rows="5" placeholder="Cuéntanos más sobre ti o tu organización..." required></textarea>
+        <label for="mensaje">Mensaje explicativo <small>(Máximo 300 caracteres)</small></label>
+        <textarea id="mensaje" name="mensaje" rows="4" placeholder="Cuéntanos brevemente sobre ti..." maxlength="300" required></textarea>
       </div>
 
-      <!-- Checkboxes para Voluntario o Aliado -->
-      <div class="form-options">
-        <label class="checkbox-label">
-          <input type="checkbox" name="tipo" value="Voluntario">
-          <span>Quiero ser Voluntario</span>
+      <!-- Opciones de selección única (Radio buttons con la misma "name" para que solo se elija una) -->
+      <div class="form-group">
+        <label>¿Cuál es tu perfil? *</label>
+        <div class="form-options-role">
+          <label class="radio-label">
+            <input type="radio" name="tipo_perfil" value="Voluntario" required>
+            <span>Quiero ser Voluntario</span>
+          </label>
+
+          <label class="radio-label">
+            <input type="radio" name="tipo_perfil" value="Aliado" required>
+            <span>Quiero ser Aliado (Empresas)</span>
+          </label>
+
+          <label class="radio-label">
+            <input type="radio" name="tipo_perfil" value="Institucion" required>
+            <span>Soy una Institución</span>
+          </label>
+        </div>
+      </div>
+
+      <hr class="form-divider">
+
+      <div class="form-options-legal">
+        <label class="checkbox-label legal-text">
+          <input type="checkbox" name="acepta_terminos" required>
+          <span>Autorizo el tratamiento de mis datos personales de acuerdo con la Ley 1581 de 2012 (Habeas Data) y acepto los términos y condiciones. *</span>
         </label>
 
-        <label class="checkbox-label">
-          <input type="checkbox" name="tipo" value="Aliado">
-          <span>Quiero ser Aliado (Empresas)</span>
+        <label class="checkbox-label legal-text">
+          <input type="checkbox" name="recibir_info" value="si">
+          <span>Acepto recibir información institucional, boletines y novedades de campañas por correo electrónico.</span>
         </label>
       </div>
 
