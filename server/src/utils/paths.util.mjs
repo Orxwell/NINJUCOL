@@ -8,6 +8,8 @@ const server_path = join(dirname(__filename), '/../../');
 
 
 // SERVER level path --------------------------
+const logs_path = join(server_path, '/logs');
+
 const src_path = join(server_path, '/src');
   // SRC level path
   const controllers_path = join(src_path, '/controllers');
@@ -37,6 +39,8 @@ const views_path = join(server_path, '/views');
 
 
 const paths = {
+  logs: logs_path,
+  
   src: src_path,
     controllers: controllers_path,
     importers  : importers_path,

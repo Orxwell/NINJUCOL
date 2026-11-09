@@ -1,11 +1,13 @@
-// Controllers for service
+// Controllers for the service
 import controller from '#controllers/handler.controller.mjs';
 
-// External & Internal Libraries
+// Utils for the service
+import { delFile } from '#utils/functions.util.mjs';
+
+// External & Internal libraries
 import { fileURLToPath } from 'url';
 import { randomUUID }    from 'crypto';
 import { basename }      from 'path';
-import { delFile } from '#src/utils/functions.util.mjs';
 
 
 const abspath  = fileURLToPath(import.meta.url);

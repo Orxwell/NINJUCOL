@@ -41,8 +41,8 @@ export async function connect () {
     try {
       await client.connect();
 
-      console.log('  ~Connected to MongoDB.~');
-      console.log(`  ~Using cluster: ${env.DB_CLUSTER_NAME}~`);
+      console.log('[DB] connected to MongoDB.');
+      console.log(`[DB] using cluster: ${env.DB_CLUSTER_NAME}`);
 
       return client.db(env.DB_CLUSTER_NAME);
 

@@ -1,16 +1,21 @@
-import handlingAuth      from './auth.middleware.mjs';
-import handlingBody      from './body.middleware.mjs';
-import handlingMultipart from './multipart.middleware.mjs';
-import handlingQuery     from './query.middleware.mjs';
-import handlingRoute     from './route.middleware.mjs';
+import AuditMiddleware     from './audit.middleware.mjs';
+import AuthMiddleware      from './auth.middleware.mjs';
+import BodyMiddleware      from './body.middleware.mjs';
+import MultipartMiddleware from './multipart.middleware.mjs';
+import QueryMiddleware     from './query.middleware.mjs';
+//import RatelimitMiddleware from './ratelimit.middleware.mjs';
+import RouteMiddleware     from './route.middleware.mjs';
 // Import more middlewares if it's needed
 
+
 const middleware = {
-  'auth'     : handlingAuth,
-  'body'     : handlingBody,
-  'multipart': handlingMultipart,
-  'query'    : handlingQuery,
-  'route'    : handlingRoute,
+  audit    : AuditMiddleware,
+  auth     : AuthMiddleware,
+  body     : BodyMiddleware,
+  multipart: MultipartMiddleware,
+  query    : QueryMiddleware,
+  //ratelimit: RatelimitMiddleware,
+  route    : RouteMiddleware,
   // Remember importing it
 }
 

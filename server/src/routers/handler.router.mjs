@@ -1,27 +1,29 @@
-import handlingHOME       from './home.router.mjs';
-import handlingABOUT_US   from './about_us.router.mjs';
-import handlingNEWS       from './news.router.mjs';
-import handlingCAMPAIGNS  from './campaigns.router.mjs';
-import handlingREPOSITORY from './repository.router.mjs';
-import handlingJOIN_US    from './join_us.router.mjs';
-import handlingSIGN       from './sign.router.mjs';
-import handlingDASHBOARD  from './dashboard.router.mjs';
-import handlingAPI        from './api.router.mjs';
-import handlingERROR      from './error.router.mjs';
+import routerHOME       from './home.router.mjs';
+import routerABOUT_US   from './about_us.router.mjs';
+import routerNEWS       from './news.router.mjs';
+import routerCAMPAIGNS  from './campaigns.router.mjs';
+import routerREPOSITORY from './repository.router.mjs';
+import routerJOIN_US    from './join_us.router.mjs';
+import routerSIGN       from './sign.router.mjs';
+import routerDASHBOARD  from './dashboard.router.mjs';
+import routerAPI        from './api.router.mjs';
+import routerERROR      from './error.router.mjs';
 // Import more route if it's needed
 
+
 const router = {
-  'home'      : handlingHOME,
-  'about_us'  : handlingABOUT_US,
-  'news'      : handlingNEWS,
-  'campaigns' : handlingCAMPAIGNS,
-  'repository': handlingREPOSITORY,
-  'join_us'   : handlingJOIN_US,
-  'sign'      : handlingSIGN,
-  'dashboard' : handlingDASHBOARD,
-  'api'       : handlingAPI,
-  'error'     : handlingERROR,
+  HOME      : routerHOME,
+  ABOUT_US  : routerABOUT_US,
+  NEWS      : routerNEWS,
+  CAMPAIGNS : routerCAMPAIGNS,
+  REPOSITORY: routerREPOSITORY,
+  JOIN_US   : routerJOIN_US,
+  SIGN      : routerSIGN,
+  DASHBOARD : routerDASHBOARD,
+  API       : routerAPI,
+  ERROR     : routerERROR,
   // Remember importing it
 };
+
 
 export default router;

@@ -1,41 +1,44 @@
-// Framework for the Back-End
-import { Router } from 'express';
-
 // Templates for the Front-End
-import { publicHomeEJS } from '#utils/templates.util.mjs';
+import template from '#utils/templates.util.mjs';
 
-// Middlewares for the endpoints
+// Middlewares for the router
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// Importers for the endpoints
+// Importers for the router
 import importer from '#importers/handler.importer.mjs';
 
 
-const routerHOME = Router();
-
-
 // ~~~~~~~~~~~ROUTER-HOME~~~~~~~~~~~
-// >>-------- GET - BELOW --------<<
-routerHOME.get('/',
-  middleware.query({}),
-  async (req, res) => {
-    return res.render(publicHomeEJS, {
-      title: `Home | NINJUCOL`,
+const routerHOME = {
+  // >>-------- GET - BELOW --------<<
+  GET: {
+    '/': {
+      middlewares: {
+        query: new middleware.query({
+          path: '/',
+        }),
+      },
+      handler: async (req, res) => {
+        return res.render(template.publicHomeEJS, {
+          title: `Home | NINJUCOL`,
+    
+          server_url: importer.env.SERVER_URL,
+        }, (error, html) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent('RENDER_ERROR./')}`);
+    
+          return res.send(html);
+        });
+      },
+    },
+  },
+  // >>-------- GET - ABOVE --------<<
 
-      server_url: importer.env.SERVER_URL,
-    }, (error, html) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent('RENDER_ERROR./')}`);
-
-      return res.send(html);
-    });
-  }
-);
-// >>-------- GET - ABOVE --------<<
-
-
-// >>-------- POST - BELOW --------<<
-// >>-------- POST - ABOVE --------<<
+  // >>-------- POST - BELOW --------<<
+  POST: {},
+  // >>-------- POST - ABOVE --------<<
+};
 // ~~~~~~~~~~~ROUTER-HOME~~~~~~~~~~~
+
 
 export default routerHOME;

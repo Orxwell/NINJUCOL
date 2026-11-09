@@ -4,6 +4,7 @@ import DonationService   from './donation.service.mjs';
 import InstagramService  from './instagram.service.mjs';
 import MailerService     from './mailer.service.mjs';
 import NewService        from './new.service.mjs';
+import RatelimitService  from './ratelimit.service.mjs';
 import RepositoryService from './repository.service.mjs';
 import TokenService      from './token.service.mjs';
 // Import more services if it's needed
@@ -27,6 +28,9 @@ await mailerService.init();
 const newService = new NewService();
 await newService.init();
 
+const ratelimitService = new RatelimitService();
+await ratelimitService.init();
+
 const repositoryService = new RepositoryService();
 await repositoryService.init();
 
@@ -41,6 +45,7 @@ const service = {
   'instagram' : instagramService,
   'mailer'    : mailerService,
   'new'       : newService,
+  'ratelimit' : ratelimitService,
   'repository': repositoryService,
   'token'     : tokenService,
   // Remember importing it

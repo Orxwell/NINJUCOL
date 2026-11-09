@@ -34,24 +34,29 @@ const temp = {
 };
 
 
-export const errorAtGetEJS  = temp.error_atGetEJS;
-export const errorAtPostEJS = temp.error_atPostEJS;
+const template = {
+  errorAtGetEJS : temp.error_atGetEJS,
+  errorAtPostEJS: temp.error_atPostEJS,
 
-export const mailSignInEJS = temp.mail_signInEJS;
+  mailSignInEJS: temp.mail_signInEJS,
 
-export const privateDashboardEJS     = temp.private_dashboardEJS;
-export const privateAddNewEJS        = temp.private_addNewEJS;
-export const privateUpdNewEJS        = temp.private_updNewEJS;
-export const privateAddCampaignEJS   = temp.private_addCampaignEJS;
-export const privateUpdCampaignEJS   = temp.private_updCampaignEJS;
-export const privateAddRepositoryEJS = temp.private_addRepositoryEJS;
-export const privateUpdRepositoryEJS = temp.private_updRepositoryEJS;
+  privateDashboardEJS    : temp.private_dashboardEJS,
+  privateAddNewEJS       : temp.private_addNewEJS,
+  privateUpdNewEJS       : temp.private_updNewEJS,
+  privateAddCampaignEJS  : temp.private_addCampaignEJS,
+  privateUpdCampaignEJS  : temp.private_updCampaignEJS,
+  privateAddRepositoryEJS: temp.private_addRepositoryEJS,
+  privateUpdRepositoryEJS: temp.private_updRepositoryEJS,
 
-export const publicHomeEJS       = temp.public_homeEJS;
-export const publicAboutUsEJS    = temp.public_aboutUsEJS;
-export const publicNewsEJS       = temp.public_newsEJS;
-export const publicNewEJS        = temp.public_newEJS;
-export const publicRepositoryEJS = temp.public_repositoryEJS;
-export const publicCampaignsEJS  = temp.public_campaignsEJS;
-export const publicJoinUsEJS     = temp.public_joinUsEJS;
-export const publicSignInEJS     = temp.public_signInEJS;
+  publicHomeEJS      : temp.public_homeEJS,
+  publicAboutUsEJS   : temp.public_aboutUsEJS,
+  publicNewsEJS      : temp.public_newsEJS,
+  publicNewEJS       : temp.public_newEJS,
+  publicRepositoryEJS: temp.public_repositoryEJS,
+  publicCampaignsEJS : temp.public_campaignsEJS,
+  publicJoinUsEJS    : temp.public_joinUsEJS,
+  publicSignInEJS    : temp.public_signInEJS,
+};
+
+
+export default template;

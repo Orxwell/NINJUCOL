@@ -1,87 +1,92 @@
-// Framework for the Back-End
-import { Router } from 'express';
-
 // Templates for the Front-End
-import {
-  publicNewsEJS,
-  publicNewEJS,
-} from '#utils/templates.util.mjs';
+import template from '#utils/templates.util.mjs';
 
-// Middlewares for the endpoints
-import middleware from '#middlewares/handler.middleware.mjs';
-
-// Services for the route
+// Services for the router
 import service from '#services/handler.service.mjs';
 
-// Importers for the endpoints
+// Middlewares for the router
+import middleware from '#middlewares/handler.middleware.mjs';
+
+// Importers for the router
 import importer from '#importers/handler.importer.mjs';
 
 
-const routerNEWS = Router();
-
-
 // ~~~~~~~~~~~ROUTER-NEWS~~~~~~~~~~~
-// >>-------- GET - BELOW --------<<
-routerNEWS.get('/news',
-  middleware.query({
-    scheme  : { error: 'string',  },
-    optional: { error: undefined, },
-  }),
-  async (req, res) => {
-    return await service.new.findAll((error, records) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-      
-      return res.render(publicNewsEJS, {
-        title: `News | NINJUCOL`,
-    
-        news: records,
+const routerNEWS = {
+  // >>-------- GET - BELOW --------<<
+  GET: {
+    '/news': {
+      middlewares: {
+        query: new middleware.query({
+          scheme  : { error: 'string',  },
+          optional: { error: undefined, },
 
-        error: error,
-    
-        server_url: importer.env.SERVER_URL,
-      }, (error, html) => {
-        if (error) return res.redirect('/error_at_get?' +
-          `error=${encodeURIComponent('RENDER_ERROR./news')}`);
+          path: '/news',
+        }),
+      },
+      handler: async (req, res) => {
+        return await service.new.findAll((error, records) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent(error)}`);
           
-        return res.send(html);
-      });
-    });
-  }
-);
-
-routerNEWS.get('/news/new',
-  middleware.query({ scheme: { uuid: 'string', }, }),
-  async (req, res) => {
-    const { uuid } = req.query;
-
-    return await service.new.findByUUID({ uuid: uuid }, (error, record) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-      
-      if (Object.keys(record).length === 0) return res.redirect('/news' +
-      `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
-      
-      return res.render(publicNewEJS, {
-        title: `New | NINJUCOL`,
-  
-        new: record,
-  
-        server_url: importer.env.SERVER_URL,
-      }, (error, html) => {
-        if (error) return res.redirect('/error_at_get?' +
-          `error=${encodeURIComponent('RENDER_ERROR./new')}`);
+          return res.render(template.publicNewsEJS, {
+            title: `News | NINJUCOL`,
         
-        return res.send(html);
-      });
-    });
-  }
-);
-// >>-------- GET - ABOVE --------<<
+            records: records,
+    
+            error: error,
+        
+            server_url: importer.env.SERVER_URL,
+          }, (error, html) => {
+            if (error) return res.redirect('/error_at_get?' +
+              `error=${encodeURIComponent('RENDER_ERROR./news')}`);
+              
+            return res.send(html);
+          });
+        });
+      },
+    },
+    '/news/new': {
+      middlewares: {
+        query: new middleware.query({
+          scheme: { uuid: 'string', },
 
+          path: '/news/new',
+        }),
+      },
+      handler: async (req, res) => {
+        const { uuid } = req.query;
+    
+        return await service.new.findByUUID({ uuid: uuid }, (error, record) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent(error)}`);
+          
+          if (Object.keys(record).length === 0) return res.redirect('/news' +
+          `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
+          
+          return res.render(template.publicNewEJS, {
+            title: `New | NINJUCOL`,
+      
+            records: record,
+      
+            server_url: importer.env.SERVER_URL,
+          }, (error, html) => {
+            if (error) return res.redirect('/error_at_get?' +
+              `error=${encodeURIComponent('RENDER_ERROR./new')}`);
+            
+            return res.send(html);
+          });
+        });
+      },
+    },
+  },
+  // >>-------- GET - ABOVE --------<<
 
-// >>-------- POST - BELOW --------<<
-// >>-------- POST - ABOVE --------<<
+  // >>-------- POST - BELOW --------<<
+  POST: {},
+  // >>-------- POST - ABOVE --------<<
+};
 // ~~~~~~~~~~~ROUTER-NEWS~~~~~~~~~~~
+
 
 export default routerNEWS;

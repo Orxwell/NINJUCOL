@@ -5,76 +5,88 @@ import { errorHTTP } from '#utils/functions.util.mjs';
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
 
+import BaseMiddleware from './base.middleware.mjs';
+
 
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
 
-function castingType ({ cast='' }={}) {
-  if (typeof cast !== 'string') return undefined;
+export default class QueryMiddleware extends BaseMiddleware {
+  constructor ({
+    scheme={},
+    optional={},
+    mode='reply',
+    path='*',
+  }={}) {
+    super({
+      name: 'QueryMiddleware',
+      mode: mode,
+      path: path,
+    });
 
-  const processed = cast.trim().toLowerCase();
+    // Middleware's configuration____________
+    this.accepted_types = ['string', 'number', 'boolean'];
 
-  if (processed === '') return undefined;
+    this.scheme   = scheme;
+    this.optional = optional;
+  }
 
-  if (['true', 'false'].includes(processed)) return 'boolean';
+  async onInit() {}
+  
+  async onInitializing () {
+    // Checking: scheme
+    if (Object.prototype.toString.call(this.scheme) !== '[object Object]') throw new Error(`[${this.name}] from ${filename}: 'scheme' must be a valid plain object.`);
 
-  if (
-    /^-?(0|[1-9]\d*)(\.\d+)?$/.test(processed) &&
-    !Number.isNaN(Number(processed))
-  ) return 'number';
+    for (const [key, value] of Object.entries(this.scheme)) {
+      if (typeof value !== 'string' || value.trim() === '') throw new Error(`[${this.name}] from ${filename}: 'scheme.${key}' must be a non-empty string.`);
 
-  return 'string';
-}
-
-export default function handlingQuery ({
-  scheme={},
-  optional={},
-  mode='reply',
-}={}) {
-  // ------------ Middleware's configuration ------------
-  // Checking: scheme
-  if (Object.prototype.toString.call(scheme) !== '[object Object]') throw new Error(`Internal-Server-Error, from ${filename}: 'scheme' must be a valid plain object.`);
-
-  const accepted_types = ['string', 'number', 'boolean'];
-  for (const [key, value] of Object.entries(scheme)) {
-    if (typeof value !== 'string' || value.trim() === '') throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be a non-empty string.`);
-
-    const given_types = value
-      .split('|')
-      .map(type => type.trim().toLowerCase())
-      .filter(Boolean);
-    
-    for (const type of given_types) {
-      if (!accepted_types.includes(type)) throw new Error(`Internal-Server-Error, from ${filename}: 'scheme.${key}' must be one of [${accepted_types
-        .map(key => `'${key}'`)
-        .join(', ')}].`
-      );
+      const given_types = value
+        .split('|')
+        .map(type => type.trim().toLowerCase())
+        .filter(Boolean);
+        
+      for (const type of given_types) {
+        if (!this.accepted_types.includes(type)) throw new Error(`[${this.name}] from ${filename}: 'scheme.${key}' must be one of [${this.accepted_types
+          .map(key => `'${key}'`)
+          .join(', ')}].`
+        );
+      }
     }
+
+    // Pre-calculating internal-keys
+    this.internal_keys = Object.keys(this.scheme);
+
+    // Checking: optional
+    if (Object.prototype.toString.call(this.optional) !== '[object Object]') throw new Error(`[${this.name}] from ${filename}: 'optional' must be a valid plain object.`);
+
+    for (const key of Object.keys(this.optional)) {
+      if (!this.internal_keys.includes(key)) throw new Error(`[${this.name}] from ${filename}: 'optional.${key}' must also be declared in 'scheme'.`);
+    }
+
+    // Pre-calculating required-keys
+    this.required_keys = this.internal_keys.filter(key => !Object.prototype.hasOwnProperty.call(this.optional, key));
+
+    // Checking: mode
+    if (!this.modes.includes(this.mode)) throw new Error(`[${this.name}] from ${filename}: 'mode' must be one of [${this.modes
+      .map(option => `'${option}'`)
+      .join(', ')}].`,
+    );
   }
+  
+  // -------------- CLI --------------
 
-  // Pre-calculating internal-keys
-  const internal_keys = Object.keys(scheme);
+  async onStart () {}
 
-  // Checking: optional
-  if (Object.prototype.toString.call(optional) !== '[object Object]') throw new Error(`Internal-Server-Error, from ${filename}: 'optional' must be a valid plain object.`);
+  async onStarting () {}
 
-  for (const [key, value] of Object.entries(optional)) {
-    if (!internal_keys.includes(key)) throw new Error(`Internal-Server-Error, from ${filename}: 'optional.${key}' must also be declared in 'scheme'.`);
-  }
+  async onStop () {}
 
-  // Pre-calculating required-keys
-  const required_keys = internal_keys.filter(key => !Object.prototype.hasOwnProperty.call(optional, key));
+  async onStopping () {}
 
-  // Checking: mode
-  const modes = ['reply', 'attach', 'next']
-  if (!modes.includes(mode)) throw new Error(`Internal-Server-Error, from ${filename}: 'mode' must be one of [${modes
-    .map(option => `'${option}'`)
-    .join(', ')}].`,
-  );
+  // -------------- MIDDLEWARE --------------
 
-  // ------------ Middleware's callback ------------
-  return (req, res, next) => {
+  middleware = async (req, res, next) => {
     // ExpressV5-LocalPatch, req.query is now mutable.
     Object.defineProperty(req, 'query', {
       value: req.query ? { ...req.query } : {}, 
@@ -85,19 +97,33 @@ export default function handlingQuery ({
     const header = {
       req: req,
       res: res,
-
+  
       next: next,
-      mode: mode,
-
+      mode: this.mode,
+  
       middleware: 'query',
     };
-  
+
+    if (!this.initialized) return errorHTTP({
+      header: header,
+      body: {
+        status : 503,
+        id     : 'ERR-0',
+        message: `[${this.name}] middleware is not initialized.`,
+      },
+    });
+
+    if (
+      !this.running ||
+      this.stop_promise
+    ) return next();
+
     // Getting the request-queries: { a: 'etc' }
     const request_query = req.query;
   
     const request_keys    = Object.keys(request_query);
-    const missing_keys    = required_keys.filter(key => !request_keys.includes(key));
-    const undeclared_keys = request_keys.filter(key => !internal_keys.includes(key));
+    const missing_keys    = this.required_keys.filter(key => !request_keys.includes(key));
+    const undeclared_keys = request_keys.filter(key => !this.internal_keys.includes(key));
   
     if (missing_keys.length > 0) return errorHTTP({
       header: header,
@@ -121,13 +147,13 @@ export default function handlingQuery ({
       },
     });
 
-    for (const [key, default_value] of Object.entries(optional)) {
+    for (const [key, default_value] of Object.entries(this.optional)) {
       if (!request_keys.includes(key))
         { request_query[key] = default_value; }
     }
   
     for (const key of Object.keys(request_query)) {
-      const valid_types = scheme[key]
+      const valid_types = this.scheme[key]
         .split('|')
         .map(type => type.trim().toLowerCase())
         .filter(Boolean);
@@ -135,7 +161,7 @@ export default function handlingQuery ({
       const value = request_query[key];
 
       if (typeof value === 'string') {
-        const casted_type = castingType({ cast: value, });
+        const casted_type = this.castingType({ cast: value, });
     
         if (!valid_types.includes(casted_type)) return errorHTTP({
           header: header,
@@ -154,5 +180,22 @@ export default function handlingQuery ({
 
     // If all checks pass, we continue
     return next();
-  };
-};
+  }
+
+  castingType ({ cast='' }={}) {
+    if (typeof cast !== 'string') return undefined;
+    
+    const processed = cast.trim().toLowerCase();
+    
+    if (processed === '') return undefined;
+    
+    if (['true', 'false'].includes(processed)) return 'boolean';
+    
+    if (
+      /^-?(0|[1-9]\d*)(\.\d+)?$/.test(processed) &&
+      !Number.isNaN(Number(processed))
+    ) return 'number';
+    
+    return 'string';
+  }
+}

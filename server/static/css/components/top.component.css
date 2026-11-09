@@ -24,32 +24,32 @@ header#top {
   border-bottom: none !important;
   outline: none !important;
   box-shadow: none !important;
-}
 
-header#top section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  & section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
-header#top h6 {
-  margin: 0;
-  font-family: var(--font-heading);
-  color: var(--color-sea-dark); 
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
+    & > span:first-of-type {
+      color: #cbd5e1;
+      font-weight: 300;
+      margin: 0 2px;
+    }
+  }
+
+  & > h6 {
+    margin: 0;
+    font-family: var(--font-heading);
+    color: var(--color-sea-dark); 
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
 }
 
 header#top span {
   color: var(--color-topbar-text);
   font-weight: 500;
-}
-
-header#top section > span:first-of-type {
-  color: #cbd5e1;
-  font-weight: 300;
-  margin: 0 2px;
 }
 
 /* Regla general de SVGs dentro de la topbar */

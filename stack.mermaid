@@ -1,0 +1,216 @@
+flowchart TD
+  subgraph Architecture
+    subgraph SRC
+      subgraph Utils
+        FunctionsUtil([functions.util.mjs])
+        PathsUtil([paths.util.mjs])
+        TemplatesUtil([templates.util.mjs])
+
+        %% Internal relations
+          PathsUtil-. { paths } .->FunctionsUtil
+          PathsUtil-. { paths } .->TemplatesUtil
+      end
+
+      subgraph Importers
+        EnvImporter([env.importer.mjs])
+        MongoDBImporter([mongodb.importer.mjs])
+        SMTPImporter([smtp.importer.mjs])
+        %% Handler below_______________________
+        HandlerImporter[(handler.importer.mjs)]
+
+        %% Internal relations
+          EnvImporter-- [Object] -->HandlerImporter
+          MongoDBImporter-- connect() -->HandlerImporter
+          SMTPImporter-- transport() -->HandlerImporter
+
+          EnvImporter-. { env } .->MongoDBImporter
+          EnvImporter-. { env } .->SMTPImporter
+
+        %% External relations
+          FunctionsUtil-- { auditENV() } -->EnvImporter
+      end
+
+      subgraph Controllers
+        MongoDBController([mongodb.controller.mjs])
+        SMTPController([smtp.controller.mjs])
+        %% Handler below___________________________
+        HandlerController[(handler.controller.mjs)]
+
+        %% Internal relations
+          MongoDBController-- class MongoDBController -->HandlerController
+          SMTPController-- class SMTPController -->HandlerController
+
+        %% External relations
+          HandlerImporter-- importer.connect() -->MongoDBController
+          HandlerImporter-- importer.transport() -->SMTPController
+      end
+
+      subgraph Services
+        RatelimitService([ratelimit.service.mjs])
+        NewService([new.service.mjs])
+        CampaignService([campaign.service.mjs])
+        RepositoryService([repository.service.mjs])
+        DonationService([donation.service.mjs])
+        InstagramService([instagram.service.mjs])
+        AccountService([account.service.mjs])
+        MailerService([mailer.service.mjs])
+        TokenService([token.service.mjs])
+        %% Handler below_____________________
+        HandlerService[(handler.service.mjs)]
+
+        %% Internal relations
+          RatelimitService-- class RatelimitService -->HandlerService
+          NewService-- class NewService -->HandlerService
+          CampaignService-- class CampaignService -->HandlerService
+          RepositoryService-- class RepositoryService -->HandlerService
+          DonationService-- class DonationService -->HandlerService
+          InstagramService-- class InstagramService -->HandlerService
+          AccountService-- class AccountService -->HandlerService
+          MailerService-- class MailerService -->HandlerService
+          TokenService-- class TokenService -->HandlerService
+      end
+
+      subgraph Middlewares
+        AuditMiddleware[[audit.middleware.mjs]]
+        RatelimitMiddleware[[ratelimit.middleware.mjs]]
+        AuthMiddleware[[auth.middleware.mjs]]
+        RouteMiddleware[[route.middleware.mjs]]
+        QueryMiddleware[[query.middleware.mjs]]
+        BodyMiddleware[[body.middleware.mjs]]
+        MultipartMiddleware[[multipart.middleware.mjs]]
+        %% Handler below___________________________
+        HandlerMiddleware[(handler.middleware.mjs)]
+
+        %% Internal relations
+          AuditMiddleware-- class AuditMiddleware -->HandlerMiddleware
+          RatelimitMiddleware-- class RatelimitMiddleware -->HandlerMiddleware
+          AuthMiddleware-- class AuthMiddleware -->HandlerMiddleware
+          RouteMiddleware-- class RouteMiddleware -->HandlerMiddleware
+          QueryMiddleware-- class QueryMiddleware -->HandlerMiddleware
+          BodyMiddleware-- class BodyMiddleware -->HandlerMiddleware
+          MultipartMiddleware-- class MultipartMiddleware -->HandlerMiddleware
+
+        %% External relations
+          %% Audit
+            PathsUtil-- paths.logs -->AuditMiddleware
+            HandlerImporter-- importer.env -->AuditMiddleware
+            HandlerService-- service.audit -->AuditMiddleware
+
+          %% Ratelimit - TODO
+
+          %% Auth
+            HandlerService-- service.token -->AuthMiddleware
+            FunctionsUtil-- { errorHTTP() } -->AuthMiddleware
+
+          %% Route
+          FunctionsUtil-- { errorHTTP() } -->RouteMiddleware
+
+          %% Query
+            FunctionsUtil-- { errorHTTP() } -->QueryMiddleware
+
+          %% Body
+            FunctionsUtil-- { errorHTTP() } -->BodyMiddleware
+
+          %% Multipart
+            PathsUtil-- paths.static -->MultipartMiddleware
+            FunctionsUtil-- { errorHTTP(), isValidMimeType() } -->MultipartMiddleware
+      end
+
+      subgraph Routers
+        HomeRouter([home.router.mjs])
+        AboutUsRouter([about_us.router.mjs])
+        NewsRouter([news.router.mjs])
+        CampaignsRouter([campaigns.router.mjs])
+        RepositoryRouter([repository.router.mjs])
+        JoinUsRouter([join_us.router.mjs])
+        SignRouter([sign.router.mjs])
+        DashboardRouter([dashboard.router.mjs])
+        APIRouter([api.router.mjs])
+        ErrorRouter([error.router.mjs])
+        %% Handler below___________________
+        HandlerRouter([handler.router.mjs])
+
+        %% External relations
+          %% Home
+          TemplatesUtil-- { publicHomeEJS } -->HomeRouter
+          HandlerImporter-- importer.env -->HomeRouter
+          HandlerMiddleware-- middleware -->HomeRouter
+
+          %% AboutUs
+          TemplatesUtil-- { publicAboutUsEJS } -->AboutUsRouter
+          HandlerImporter-- importer.env -->AboutUsRouter
+          HandlerMiddleware-- middleware -->AboutUsRouter
+
+          %% News
+          TemplatesUtil-- { publicNewsEJS, publicNewEJS } -->NewsRouter
+          HandlerImporter-- importer.env -->NewsRouter
+          HandlerService-- service -->NewsRouter
+          HandlerMiddleware-- middleware -->NewsRouter
+      end
+
+      Bootstrap([bootstrap.mjs])
+      Server([server.mjs])
+      App([app.mjs])
+
+      %% Internal relations
+        %% Bootstrap
+          Server-. void .->Bootstrap
+
+        %% Server
+          App-- app -->Server
+
+      %% External relations
+        %% Server
+          HandlerImporter-- importer.env -->Server
+
+        %% App
+          HandlerImporter-- importer.env -->App
+          HandlerService-- service.token -->App
+          HandlerMiddleware-- middleware.audit -->App
+          HandlerRouter-- router -->App
+        
+        
+
+      %% Services
+        %% Ratelimit
+        HandlerController-- controller.dbAPI() -->RatelimitService
+
+        %% New
+        HandlerController-- controller.dbAPI() -->NewService
+        FunctionsUtil-- { delFile } -->NewService
+
+        %% Campaign
+        HandlerController-- controller.dbAPI() -->CampaignService
+
+        %% Repository
+        HandlerController-- controller.dbAPI() -->RepositoryService
+
+        %% Donation
+        HandlerController-- controller.dbAPI() -->DonationService
+
+        %% Instagram
+        HandlerController-- controller.dbAPI() -->InstagramService
+
+        %% Account
+        HandlerController-- controller.dbAPI() -->AccountService
+
+        %% Mailer
+        HandlerController-- controller.dbAPI() -->MailerService
+
+        %% Token
+        HandlerController-- controller.dbAPI() -->TokenService
+    end
+
+    subgraph STATIC
+    end
+
+    subgraph VIEWS
+    end
+  end
+
+  %% UI --> API
+  %% UI --> CDN
+  %% API --> Auth
+  %% API --> Orders
+  %% Orders --> DB
+  %% Auth -. token .-> UI
