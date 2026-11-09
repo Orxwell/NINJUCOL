@@ -3,6 +3,16 @@
     
     <!-- Columna Izquierda: Tarjeta de Bienvenida con Imagen -->
     <div class="signin-brand-col">
+      <svg xmlns="http://www.w3.org/2000/svg" class="signin-svg-bg" width="100%" height="100%">
+        <image
+          href="<%= server_url %>/api/webp/public/imagenSignIn.webp<%= `?v=${Date.now()}` %>"
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid slice"
+        />
+      </svg>
       <div class="signin-brand-overlay"></div>
       <div class="signin-brand-content">
         <span class="signin-badge">NINJUCOL</span>

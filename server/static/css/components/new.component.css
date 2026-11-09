@@ -7,7 +7,7 @@
   margin-left: calc(-50vw + 50%);
   position: relative;
   /* Fondo Matcha con transparencia (Alpha 0.2 para que sea muy sutil y elegante) */
-  background-color:var(--color-butter); 
+  background-color:rgba(124, 158, 159, 0.01);
   padding-bottom: 5rem;
   box-sizing: border-box;
 }

@@ -45,15 +45,31 @@ section.signin-section {
   flex: 1;
   position: relative;
   background-color: var(--color-sea-dark);
-  background-image: url('/api/webp/public/hero-bg.webp');
-  background-size: cover;
-  background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 50px 40px;
   box-sizing: border-box;
   color: #ffffff;
+  overflow: hidden;
+  min-height: 100%;
+  height: 100%;
+}
+
+.signin-svg-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
+  display: block;
+}
+
+.signin-svg-bg image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .signin-brand-overlay {
