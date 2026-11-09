@@ -15,7 +15,44 @@ export default class CLI {
       middleware: {
         description: 'Manage middlewares of the server.',
 
-        examples: ['middleware {no-args}'],
+        examples: [
+          {
+            label: 'middleware',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+          {
+            label: 'middleware stop',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+          {
+            label: 'middleware router=* stop',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+          {
+            label: 'middleware router=* middleware=audit stop',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+          {
+            label: 'middleware router=HOME stop',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+          {
+            label: 'middleware router=[HOME, SIGN] stop',
+            childrens: [{
+              label: 'Description...',
+            }],
+          },
+        ],
 
         handler: new manager.middleware(app_config),
       },
@@ -23,14 +60,28 @@ export default class CLI {
       help: {
         description: 'Display available commands and their descriptions, an examples.',
 
-        examples: ['help {no-args}'],
+        examples: [
+          {
+            label: 'help',
+            childrens: [{
+              label: '{no-args}',
+            }],
+          },
+        ],
 
         handler: (...args) => this.help(...args),
       },
       shutdown: {
         description: 'Gracefully shutdown the server.',
 
-        examples: ['shutdown {no-args}'],
+        examples: [
+          {
+            label: 'shutdown',
+            childrens: [{
+              label: '{no-args}',
+            }],
+          },
+        ],
 
         handler: (...args) => this.shutdown(...args),
       },
@@ -42,44 +93,66 @@ export default class CLI {
 
     // Internal logic...
     this.help_promise     = null;
+    //this.reset_promise    = null;
     this.shutdown_promise = null;
+  }
+
+  #buildTree (nodes, prefix='') {
+    const space = ' '.repeat(15);
+
+    const lines = [];
+  
+    nodes.forEach((node, index) => {
+      const is_last = index === nodes.length - 1;
+  
+      const branch = is_last
+        ? '└─'
+        : '├─';
+
+      const continuation = is_last
+        ? '   '
+        : '│  ';
+  
+      const label = typeof node === 'string'
+        ? node
+        : node.label;
+  
+      lines.push(`${space}${prefix}${branch} ${label}`);
+  
+      if (
+        typeof node === 'object' &&
+        node !== null &&
+        Array.isArray(node.childrens)
+      ) {
+        lines.push(
+          ...this.#buildTree(
+            node.childrens,
+            prefix+continuation,
+          )
+        );
+      }
+
+      if (is_last) lines.push(`${space}${prefix}`);
+    });
+  
+    return lines;
   }
 
   help () {
     if (this.help_promise) return this.help_promise;
-
+  
     this.help_promise = (async () => {
-      console.info('[CLI] Commands:');
+      const definition = Object.entries(this.commands)
+        .map(([name, concept]) => ({
+          label: `${name.toUpperCase()}: ${concept.description}`,
+          childrens: concept.examples,
+        }));
+  
+      const tree = this.#buildTree(definition);
 
-      let depth = 0;
-
-      const command_names = Object.keys(this.commands);
-      for (let i=0; i<command_names.length; i++) {
-        const name    = command_names[i];
-        const concept = this.commands[name];
-
-        const i_last = i === command_names.findIndex(name);
-
-        const i_prefix = i_last
-          ? '└'
-          : '├'
-
-        console.info(`  ${i_prefix} ${name.toUpperCase()}: ${concept.description}`);
-
-        for (let j=0; j<concept.examples.length; j++) {
-          const j_last = j === concept.examples.findIndex(name);
-
-          const j_prefix = j_last
-            ? '└'
-            : '├'
-
-          const i_sufix = i_last
-            ? ''
-            : '│';
-
-          console.info(`  ${i_sufix} ${j_prefix} ${concept.examples[j]}`);
-        }
-      }
+      for (let i=1; i<definition.length; i++) tree.pop();
+  
+      console.info(`[CLI] Commands:\n${tree.join('\n')}`);
     })();
   
     return this.help_promise;

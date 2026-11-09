@@ -1,4 +1,5 @@
 import AccountService    from './account.service.mjs';
+import AuditService      from './audit.service.mjs';
 import CampaignService   from './campaign.service.mjs';
 import DonationService   from './donation.service.mjs';
 import InstagramService  from './instagram.service.mjs';
@@ -10,6 +11,9 @@ import TokenService      from './token.service.mjs';
 // Import more services if it's needed
 
 // Instantiating services -----------------------¬
+const auditService = new AuditService();
+await auditService.init();
+
 const accountService = new AccountService();
 await accountService.init();
 
@@ -39,6 +43,7 @@ await tokenService.init();
 // _______________________________________________
 
 const service = {
+  'audit'     : auditService,
   'account'   : accountService,
   'campaign'  : campaignService,
   'donation'  : donationService,
