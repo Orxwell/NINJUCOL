@@ -1,51 +1,52 @@
-// Framework for the Back-End
-import { Router } from 'express';
-
 // Templates for the Front-End
-import { publicCampaignsEJS } from '#utils/templates.util.mjs';
+import template from '#utils/templates.util.mjs';
 
-// Middlewares for the endpoints
-import middleware from '#middlewares/handler.middleware.mjs';
-
-// Services for the endpoints
+// Services for the router
 import service from '#services/handler.service.mjs';
 
-// Importers for the endpoints
+// Middlewares for the router
+import middleware from '#middlewares/handler.middleware.mjs';
+
+// Importers for the router
 import importer from '#importers/handler.importer.mjs';
 
 
-const routerCAMPAIGNS = Router();
-
-
 // ~~~~~~~~~~~ROUTER-CAMPAIGNS~~~~~~~~~~~
-// >>-------- GET - BELOW --------<<
-routerCAMPAIGNS.get('/campaigns',
-  middleware.query({}),
-  async (req, res) => {
-    return await service.campaign.findAll((error, records) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent(error)}`);
-      
-      return res.render(publicCampaignsEJS, {
-        title: `Campaigns | NINJUCOL`,
-    
-        campaigns: records,
-    
-        server_url: importer.env.SERVER_URL,
-      }, (error, html) => {
-        if (error) return res.redirect('/error_at_get?' +
-          `error=${encodeURIComponent('RENDER_ERROR./campaigns')}`);
-            
-        return res.send(html);
-      });
-    });
-  }
-);
-// >>-------- GET - ABOVE --------<<
+const routerCAMPAIGNS = {
+  // >>-------- GET - BELOW --------<<
+  GET: {
+    '/campaigns': {
+      middlewares: {
+        query: new middleware.query({ path: '/campaigns', }),
+      },
+      handler: async (req, res) => {
+        return await service.campaign.findAll((error, records) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent(error)}`);
+          
+          return res.render(template.publicCampaignsEJS, {
+            title: `Campaigns | NINJUCOL`,
+        
+            records: records,
+        
+            server_url: importer.env.SERVER_URL,
+          }, (error, html) => {
+            if (error) return res.redirect('/error_at_get?' +
+              `error=${encodeURIComponent('RENDER_ERROR./campaigns')}`);
+                
+            return res.send(html);
+          });
+        });
+      },
+    },
+  },
+  // >>-------- GET - ABOVE --------<<
 
-
-// >>-------- POST - BELOW --------<<
-// >>-------- POST - ABOVE --------<<
+  // >>-------- POST - BELOW --------<<
+  POST: {},
+  // >>-------- POST - ABOVE --------<<
+};
 // ~~~~~~~~~~~ROUTER-CAMPAIGNS~~~~~~~~~~~
+
 
 export default routerCAMPAIGNS;

@@ -1,41 +1,42 @@
-// Framework for the Back-End
-import { Router } from 'express';
-
 // Templates for the Front-End
-import { publicAboutUsEJS } from '#utils/templates.util.mjs';
+import template from '#utils/templates.util.mjs';
 
-// Middlewares for the endpoints
+// Middlewares for the router
 import middleware from '#middlewares/handler.middleware.mjs';
 
-// Importers for the endpoints
+// Importers for the router
 import importer from '#importers/handler.importer.mjs';
 
 
-const routerABOUT_US = Router();
-
-
 // ~~~~~~~~~~~ROUTER-ABOUT_US~~~~~~~~~~~
-// >>-------- GET - BELOW --------<<
-routerABOUT_US.get('/about_us',
-  middleware.query({}),
-  async (req, res) => {
-    return res.render(publicAboutUsEJS, {
-      title: `AboutUs | NINJUCOL`,
+const routerABOUT_US = {
+  // >>-------- GET - BELOW --------<<
+  GET: {
+    '/about_us': {
+      middlewares: {
+        query: new middleware.query({ path: '/about_us', }),
+      },
+      handler: async (req, res) => {
+        return res.render(template.publicAboutUsEJS, {
+          title: `AboutUs | NINJUCOL`,
+    
+          server_url: importer.env.SERVER_URL,
+        }, (error, html) => {
+          if (error) return res.redirect('/error_at_get?' +
+            `error=${encodeURIComponent('RENDER_ERROR./about_us')}`);
+          
+          return res.send(html);
+        });
+      },
+    },
+  },
+  // >>-------- GET - ABOVE --------<<
 
-      server_url: importer.env.SERVER_URL,
-    }, (error, html) => {
-      if (error) return res.redirect('/error_at_get?' +
-        `error=${encodeURIComponent('RENDER_ERROR./about_us')}`);
-      
-      return res.send(html);
-    });
-  }
-);
-// >>-------- GET - ABOVE --------<<
-
-
-// >>-------- POST - BELOW --------<<
-// >>-------- POST - ABOVE --------<<
+  // >>-------- POST - BELOW --------<<
+  POST: {},
+  // >>-------- POST - ABOVE --------<<
+};
 // ~~~~~~~~~~~ROUTER-ABOUT_US~~~~~~~~~~~
+
 
 export default routerABOUT_US;

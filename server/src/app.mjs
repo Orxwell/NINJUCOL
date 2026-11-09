@@ -2,11 +2,20 @@ import express      from 'express';
 import morgan       from 'morgan';
 import cookieParser from 'cookie-parser';
 
+// Framework for the Back-End
+import { Router } from 'express';
+
 // Routers for the app
 import router from '#routers/handler.router.mjs';
 
+// Middlewares for the app
+import middleware from '#middlewares/handler.middleware.mjs';
+
 // Services for the app
 import service from '#services/handler.service.mjs';
+
+// Utils for the router
+import { initRouter } from '#src/utils/functions.util.mjs';
 
 // Importers for the app
 import importer from '#importers/handler.importer.mjs';
@@ -38,12 +47,26 @@ switch (importer.env.SERVER_MODE) {
   default: throw new Error('  ~Internal-Server-Error: invalid application mode.~');
 }
 
-// Setting the routes
-Object.entries(router).forEach(([name, router]) => {
-  console.log(`  ~Server using the router-${name}~`);
+// Global middlewares ----------------¬
+const audit = new middleware.audit({});
+await audit.init();
 
-  app.use(router);
-});
+app.use(audit.middleware);
+// ____________________________________
+
+// Setting the routes
+for (const [name, config] of Object.entries(router)) {
+  const cache_router = Router();
+
+  await initRouter({
+    router: cache_router,
+    config: config,
+  });
+
+  app.use(cache_router);
+
+  console.log(`[Server] using the router-${name}`);
+}
 
 // Handling global events
 app.use((error, req, res, next) => {
@@ -55,5 +78,15 @@ app.use((error, req, res, next) => {
 
 // Erasing all tokens
 await service.token.deleteAll({ firm: '' });
+
+// Export app-config of the app
+const app_config = {
+  app: {
+    audit: audit,
+  },
+  routers: router,
+};
+
+export { app_config };
 
 export default app;

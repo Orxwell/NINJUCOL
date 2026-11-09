@@ -45,7 +45,7 @@ export async function transport ({ host, port, secure }) {
 
       await smtp.verify();
   
-      console.log('  ~SMTP-Transport successfully verified.~');
+      console.log('[SMTP] transport successfully verified.');
 
       currentTransport = smtp;
   

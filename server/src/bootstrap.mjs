@@ -1,5 +1,10 @@
 import dns from 'node:dns';
 
+import { personalizedTerminal } from '#utils/terminal.util.mjs';
+
+
+void personalizedTerminal();
+
 
 const servers = dns.getServers();
 

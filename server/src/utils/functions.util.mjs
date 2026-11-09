@@ -10,6 +10,31 @@ import { readdir, unlink }   from 'fs/promises';
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
+const middlewares = ['query', 'body', 'route', 'multipart', 'auth', 'ratelimit'];
+
+
+export async function initRouter({ router, config }={}) {
+  for (const [method, routes] of Object.entries(config)) {
+    for (const [path, definition] of Object.entries(routes)) {
+      const instances = Object.values(definition.middlewares ?? {});
+
+      // Initialize all middleware instances
+      await Promise.all(instances.map(instance => instance.init()));
+
+      // Extract middleware-handlers functions
+      const middleware_handlers = instances.map(instance => instance.middleware);
+
+      // Register route
+      router[method.toLowerCase()](
+        path,                   // set path
+        ...middleware_handlers, // set middlewares
+        definition.handler      // set logic
+      );
+    }
+  }
+
+  return router;
+}
 
 // Async-function to get the folders of a folder...
 export async function getFolders({ folder_path }={}) {
@@ -145,7 +170,6 @@ export function errorHTTP ({ header={}, body={} }={}) {
     .map(option => `'${option}'`)
     .join(', ')}].`);
   
-  const middlewares = ['query', 'body', 'route', 'multipart', 'auth'];
   if (!middlewares.includes(header.middleware)) throwError(`Internal-Server-Error, errorHTTP() from ${filename}: 'header.middleware' must be one of [${middlewares
     .map(option => `'${option}'`)
     .join(', ')}].`);

@@ -1,4 +1,4 @@
-// External & Internal Libraries
+// External & Internal libraries
 import { basename }      from 'path';
 import { fileURLToPath } from 'url';
 

@@ -11,8 +11,10 @@
   },
   "imports": {
     "#src/*": "./server/src/*",
+    "#logs/*": "./server/src/logs/*",
     "#controllers/*": "./server/src/controllers/*",
     "#importers/*": "./server/src/importers/*",
+    "#managers/*": "./server/src/managers/*",
     "#middlewares/*": "./server/src/middlewares/*",
     "#routers/*": "./server/src/routers/*",
     "#services/*": "./server/src/services/*",

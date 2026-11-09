@@ -4,10 +4,10 @@ import controller from '#controllers/handler.controller.mjs';
 // Services for the service
 import service from '#services/handler.service.mjs';
 
-// Importers for the endpoints
+// Importers for the service
 import importer from '#importers/handler.importer.mjs';
 
-// External & Internal Libraries
+// External & Internal libraries
 import { basename }      from 'path';
 import { randomBytes }   from 'crypto';
 import { fileURLToPath } from 'url';

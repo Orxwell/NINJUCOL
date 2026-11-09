@@ -5,54 +5,78 @@ import { errorHTTP } from '#utils/functions.util.mjs';
 import { fileURLToPath } from 'url';
 import { basename }      from 'path';
 
+import BaseMiddleware from './base.middleware.mjs';
+
 
 const abspath  = fileURLToPath(import.meta.url);
 const filename = basename(abspath);
 
 
-function validatingType ({ cast }={}) {
-  if (cast === null) return 'null';
+export default class BodyMiddleware extends BaseMiddleware {
+  constructor ({
+    scheme={},
+    mode='reply',
+    path='*',
+  }={}) {
+    super({
+      name: 'BodyMiddleware',
+      mode: mode,
+      path: path,
+    });
 
-  if (typeof cast === 'string') return 'string';
+    // Middleware's configuration____________
+    this.scheme = scheme;
+  }
 
-  if (typeof cast === 'number' && Number.isFinite(cast)) return 'number';
+  async onInit() {}
 
-  if (typeof cast === 'boolean') return 'boolean';
+  async onInitializing () {
+    // Checking: scheme
+    if (Object.prototype.toString.call(this.scheme) !== '[object Object]') throw new TypeError(`[${this.name}], from ${filename}: 'scheme' must be a valid plain object.`);
 
-  if (Array.isArray(cast)) return 'array';
-
-  if (Object.prototype.toString.call(cast) === '[object Object]') return 'object';
-
-  return false;
-}
-
-export default function handlingBody ({
-  scheme={},
-  mode='reply',
-}={}) {
-  // ------------ Middleware's configuration ------------
-  // Checking: scheme
-  if (Object.prototype.toString.call(scheme) !== '[object Object]')
-    throw new TypeError(`Internal-Server-Error, from ${filename}: 'scheme' must be a valid plain object.`);
-
-  // Checking: mode
-  const modes = ['reply', 'attach', 'next']
-  if (!modes.includes(mode))
-    throw new Error(`Internal-Server-Error, from ${filename}: 'mode' must be one of [${modes
+    // Checking: mode
+    if (!this.modes.includes(this.mode)) throw new Error(`[${this.name}], from ${filename}: 'mode' must be one of [${this.modes
       .map(option => `'${option}'`)
       .join(', ')}].`,
     );
+  }
 
-  return (req, res, next) => {
+  // -------------- CLI --------------
+
+  async onStart () {}
+
+  async onStarting () {}
+
+  async onStop () {}
+
+  async onStopping () {}
+
+  // -------------- MIDDLEWARE --------------
+
+  middleware = async (req, res, next) => {
     const header = {
       req: req,
       res: res,
 
       next: next,
-      mode: mode,
+      mode: this.mode,
 
       middleware: 'body',
     };
+
+    if (!this.initialized) return errorHTTP({
+      header: header,
+      body: {
+        status : 503,
+        id     : 'ERR-0',
+        message: `[${this.name}] middleware is not initialized.`,
+      },
+    });
+
+    if (
+      !this.running ||
+      this.stop_promise
+    ) return next();
 
     // Getting the request-body: { a: 'etc' }
     const request_body = req.body ?? {};
@@ -63,7 +87,7 @@ export default function handlingBody ({
       body: {
         status : 400,
         id     : 'ERR-1',
-        message: "Bad-Request: 'req.body' must be a valid plain object.",
+        message: `[${this.name}] 'req.body' must be a valid plain object.`,
       },
     });
     
@@ -74,7 +98,7 @@ export default function handlingBody ({
           body: {
             status : 400,
             id     : 'ERR-4',
-            message: `Bad-Request: expected types ['array'] for '${path}' but got '${casted_value}'.`,
+            message: `[${this.name}] expected types ['array'] for '${path}' but got '${casted_value}'.`,
           },
         });
     
@@ -83,7 +107,7 @@ export default function handlingBody ({
           body: {
             status : 400,
             id     : 'ERR-5',
-            message: `Bad-Request: expected array.length=${rule.length} for '${path}' but got ${value.length}.`,
+            message: `[${this.name}] expected array.length=${rule.length} for '${path}' but got ${value.length}.`,
           },
         });
     
@@ -104,7 +128,7 @@ export default function handlingBody ({
           body: {
             status : 400,
             id     : 'ERR-4',
-            message: `Bad-Request: expected types ['object'] for '${path}' but got '${casted_value}'.`,
+            message: `[${this.name}] expected types ['object'] for '${path}' but got '${casted_value}'.`,
           },
         });
 
@@ -118,7 +142,7 @@ export default function handlingBody ({
           body: {
             status : 400,
             id     : 'ERR-3',
-            message: `Bad-Request: undeclared key '${path}.${undeclared_keys[0]}'`,
+            message: `[${this.name}] undeclared key '${path}.${undeclared_keys[0]}'`,
           },
         });
     
@@ -128,7 +152,7 @@ export default function handlingBody ({
             body: {
               status : 400,
               id     : 'ERR-2',
-              message: `Bad-Request: missing required key '${path}.${internal_key}'.`,
+              message: `[${this.name}] missing required key '${path}.${internal_key}'.`,
             },
           });
     
@@ -142,7 +166,7 @@ export default function handlingBody ({
         return;
       }
 
-      const casted_type = validatingType({ cast: value });
+      const casted_type = this.validatingType({ cast: value });
       
       const is_simple_rule = typeof rule === 'string'
           || (
@@ -155,7 +179,7 @@ export default function handlingBody ({
     
       if (is_simple_rule) {
         const cache_rule = typeof rule !== 'string'
-          ? validatingType({ cast: rule })
+          ? this.validatingType({ cast: rule })
           : rule;
     
         const valid_types = cache_rule
@@ -169,7 +193,7 @@ export default function handlingBody ({
           body: {
             status : 400,
             id     : 'ERR-4',
-            message: `Bad-Request: expected types [${valid_types
+            message: `[${this.name}] expected types [${valid_types
               .map(type => `'${type}'`)
               .join(', ')}] for body-key ${path} but got '${casted_type}'.`,
           },
@@ -197,7 +221,7 @@ export default function handlingBody ({
         body: {
           status : 500,
           id     : 'ERR-0',
-          message: `Internal-Server-Error: invalid rule at '${path}'.`,
+          message: `[${this.name}] invalid rule at '${path}'.`,
         },
       });
     }
@@ -205,11 +229,27 @@ export default function handlingBody ({
     // Calling the recursive-DSL-validator
     recursiveDSLValidator({
       value: request_body,
-      rule : scheme,
-      path : "req.body",
+      rule : this.scheme,
+      path : 'req.body',
     });
 
     // If all checks pass, we continue
     return next();
-  };
-};
+  }
+
+  validatingType ({ cast }={}) {
+    if (cast === null) return 'null';
+  
+    if (typeof cast === 'string') return 'string';
+  
+    if (typeof cast === 'number' && Number.isFinite(cast)) return 'number';
+  
+    if (typeof cast === 'boolean') return 'boolean';
+  
+    if (Array.isArray(cast)) return 'array';
+  
+    if (Object.prototype.toString.call(cast) === '[object Object]') return 'object';
+  
+    return false;
+  }
+}
