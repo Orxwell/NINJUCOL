@@ -16,8 +16,7 @@
     <%- include('../components/top.component.ejs', { page: 'new', }) %>
 
     <%- include('../components/bar.component.ejs', { page: 'new', }) %>
-
-    <%- include('../components/new.component.ejs') %>
+<%- include('../components/new.component.ejs', { record: records}) %>
     <%- include('../components/donations.component.ejs') %>
 
     <%- include('../components/footer.component.ejs') %>

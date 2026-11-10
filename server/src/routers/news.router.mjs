@@ -33,7 +33,7 @@ const routerNEWS = {
             title: `News | NINJUCOL`,
         
             records: records,
-    
+      
             error: error,
         
             server_url: importer.env.SERVER_URL,
@@ -61,19 +61,21 @@ const routerNEWS = {
           if (error) return res.redirect('/error_at_get?' +
             `error=${encodeURIComponent(error)}`);
           
-          if (Object.keys(record).length === 0) return res.redirect('/news' +
+          if (Object.keys(record).length === 0) return res.redirect('/news?'+
           `error=${encodeURIComponent('No existe la noticia solicitada.')}`);
           
           return res.render(template.publicNewEJS, {
             title: `New | NINJUCOL`,
       
             records: record,
-      
+            record: record,
             server_url: importer.env.SERVER_URL,
           }, (error, html) => {
-            if (error) return res.redirect('/error_at_get?' +
-              `error=${encodeURIComponent('RENDER_ERROR./new')}`);
-            
+            if (error) {
+              console.error("🔥 ERROR DE EJS EN /news/new:", error);
+              return res.redirect('/error_at_get?' +
+                `error=${encodeURIComponent('RENDER_ERROR./new')}`);
+            }
             return res.send(html);
           });
         });
