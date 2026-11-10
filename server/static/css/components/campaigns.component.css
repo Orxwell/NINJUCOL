@@ -245,11 +245,13 @@ section.campaigns-section {
   }
 
   .campaign-col-texto {
-    padding: 40px 20px;
+    padding: 20px 20px;
+    
   }
 
   .campaign-col-imagen {
     min-height: 280px;
+    height: 900px;
     order: -1; /* En celulares la imagen va arriba del texto */
   }
 }
