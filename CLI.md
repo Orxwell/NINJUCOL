@@ -62,19 +62,19 @@ _`:middleware`_: **Especifica a qué middlewares quieres afectar, puedes especif
 
 ### Ejemplos, *middleware*:
 
-> `>middlewares stop`\
+> `>middleware stop`\
 > Detén todos los middlewares de todos los enrutadores.
 
-> `>middlewares router=* stop`\
+> `>middleware router=* stop`\
 > Detén todos los middlewares globales.
 
-> `>middlewares router=* middleware=audit stop`\
+> `>middleware router=* middleware=audit stop`\
 > Detén el **middleware `audit`** global.
 
-> `>middlewares router=HOME stop`\
+> `>middleware router=HOME stop`\
 > Detén todos los middlewares del enrutador HOME.
 
-> `>middlewares router=[HOME, SIGN] stop`\
+> `>middleware router=[HOME, SIGN] stop`\
 > Detén todos los middlewares de los enrutadores especificados.
 
 > `>middlewares method=GET stop`\

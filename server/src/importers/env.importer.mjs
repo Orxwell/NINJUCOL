@@ -73,6 +73,19 @@ temp.EMAIL_KEY = auditENV({
 });
 
 
+// Audit configuration...
+temp.FLUSHER_MS = auditENV({
+  name    : 'FLUSHER_MS',
+  type    : 'number',
+  required: true,
+});
+temp.PERSISTENCY_MS = auditENV({
+  name    : 'PERSISTENCY_MS',
+  type    : 'number',
+  required: true,
+});
+
+
 // Instagram configuration...
 temp.INSTAGRAM_TOKEN = auditENV({
   name    : 'INSTAGRAM_TOKEN',
@@ -125,6 +138,10 @@ export const env = Object.freeze({
   // Email configuration...
   EMAIL_DOMAIN: temp.EMAIL_DOMAIN,
   EMAIL_KEY   : temp.EMAIL_KEY,
+
+  // Audit configuration...
+  FLUSHER_MS    : temp.FLUSHER_MS,
+  PERSISTENCY_MS: temp.PERSISTENCY_MS,
 
   // Instagram configuration...
   INSTAGRAM_TOKEN    : temp.INSTAGRAM_TOKEN,

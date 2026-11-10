@@ -284,17 +284,13 @@ export default class AuditMiddleware extends BaseMiddleware {
 
       if (!Array.isArray(batch)) throw new Error(`[${this.name}] Invalid audit file: ${log}`);
 
-      records.push(...batch);
+      records.push({ record: batch, });
     }
 
 // Export the data:
     if (records.length > 0) {
-      // to the DB (Validamos de forma segura si el servicio audit existe)
-      if (service && service.audit && typeof service.audit.createRecords === 'function') {
-        await service.audit.createRecords(records); 
-      } else {
-        console.warn(`⚠️ [AuditMiddleware] El servicio 'audit' no está registrado en handler.service.mjs. Omitiendo guardado en BD de ${records.length} registros.`);
-      }
+      // to the DB
+      await service.audit.send({ records: records, });
 
       // TODO: Send records to api.orxwell.com
       // Await delivery if required before deleting files.

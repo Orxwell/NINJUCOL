@@ -12,9 +12,9 @@ import CLI from './CLI.mjs';
 // Turning on the server, at PORT
 const server = app.listen(importer.env.SERVER_PORT, () => {
   if (importer.env.SERVER_MODE === 'dev') {
-    console.info(`[Server] listen on port: ${importer.env.SERVER_PORT}~`);
+    console.info(`[Server] listen on port: ${importer.env.SERVER_PORT}`);
 
-    console.info(`[Server] URL: ${importer.env.SERVER_URL} ~\n`);
+    console.info(`[Server] URL: ${importer.env.SERVER_URL}\n`);
   }
 });
 
