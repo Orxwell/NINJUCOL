@@ -1,7 +1,93 @@
 /* General*/
-@import "../public/reset.public.css";
-@import "../public/styles.public.css";
+@import "../reset.public.css";
+@import "../styles.public.css";
 
 /* Components */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
+@import "../components/footer.component.css";
+.add-repository-container {
+  width: 100%;
+  max-width: 750px;
+  background-color: var(--fg-color, #ffffff);
+  color: var(--text-color, #111111);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.add-repository-container h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-matcha);
+  color: var(--text-color, #111111);
+}
+
+.add-repository-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-repository-group label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color, #333333);
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.add-repository-group input[type="text"],
+.add-repository-group input[type="url"],
+.add-repository-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-color, #111111);
+  background-color: var(--bg-color, #f9fafb);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.add-repository-group input[type="text"]:focus,
+.add-repository-group input[type="url"]:focus,
+.add-repository-group textarea:focus {
+  outline: none;
+  border-color: var(--color-matcha);
+  box-shadow: 0 0 0 3px rgba(180, 181, 52, 0.25);
+  background-color: var(--fg-color, #ffffff);
+}
+
+.add-repository-group textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.add-repository-btn-submit {
+  width: 100%;
+  padding: 14px;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-matcha);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: filter 0.2s ease;
+  margin-top: 10px;
+}
+
+.add-repository-btn-submit:hover {
+  filter: brightness(0.9);
+}

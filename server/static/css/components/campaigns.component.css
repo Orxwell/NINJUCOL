@@ -1,0 +1,257 @@
+/* ==========================================================
+   ESTILOS DE LA SECCIÓN DE CAMPAÑAS (EN RECUADROS RECTANGULARES)
+   ========================================================== */
+
+section.campaigns-section {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f8fafc; /* Fondo general sutil para que los recuadros resalten */
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 60px 20px;
+}
+
+/* Encabezado general de la sección */
+.campaigns-header-wrapper {
+  max-width: 900px;
+  margin: 0 auto 50px auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.campaigns-main-title {
+  font-family: var(--font-heading);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 800;
+  color: var(--color-sea-dark);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 15px 0;
+  line-height: 1.1;
+}
+
+.campaigns-subtitle {
+  font-family: var(--font-body);
+  color: #475569;
+  font-size: clamp(14px, 1.5vw, 16px);
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Contenedor general que apila las tarjetas de campañas */
+.campaigns-grid-full {
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* Separación elegante entre cada tarjeta de campaña */
+  max-width: 1250px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Cada tarjeta de campaña es un recuadro rectangular con bordes redondeados y sombra */
+.campaign-row-full {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* Ajuste proporcional de columnas */
+  width: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+/* INTERCALADO AUTOMÁTICO: Las campañas pares invierten el orden (Imagen izquierda, texto derecha) */
+.campaign-row-full:nth-child(even) {
+  direction: rtl;
+}
+
+.campaign-row-full:nth-child(even) > * {
+  direction: ltr;
+}
+
+/* Columna de Texto */
+.campaign-col-texto {
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 6%;
+  box-sizing: border-box;
+}
+
+.campaign-inner-wrapper {
+  max-width: 520px;
+  width: 100%;
+}
+
+.campaign-titulo {
+  font-family: var(--font-heading);
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 800;
+  color: var(--color-sea-dark);
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+.campaign-descripcion {
+  font-family: var(--font-body);
+  color: #475569;
+  font-size: clamp(14px, 1.4vw, 16px);
+  line-height: 1.7;
+  margin: 0 0 24px 0;
+  font-weight: 400;
+}
+
+/* Botón de WhatsApp empresarial estilizado con Tangerine */
+.whatsapp-campaign-btn {
+  display: inline-block;
+  background-color: var(--color-tangerine);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  box-shadow: 0 6px 15px rgba(240, 140, 33, 0.25);
+}
+
+.whatsapp-campaign-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(240, 140, 33, 0.35);
+  filter: brightness(1.05);
+}
+
+.campaign-col-imagen {
+  position: relative;
+  width: 100%;
+  min-height: 600px; 
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+.campaign-col-imagen > svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.campaign-col-imagen > svg image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* La imagen llena el recuadro rectangular sin deformarse */
+  transition: transform 0.5s ease;
+}
+
+.campaign-row-full:hover .campaign-col-imagen > svg image {
+  transform: scale(1.03); /* Sutil zoom al pasar el cursor por la tarjeta */
+}
+.campaign-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  box-sizing: border-box;
+  padding: 40px 20px;
+}
+
+.campaign-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.campaign-modal-content-wrapper {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campaign-modal-content-wrapper img {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  transform: scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.campaign-modal-overlay.active .campaign-modal-content-wrapper img {
+  transform: scale(1);
+}
+
+.campaign-modal-close {
+  position: absolute;
+  top: 25px;
+  right: 35px;
+  color: #ffffff;
+  font-size: 45px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 10000;
+  line-height: 1;
+}
+
+.campaign-modal-close:hover {
+  color: var(--color-tangerine, #F08C21);
+}
+
+
+/* Mensaje si no hay campañas */
+.no-campaigns-message {
+  text-align: center;
+  font-family: var(--font-body);
+  color: #475569;
+  font-size: 1.1rem;
+  padding: 50px 20px;
+  background: #ffffff;
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .campaign-row-full,
+  .campaign-row-full:nth-child(even) {
+    grid-template-columns: 1fr;
+    direction: ltr; /* Desactiva la inversión en celulares */
+  }
+
+  .campaign-col-texto {
+    padding: 20px 20px;
+    
+  }
+
+  .campaign-col-imagen {
+    min-height: 280px;
+    height: 900px;
+    order: -1; /* En celulares la imagen va arriba del texto */
+  }
+}

@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="dashboard-items-list">
-                  <% if (data.news.length > 0) { %>
+                  <% if (data.news && data.news.length > 0) { %>
                     <% data.news.forEach(item => { %>
                       <div class="dashboard-item-row">
                         <div class="dashboard-item-info">
@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="dashboard-items-list">
-                  <% if (data.campaigns.length > 0) { %>
+                  <% if (data.campaigns && data.campaigns.length > 0) { %>
                     <% data.campaigns.forEach(item => { %>
                       <div class="dashboard-item-row">
                         <div class="dashboard-item-info">
@@ -104,10 +104,10 @@
                         </div>
 
                         <div class="dashboard-item-actions">
-                          <a href="/dashboard/upd/campaign?<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
+                          <a href="/dashboard/upd/campaign?uuid=<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
 
                           <form
-                            action="/dashboard/del/campaign?<%= item.uuid %>"
+                            action="/dashboard/del/campaign?uuid=<%= item.uuid %>"
                             method="POST"
                             onsubmit="return confirm('¿Eliminar esta campaña?');"
                           >
@@ -143,21 +143,20 @@
                 </div>
 
                 <div class="dashboard-items-list">
-                  <% if (data.repository.length > 0) { %>
-                    <% data.campaigns.forEach(item => { %>
+                  <% if (data.repository && data.repository.length > 0) { %>
+                    <% data.repository.forEach(item => { %>
                       <div class="dashboard-item-row">
                         <div class="dashboard-item-info">
-                          <h4
-                          class="dashboard-item-title"><%= item.title %></h4>
+                          <h4 class="dashboard-item-title"><%= item.title %></h4>
 
                           <p class="dashboard-item-desc"><%= item.description %></p>
                         </div>
 
                         <div class="dashboard-item-actions">
-                          <a href="/dashboard/upd/repository?<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
+                          <a href="/dashboard/upd/repository?uuid=<%= item.uuid %>" class="dashboard-btn-editar">Editar</a>
 
                           <form
-                            action="/dashboard/del/repository?<%= item.uuid %>"
+                            action="/dashboard/del/repository?uuid=<%= item.uuid %>"
                             method="POST"
                             onsubmit="return confirm('¿Eliminar este recurso?');"
                           >

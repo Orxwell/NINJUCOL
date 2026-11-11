@@ -1,35 +1,34 @@
 /*
 ==========================================
-DONATION COMPONENT
+DONATION COMPONENT (FULL-BLEED 100VW CENTRADO Y COMPACTO)
 ==========================================
 */
 
 .donation-section-full {
-  width: 100vw;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  
   background-color: var(--color-sea-dark, #3B6B9C);
   color: #FFFFFF;
-  overflow: hidden;
   font-family: var(--font-body);
+  min-height: auto;
+  box-sizing: border-box;
 }
 
 .donation-grid-full {
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  min-height: 580px;
+  align-items: stretch;
 }
 
-/* --- COLUMNA IZQUIERDA (IMAGEN FULL) --- */
 .donation-col-image {
   position: relative;
   width: 100%;
   height: 100%;
-  min-height: 450px;
+  min-height: 300px; 
 }
 
 .donation-img-full {
@@ -42,78 +41,80 @@ DONATION COMPONENT
 
 .donation-badge-float {
   position: absolute;
-  bottom: 40px;
-  left: 40px;
+  bottom: 30px;
+  left: 30px;
   background-color: var(--color-butter, #F2D88F);
   color: #3B3005;
-  padding: 10px 20px;
-  font-size: 0.85rem;
+  padding: 8px 16px;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 1px;
   border-radius: 4px;
 }
 
-/* --- COLUMNA DERECHA (BLOQUE AZUL CON FORMULARIO) --- */
 .donation-col-content {
   background-color: var(--color-sea-dark, #3B6B9C);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 60px 8%;
+  padding: 40px 6%; /* Espaciado vertical reducido para que sea más bajo */
   box-sizing: border-box;
 }
 
 .donation-inner-wrapper {
-  max-width: 520px;
+  max-width: 500px;
   width: 100%;
 }
 
 .donation-inner-wrapper .section-dots {
   color: var(--color-butter, #F2D88F);
+  font-size: 2rem;
+  letter-spacing: 4px;
+  font-weight: 800;
+  margin-bottom: 12px;
 }
 
 .donation-title {
   font-family: var(--font-heading, 'Oswald', sans-serif);
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   color: #FFFFFF;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   line-height: 1.1;
 }
 
 .donation-subtitle {
   color: #E2E8F0;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin-bottom: 35px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
 }
 
 .form-label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 800;
   color: var(--color-butter, #F2D88F);
   letter-spacing: 1px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
-/* GRID DE VALORES */
 .values-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr) 1.2fr;
-  gap: 10px;
-  margin-bottom: 24px;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .btn-value {
   background-color: rgba(255, 255, 255, 0.12);
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   color: #FFFFFF;
-  padding: 14px 10px;
+  padding: 10px 8px;
   border-radius: 6px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -134,9 +135,9 @@ DONATION COMPONENT
   background-color: rgba(255, 255, 255, 0.12);
   border: 1.5px solid rgba(255, 255, 255, 0.3);
   color: #FFFFFF;
-  padding: 14px 10px;
+  padding: 10px 8px;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
   text-align: center;
   box-sizing: border-box;
@@ -153,41 +154,39 @@ DONATION COMPONENT
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* CAJA DE RESUMEN PROYECTADO */
 .projection-box {
   background-color: rgba(0, 0, 0, 0.2);
   border-left: 4px solid var(--color-butter, #F2D88F);
-  padding: 18px 22px;
-  margin-bottom: 30px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
   border-radius: 0 6px 6px 0;
 }
 
 .projection-text {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.8);
   letter-spacing: 0.5px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .projection-value {
   font-family: var(--font-heading, 'Oswald', sans-serif);
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #FFFFFF;
   margin: 0;
 }
 
-/* BOTÓN TANGERINE DE IMPACTO */
 .btn-donate-submit {
   width: 100%;
   background-color: var(--color-tangerine, #F08C21);
   color: #FFFFFF;
   border: none;
-  padding: 18px;
+  padding: 14px;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   letter-spacing: 1px;
   cursor: pointer;
@@ -200,28 +199,19 @@ DONATION COMPONENT
   transform: translateY(-2px);
 }
 
-/* --- RESPONSIVE--- */
+/* --- RESPONSIVE --- */
 @media (max-width: 1024px) {
-  /* Mantenemos el truco de ancho completo (100vw) pero asegurando que la sección se apile correctamente */
-  .donation-section-full {
-    width: 100vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-  }
-
   .donation-grid-full {
-    grid-template-columns: 1fr; /* Pasa a una sola columna vertical */
+    grid-template-columns: 1fr; 
   }
 
   .donation-col-image {
-    min-height: 350px;
-    max-height: 400px;
+    min-height: 300px;
+    max-height: 350px;
   }
 
   .donation-col-content {
-    padding: 50px 20px;
+    padding: 40px 20px;
   }
 
   .values-grid {

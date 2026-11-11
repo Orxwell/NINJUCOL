@@ -21,7 +21,11 @@
 
     <main>
       <article>
-
+        <%- include('../components/title.component.ejs',{
+          page: 'repository', 
+          customTitle: 'Recursos'
+        }
+        ) %>
         <%- include('../components/donations.component.ejs') %>
   
       </article>

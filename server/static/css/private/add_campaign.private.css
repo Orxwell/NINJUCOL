@@ -5,3 +5,90 @@
 /* Components */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
+@import "../components/footer.component.css";
+
+.add-campaign-container {
+  width: 100%;
+  max-width: 750px;
+  background-color: var(--fg-color, #ffffff);
+  color: var(--text-color, #111111);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 12px;
+  padding: 35px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.add-campaign-container h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--color-tangerine);
+  color: var(--text-color, #111111);
+}
+
+.add-campaign-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.add-campaign-group label {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-color, #333333);
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.add-campaign-group input[type="text"],
+.add-campaign-group input[type="url"],
+.add-campaign-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-color, #111111);
+  background-color: var(--bg-color, #f9fafb);
+  border: 1px solid var(--color-sea-dark);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.add-campaign-group input[type="text"]:focus,
+.add-campaign-group input[type="url"]:focus,
+.add-campaign-group textarea:focus {
+  outline: none;
+  border-color: var(--color-tangerine);
+  box-shadow: 0 0 0 3px rgba(240, 140, 33, 0.25);
+  background-color: var(--fg-color, #ffffff);
+}
+
+.add-campaign-group textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.add-campaign-btn-submit {
+  width: 100%;
+  padding: 14px;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--color-tangerine);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.add-campaign-btn-submit:hover {
+  background-color: var(--color-tangerine-hover);
+}

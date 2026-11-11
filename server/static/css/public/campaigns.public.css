@@ -6,5 +6,8 @@
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
 
+@import "../components/title.component.css";
+@import "../components/campaigns.component.css";
+
 @import "../components/donations.component.css";
 @import "../components/footer.component.css";

@@ -1,37 +1,80 @@
-/*
-==========================================
-(CLASE ._3)
-==========================================
-*/
+/* ==========================================
+   (CLASE ._3 CON FONDO DE IMAGEN ABSOLUTO CORREGIDO)
+   ========================================== */
 
 section._3 {
   position: relative;
   width: 100vw;
-  position: relative;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  
   padding: 80px 20px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  background-color: color-mix(in srgb, var(--color-sea) 12%, #ffffff 88%);
+  background-color: color-mix(in srgb, var(--color-sea) 10%, #ffffff 90%);
+  overflow: hidden;
+}
+
+/* El contenedor del fondo se posiciona de forma fija detrás del contenido */
+section._3 .section-bg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Asegura que quede completamente atrás */
+  pointer-events: none;
+}
+
+section._3 .section-bg-wrapper svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Overlay de oscurecimiento */
+section._3 .section-bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(15, 23, 42, 0.65); /* Ajusta este valor si deseas más o menos claridad */
+  z-index: 1;
+}
+
+/* El contenido DEBE tener z-index superior para estar al frente */
+section._3 ._3-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ajustes de contraste para el header si tiene imagen */
+section._3.has-bg-img ._3-header h2 {
+  color: #ffffff;
+}
+
+section._3.has-bg-img ._3-header p {
+  color: #e2e8f0;
 }
 
 section._3 ._3-container {
-  max-width: 1200px;
+  max-width: 1250px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2; 
 }
 
-/* Encabezado */
 section._3 ._3-header {
   text-align: center;
   margin-bottom: 50px;
@@ -39,7 +82,7 @@ section._3 ._3-header {
 
 section._3 ._3-header h2 {
   font-family: var(--font-heading);
-  font-size: clamp(28px, 3.5vw, 36px);
+  font-size: clamp(28px, 3.5vw, 38px);
   font-weight: 800;
   color: var(--color-sea-dark);
   margin: 0 0 10px 0;
@@ -54,26 +97,18 @@ section._3 ._3-header p {
   margin: 0;
 }
 
-/* Grid de Tarjetas (4 columnas en pantallas grandes) */
 section._3 ._3-grid {
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
 }
 
-section._3 ._4-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-}
-
-/* Estilo Individual de cada Tarjeta */
 section._3 ._3-card {
   background-color: #ffffff;
   border-radius: 16px;
-  padding: 30px 25px;
+  padding: 35px 28px;
   box-sizing: border-box;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -81,10 +116,14 @@ section._3 ._3-card {
   align-items: flex-start;
   position: relative;
   overflow: hidden;
+  
+  width: calc(25% - 23px);
+  min-width: 260px;
+  max-width: 290px;
+  
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Línea superior distintiva color matcha en cada tarjeta */
 section._3 ._3-card::before {
   content: '';
   position: absolute;
@@ -100,24 +139,28 @@ section._3 ._3-card:hover {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
-/* Contenedor del Ícono Circular */
 section._3 ._3-icon {
-  width: 65px;
-  height: 65px;
+  width: 60px;
+  height: 60px;
   background-color: var(--color-matcha);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(180, 181, 52, 0.3);
+  box-shadow: 0 4px 12px rgba(180, 181, 52, 0.35);
 }
 
 section._3 ._3-icon svg {
-  color: #ffffff;
+  width: 28px;
+  height: 28px;
+  stroke: #ffffff;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* Título de la Tarjeta */
 section._3 ._3-card h3 {
   font-family: var(--font-heading);
   font-size: 19px;
@@ -127,7 +170,6 @@ section._3 ._3-card h3 {
   line-height: 1.3;
 }
 
-/* Párrafo descriptivo de la tarjeta */
 section._3 ._3-card p {
   font-family: var(--font-body);
   font-size: 14px;
@@ -137,15 +179,17 @@ section._3 ._3-card p {
   line-height: 1.5;
 }
 
-/* --- RESPONSIVE--- */
-@media (max-width: 1024px) {
-  section._3 ._3-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+/* --- RESPONSIVE --- */
+@media (max-width: 1100px) {
+  section._3 ._3-card {
+    width: calc(50% - 20px); 
+    max-width: 350px;
   }
 }
 
 @media (max-width: 640px) {
-  section._3 ._3-grid {
-    grid-template-columns: 1fr; /* 1 columna en celulares */
+  section._3 ._3-card {
+    width: 100%; 
+    max-width: 100%;
   }
 }

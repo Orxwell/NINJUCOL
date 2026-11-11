@@ -287,7 +287,7 @@ export default class AuditMiddleware extends BaseMiddleware {
       records.push({ record: batch, });
     }
 
-    // Export the data:
+// Export the data:
     if (records.length > 0) {
       // to the DB
       await service.audit.send({ records: records, });
@@ -297,6 +297,7 @@ export default class AuditMiddleware extends BaseMiddleware {
     }
 
     // Delete only after successful export
-    for (const log of logs) { await rm(log); }
-  }
+    for (const log of logs) { 
+      await rm(log); 
+    }}
 }

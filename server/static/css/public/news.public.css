@@ -5,6 +5,7 @@
 /* COMPONENTS' STYLES */
 @import "../components/top.component.css";
 @import "../components/bar.component.css";
-
+@import "../components/title.component.css";
+@import "../components/news.component.css";
 @import "../components/donations.component.css";
 @import "../components/footer.component.css";

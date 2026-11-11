@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <%- include('../components/links.component.ejs', { pages: [{ route: 'private', name: 'add_new' }] }) %>
-
     <%- include('../components/scripts.component.ejs', { resources: [{ route: 'private', name: 'multipart' }] }) %>
 
     <title><%= title %></title>
   </head>
 
   <body>
-    <%- include('../components/top.component.ejs', { page: 'add_new', }) %>
-    
-    <%- include('../components/bar.component.ejs', { page: 'add_new', }) %>
+    <%- include('../components/top.component.ejs', { page: 'add_new' }) %>
+    <%- include('../components/bar.component.ejs', { page: 'add_new' }) %>
 
     <script>
       const allowedTypesByInput = {
@@ -38,47 +36,46 @@
         >
           <div class="add-new-group">
             <label>Título:</label>
-
             <input
               type="text"
               name="title"
+              placeholder="Escribe un título llamativo..."
               required
             />
           </div>
 
           <div class="add-new-group">
             <label>Autor:</label>
-
             <input
               type="text"
               name="author"
+              placeholder="Nombre del autor o entidad..."
               required
             />
           </div>
 
           <div class="add-new-group">
             <label>Resumen:</label>
-
             <textarea
               name="resume"
               rows="2"
+              placeholder="Breve introducción de la noticia..."
               required
             ></textarea>
           </div>
 
           <div class="add-new-group">
             <label>Descripción:</label>
-
             <textarea
               name="description"
               rows="5"
+              placeholder="Contenido completo de la noticia..."
               required
             ></textarea>
           </div>
 
           <div class="add-new-group">
             <label>Portada:</label>
-
             <input
               type="file"
               id="resource"
@@ -89,7 +86,6 @@
 
           <div class="add-new-group">
             <label>URL de YouTube (opcional):</label>
-
             <input
               type="url"
               id="video_url"
@@ -99,19 +95,20 @@
 
             <script>
               const $npt = document.getElementById('video_url');
-
-              $npt.form.addEventListener('submit', () => {
-                if (!$npt.value.trim()) {
-                  $npt.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
-                }
-              });
+              if ($npt && $npt.form) {
+                $npt.form.addEventListener('submit', () => {
+                  if (!$npt.value.trim()) {
+                    $npt.value = 'https://www.youtube.com/watch?v=jNQXAC9IVRw';
+                  }
+                });
+              }
             </script>
           </div>
 
-          <button type="submit" class="add-new-btn-submit">Guardar</button>
+          <button type="submit" class="add-new-btn-submit">Guardar Noticia</button>
         </form>
 
-        <a href="/dashboard">Regresar</a>
+        <a href="/dashboard" class="back-link">← Regresar al Dashboard</a>
       </div>
     </main>
 

@@ -25,6 +25,14 @@
   --button-bg-color: #82b4f1;
   --button-text-color: #0d1e32;
 }
+/* ==========================================================
+   CLASE GLOBAL PARA PANTALLA COMPLETA REAL
+   ========================================================== */
+.full-screen-section {
+  min-height: calc(100dvh - 100px);
+  width: 100%;
+  box-sizing: border-box;
+}
 
 @property --a-bg { 
   syntax: '<angle>'; 

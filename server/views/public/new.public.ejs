@@ -10,22 +10,14 @@
     <%- include('../components/links.component.ejs', { pages: [{ route: 'public', name: 'new' }], }) %>
 
     <%- include('../components/scripts.component.ejs') %>
-
-    <title><%= title %></title>
   </head>
 
   <body>
     <%- include('../components/top.component.ejs', { page: 'new', }) %>
 
     <%- include('../components/bar.component.ejs', { page: 'new', }) %>
-
-    <main>
-      <article>
-
-        <%- include('../components/donations.component.ejs') %>
-  
-      </article>
-    </main>
+<%- include('../components/new.component.ejs', { record: records}) %>
+    <%- include('../components/donations.component.ejs') %>
 
     <%- include('../components/footer.component.ejs') %>
   </body>

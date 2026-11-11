@@ -1,9 +1,26 @@
-<section class="_3">
+<section class="_3 has-bg-img">
+  
+  <!-- CONTENEDOR DE FONDO (SVG + OVERLAY) -->
+  <div class="section-bg-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <image
+        href="<%= server_url %>/api/webp/public/Reunion.webp<%= `?v=${Date.now()}` %>"
+        x="0"
+        y="0"
+        width="100%"
+        height="100%"
+        preserveAspectRatio="xMidYMid slice"
+        style="opacity: 0; transition: opacity .5s ease-in;"
+        onload="this.style.opacity='1'"
+      />
+    </svg>
+    <div class="section-bg-overlay"></div>
+  </div>
+
   <div class="_3-container">
-    <!-- Encabezado con la información de la imagen -->
     <div class="_3-header">
-      <h2>NUESTROS PROGRAMAS Y PROPUESTAS</h2>
-      <p>Acompañamos a las instituciones educativas a fortalecer la convivencia pacífica a través de programas diseñados a la medida de sus necesidades.</p>
+      <h2>ACOMPAÑAMOS A TODA LA COMUNIDAD EDUCATIVA</h2>
+      <p>La convivencia no es responsabilidad exclusiva de niñas, niños y jóvenes: se construye entre quienes comparten la vida escolar.</p>
     </div>
 
     <!-- Grid de Tarjetas (3 Columnas usando la estructura del componente 3) -->
@@ -16,8 +33,9 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
         </div>
-        <h3>Prevención del Bullying</h3>
-        <p>Talleres interactivos y dinámicas grupales para identificar, prevenir y desarticular situaciones de acoso escolar en el aula.</p>
+        <h3>Prevención del Bullying entre Estudiantes</h3>
+        <p>Habilidades socioemocionales, convivencia y participación, y
+prevención del acoso y el ciberacoso escolar.</p>
       </article>
 
       <!-- Tarjeta 2: Acompañamiento a Docentes -->
@@ -30,8 +48,8 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
         </div>
-        <h3>Acompañamiento a Docentes</h3>
-        <p>Capacitación en técnicas restaurativas y gestión emocional para ayudar a los profesores en el manejo constructivo del aula.</p>
+        <h3>Acompañamiento a Educadores</h3>
+        <p>Capacitamos en prácticas restaurativas, herramientas pedagógicas y clima y gestión del aula.</p>
       </article>
 
       <!-- Tarjeta 3: Talleres con Familias -->
@@ -43,7 +61,8 @@
           </svg>
         </div>
         <h3>Talleres con Familias</h3>
-        <p>Espacios de encuentro y formación para padres y cuidadores sobre pautas de crianza respetuosa y hábitos de escucha en el hogar.</p>
+        <p>Escuela de familias restaurativa: comunicación, crianza con normas y límites, y
+corresponsabilidad con la escuela.</p>
       </article>
     </div>
   </div>

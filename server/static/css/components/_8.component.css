@@ -1,0 +1,190 @@
+/* ==========================================
+   COMPONENTE: ASÍ SE VIVE UNA SESIÓN (FLIP CARDS)
+   ========================================== */
+
+section.session-experience {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f8fafc;
+  padding: 80px 5%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.session-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 50px;
+  align-items: center;
+}
+
+/* --- SECCIÓN IZQUIERDA: CÍRCULO CENTRAL --- */
+.session-left-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.session-central-circle {
+  width: 440px;
+  height: 440px;
+  /* Actualizado con un toque degradado que incluye tangerine en el centro */
+  background: linear-gradient(135deg, var(--color-sea-dark, #3B6B9C), #224c75);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  box-sizing: border-box;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  position: relative;
+  border: 0px solid var(--color-tangerine, #F08C21); /* Borde tangerine para resaltar */
+}
+
+.session-circle-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-butter, #F2D88F);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.session-circle-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 2.2rem;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+/* --- SECCIÓN DERECHA: TARJETAS CON EFECTO FLIP 3D --- */
+.session-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.session-section-title {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 2rem;
+  color: var(--color-sea-dark, #3B6B9C);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 100%;
+  height: 100px; /* Ligeramente más alto para albergar el subtítulo cómodo */
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateX(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  padding: 0 25px;
+  box-sizing: border-box;
+  /* Borde izquierdo con color Tangerine para darle vida */
+  border-left: 5px solid var(--color-tangerine, #F08C21);
+}
+
+.flip-card-front {
+  background-color: #FFFFFF;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.step-number {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  color: var(--color-tangerine, #F08C21); /* Números en color tangerine */
+  font-weight: 700;
+}
+
+.step-name {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-sea-dark, #3B6B9C);
+  font-weight: 700;
+}
+
+/* Cara trasera adaptada con subtítulo "Jugamos" y el párrafo */
+.flip-card-back {
+  background-color: var(--color-sea, #3B6B9C);
+  color: #FFFFFF;
+  transform: rotateX(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 25px;
+}
+
+.flip-card-subtitle-play {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--color-butter, #F08C21); /* Subtítulo resaltado en tangerine */
+  margin-bottom: 3px;
+  font-weight: 700;
+}
+
+.flip-card-back p {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.35;
+  margin: 0;
+  color: #F8FAFC;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .session-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .session-left-col {
+    order: -1;
+  }
+
+  .session-central-circle {
+    width: 380px;
+    height: 380px;
+  }
+}

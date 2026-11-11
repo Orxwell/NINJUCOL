@@ -35,7 +35,7 @@ const routerDASHBOARD = {
             `error=${encodeURIComponent(error)}`);
     
           if (record.status === 'DENIED') return res.redirect('/sign/in?' +
-            `error=${encodeURIComponent(error)}`);
+            `error=${encodeURIComponent('Acceso denegado')}`);
           
           return record;
         });
@@ -73,10 +73,11 @@ const routerDASHBOARD = {
           title: `Dashboard | NINJUCOL`,
     
           account: found_account,
-    
+          repository: found_repository,
           data: {
             news      : found_news,
             campaigns : found_campaigns,
+            records : found_campaigns,
             repository: found_repository,
           },
     
@@ -211,7 +212,7 @@ const routerDASHBOARD = {
     },
 
     '/dashboard/add/repository': {
-      middlewares: {
+      multipart: {
         auth: new middleware.auth({
           path: '/dashboard/add/repository',
         }),
@@ -593,7 +594,7 @@ const routerDASHBOARD = {
 
           path: '/dashboard/upd/repository',
         }),
-        mmultipart: new middleware.multipart({
+      multipart: new middleware.multipart({
           scheme: {
             resource: [
               'image/jpeg',
